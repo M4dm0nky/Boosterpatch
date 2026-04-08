@@ -1127,7 +1127,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.3.3</div>
+        <div class="app-version" id="appVersionDisplay">v0.3.4</div>
       </div>
     </div>
   </div>
@@ -1420,7 +1420,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.3.3';
+const APP_VERSION = 'v0.3.4';
 
 // ============================================================
 // 1. STATE
@@ -1627,8 +1627,9 @@ function updateEmptyState() {
 // ============================================================
 // 7. RENDERING — DEVICE CARDS
 // ============================================================
-const CONN_SLOT_W = 90; // px per connector slot (display width + gap)
-const BASE_DEVICE_W = 200; // ears + input section approx
+const CONN_W    = 103; // actual xlr-connector width (seg-display: 6×13 + 5×3 + 2×5)
+const CONN_GAP  = 10;  // gap between connectors in connectors-row
+const RACK_BASE = 113; // 2 ears (56) + face-padding (24) + input-section separators (33)
 
 function updateRackScale() {
   const container = document.getElementById('devicesContainer');
@@ -1654,7 +1655,10 @@ function renderAllDevices() {
   }
 
   const maxOutputs = Math.max(...state.devices.map(d => d.outputs));
-  const minW = maxOutputs * CONN_SLOT_W + BASE_DEVICE_W;
+  const maxInputs  = Math.max(...state.devices.map(d => d.inputs));
+  const inputsW  = maxInputs  * CONN_W + Math.max(maxInputs  - 1, 0) * CONN_GAP;
+  const outputsW = maxOutputs * CONN_W + Math.max(maxOutputs - 1, 0) * CONN_GAP;
+  const minW = RACK_BASE + inputsW + outputsW + 4;
   container.style.setProperty('--device-min-w', minW + 'px');
   container.style.setProperty('--device-natural-w', minW + 'px');
   updateRackScale();

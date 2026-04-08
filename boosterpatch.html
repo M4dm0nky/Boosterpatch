@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;900&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    /* === 0. Global Scale === */
+    html { zoom: 1.2; }
+
     /* === 1. Reset & Variables === */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -262,22 +265,40 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      padding: 80px 20px;
+      gap: 20px;
+      min-height: calc(100vh - var(--header-h) - 40px);
+      padding: 40px 20px;
       color: var(--text-secondary);
       text-align: center;
     }
-    #emptyState .empty-icon { font-size: 64px; opacity: 0.3; }
-    #emptyState h2 { font-family: var(--font-header); font-size: 32px; letter-spacing: 3px; color: var(--text-secondary); }
+    #emptyState .empty-icon { font-size: 64px; opacity: 0.2; }
+    #emptyState h2 { font-family: var(--font-header); font-size: 42px; letter-spacing: 6px; color: var(--text-primary); }
     #emptyState p { font-size: 15px; font-weight: 400; max-width: 300px; line-height: 1.5; }
-    #emptyState .hint {
-      font-family: var(--font-mono);
-      font-size: 11px;
+    .empty-actions {
+      display: flex;
+      gap: 16px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--accent);
       color: var(--accent);
-      border: 1px solid var(--accent-dim);
-      padding: 6px 16px;
-      margin-top: 8px;
-      letter-spacing: 1px;
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      padding: 12px 32px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(232,200,74,0.1); }
+    .btn-large {
+      font-size: 16px !important;
+      padding: 14px 40px !important;
+      letter-spacing: 2px;
     }
 
     #devicesContainer { display: flex; flex-direction: column; gap: 20px; }
@@ -1037,7 +1058,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.2.0</div>
+        <div class="app-version" id="appVersionDisplay">v0.2.1</div>
       </div>
     </div>
   </div>
@@ -1131,9 +1152,12 @@
 <main id="main">
   <div id="emptyState">
     <div class="empty-icon">⬡</div>
-    <h2>KEIN PROJEKT</h2>
-    <p>Lege ein neues Gerät an oder lade ein bestehendes Projekt.</p>
-    <div class="hint">⊕ NEU &nbsp;|&nbsp; 📂 ÖFFNEN</div>
+    <h2>BOOSTERPATCH</h2>
+    <p>Wähle eine Option um zu starten:</p>
+    <div class="empty-actions">
+      <button class="btn btn-primary btn-large" onclick="newProject()">⊕ Neues Projekt</button>
+      <button class="btn btn-secondary btn-large" onclick="triggerLoad()">📂 Projekt laden</button>
+    </div>
   </div>
 
   <div id="devicesContainer"></div>
@@ -1240,7 +1264,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.2.0';
+const APP_VERSION = 'v0.2.1';
 
 // ============================================================
 // 1. STATE

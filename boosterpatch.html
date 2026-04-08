@@ -325,7 +325,7 @@
     }
 
     #ethPanel {
-      width: 190px;
+      width: 133px;
       flex-shrink: 0;
       background: var(--sidebar-bg);
       border-right: 1px solid var(--rack-border);
@@ -402,7 +402,8 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      width: 100%;
+      width: var(--device-natural-w, 100%);
+      zoom: var(--rack-scale, 1);
     }
 
     .rack-unit {
@@ -415,7 +416,7 @@
       box-shadow:
         0 4px 16px rgba(0,0,0,0.5),
         inset 0 1px 0 rgba(255,255,255,0.05);
-      max-width: 100%;
+      max-width: unset;
     }
 
     .rack-ear {
@@ -1126,7 +1127,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.3.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.3.3</div>
       </div>
     </div>
   </div>
@@ -1419,7 +1420,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.3.2';
+const APP_VERSION = 'v0.3.3';
 
 // ============================================================
 // 1. STATE
@@ -1629,6 +1630,17 @@ function updateEmptyState() {
 const CONN_SLOT_W = 90; // px per connector slot (display width + gap)
 const BASE_DEVICE_W = 200; // ears + input section approx
 
+function updateRackScale() {
+  const container = document.getElementById('devicesContainer');
+  const naturalW = parseInt(container.style.getPropertyValue('--device-natural-w')) || 0;
+  if (!naturalW) return;
+  // clientWidth minus horizontal padding (16px × 2 = 32px)
+  const availW = container.clientWidth - 32;
+  if (availW <= 0) return;
+  const scale = availW / naturalW;
+  container.style.setProperty('--rack-scale', scale);
+}
+
 function renderAllDevices() {
   const container = document.getElementById('devicesContainer');
   container.innerHTML = '';
@@ -1644,6 +1656,8 @@ function renderAllDevices() {
   const maxOutputs = Math.max(...state.devices.map(d => d.outputs));
   const minW = maxOutputs * CONN_SLOT_W + BASE_DEVICE_W;
   container.style.setProperty('--device-min-w', minW + 'px');
+  container.style.setProperty('--device-natural-w', minW + 'px');
+  updateRackScale();
 
   state.devices.forEach(d => container.appendChild(buildDeviceCard(d)));
 }
@@ -2582,6 +2596,8 @@ function openLogosModal() {
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
 initEthDatabase();
+const _rackResizeObs = new ResizeObserver(() => updateRackScale());
+_rackResizeObs.observe(document.getElementById('devicesContainer'));
 renderEthPanel();
 loadLogosLocal();
 updateProjectDisplay();

@@ -108,29 +108,39 @@
 
     .hdr-right {
       display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .hdr-project-info {
+      display: flex;
       flex-direction: column;
       align-items: flex-end;
-      justify-content: center;
       gap: 2px;
     }
 
-    .logo-slot {
-      width: 52px;
-      height: 52px;
-      border: 1px solid #333;
-      background: #141414;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-mono);
-      font-size: 8px;
-      color: #444;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      overflow: hidden;
+    .logo-planer  { max-height: 52px; max-width: 160px; object-fit: contain; object-position: left center;  display: block; cursor: pointer; }
+    .logo-band    { max-height: 46px; max-width: 140px; object-fit: contain;                                 display: block; cursor: pointer; }
+    .logo-booking { max-height: 52px; max-width: 160px; object-fit: contain; object-position: right center; display: block; cursor: pointer; }
+
+    /* Logo Option in Modal */
+    .logo-option {
+      display: flex; align-items: center; gap: 14px; padding: 14px;
+      background: #1a1a1a; border: 1px solid #2a2a2a; margin-bottom: 10px;
+      cursor: pointer; transition: border-color 0.15s;
     }
-    .logo-slot:hover { border-color: var(--accent-dim); }
-    .logo-slot img { max-height: 48px; max-width: 48px; object-fit: contain; display: block; }
+    .logo-option:hover { border-color: var(--accent); }
+    .logo-option-icon { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
+    .logo-option-text strong { display: block; font-size: 13px; color: var(--text-primary); margin-bottom: 2px; }
+    .logo-option-text span { font-size: 11px; color: var(--text-secondary); }
+    .logo-option-action { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+    .logo-prev { max-height: 32px; max-width: 80px; object-fit: contain; display: none; }
+    .logo-rm {
+      font-size: 10px; color: var(--accent-red); background: transparent;
+      border: 1px solid rgba(255,60,60,.3); padding: 2px 8px; cursor: pointer; display: none;
+      font-family: var(--font-ui); letter-spacing: 1px;
+    }
 
     .app-title {
       font-family: var(--font-header);
@@ -1006,20 +1016,21 @@
 
 <!-- ===== HEADER ===== -->
 <header id="app-header">
-  <div class="hdr-left">
-    <div class="logo-slot" id="logo1" onclick="selectLogo(1)" title="Logo 1 auswählen">L1</div>
-    <div class="logo-slot" id="logo2" onclick="selectLogo(2)" title="Logo 2 auswählen">L2</div>
-    <div class="logo-slot" id="logo3" onclick="selectLogo(3)" title="Logo 3 auswählen">L3</div>
-  </div>
+  <div class="hdr-left" id="areaPlaner"></div>
   <div class="hdr-center">
-    <div>
-      <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-      <div class="app-version" id="appVersionDisplay">v0.1.1</div>
+    <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
+      <div>
+        <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
+        <div class="app-version" id="appVersionDisplay">v0.1.2</div>
+      </div>
     </div>
   </div>
   <div class="hdr-right">
-    <div id="projectNameDisplay" ondblclick="openProjectNameModal()" title="Doppelklick zum Umbenennen">Kein Projekt</div>
-    <div id="modifiedIndicator">● UNGESPEICHERT</div>
+    <div id="areaBooking"></div>
+    <div class="hdr-project-info">
+      <div id="projectNameDisplay" ondblclick="openProjectNameModal()" title="Doppelklick zum Umbenennen">Kein Projekt</div>
+      <div id="modifiedIndicator">● UNGESPEICHERT</div>
+    </div>
   </div>
 </header>
 
@@ -1051,6 +1062,11 @@
     <span>Export</span>
   </button>
   <div class="sidebar-sep"></div>
+  <button class="sidebar-btn" onclick="openLogosModal()" title="Logos verwalten">
+    <span class="icon">🖼</span>
+    <span>Logos</span>
+  </button>
+  <div class="sidebar-sep"></div>
   <button class="sidebar-btn danger" onclick="clearAll()" title="Alle Geräte löschen">
     <span class="icon">✕</span>
     <span>Leeren</span>
@@ -1060,7 +1076,40 @@
 <!-- hidden file inputs -->
 <input type="file" id="fileInput" accept=".json" onchange="handleFileLoad(event)">
 <input type="file" id="importInput" accept=".json" onchange="handleImport(event)">
-<input type="file" id="logoInput" accept="image/*" onchange="handleLogoLoad(event)">
+<input type="file" id="inLogoPlaner"  accept="image/*" style="display:none" onchange="handleLogoUpload('planer',this)">
+<input type="file" id="inLogoBand"    accept="image/*" style="display:none" onchange="handleLogoUpload('band',this)">
+<input type="file" id="inLogoBooking" accept="image/*" style="display:none" onchange="handleLogoUpload('booking',this)">
+
+<!-- ===== LOGO MODAL ===== -->
+<div class="modal-overlay" id="logosModal">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-header">
+      <div class="modal-title">LOGOS</div>
+      <button class="modal-close" onclick="closeModal('logosModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;font-family:var(--font-mono);">Logos werden im Header platziert und mit dem Projekt gespeichert.</p>
+      <div class="logo-option" onclick="document.getElementById('inLogoPlaner').click()">
+        <div class="logo-option-icon">🏢</div>
+        <div class="logo-option-text"><strong>Produktionsfirma</strong><span>Links oben</span></div>
+        <div class="logo-option-action"><img id="prevPlaner" class="logo-prev"><button class="logo-rm" id="rmPlaner" onclick="event.stopPropagation();removeLogo('planer')">✕ Entfernen</button></div>
+      </div>
+      <div class="logo-option" onclick="document.getElementById('inLogoBand').click()">
+        <div class="logo-option-icon">🎸</div>
+        <div class="logo-option-text"><strong>Band / Produktion</strong><span>Mitte, neben dem Titel</span></div>
+        <div class="logo-option-action"><img id="prevBand" class="logo-prev"><button class="logo-rm" id="rmBand" onclick="event.stopPropagation();removeLogo('band')">✕ Entfernen</button></div>
+      </div>
+      <div class="logo-option" onclick="document.getElementById('inLogoBooking').click()">
+        <div class="logo-option-icon">📋</div>
+        <div class="logo-option-text"><strong>Booking / Agentur</strong><span>Rechts oben</span></div>
+        <div class="logo-option-action"><img id="prevBooking" class="logo-prev"><button class="logo-rm" id="rmBooking" onclick="event.stopPropagation();removeLogo('booking')">✕ Entfernen</button></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="closeModal('logosModal')">Fertig</button>
+    </div>
+  </div>
+</div>
 
 <!-- ===== MAIN ===== -->
 <main id="main">
@@ -1175,7 +1224,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.1.1';
+const APP_VERSION = 'v0.1.2';
 
 // ============================================================
 // 1. STATE
@@ -1185,8 +1234,7 @@ const state = {
   created: null,
   modified: false,
   devices: [],
-  logos: { 1: null, 2: null, 3: null },
-  _logoTarget: null
+  logos: { planer: '', band: '', booking: '' }
 };
 
 // ============================================================
@@ -1822,6 +1870,13 @@ function loadProjectData(data) {
   state.projectName = data.projectName || 'Unbenannt';
   state.created = data.created || new Date().toISOString();
   state.devices = data.devices || [];
+  if (data.logos) {
+    logos.planer  = data.logos.planer  || '';
+    logos.band    = data.logos.band    || '';
+    logos.booking = data.logos.booking || '';
+    applyAllLogos();
+    saveLogosLocal();
+  }
   markSaved();
   updateProjectDisplay();
   renderAllDevices();
@@ -1839,7 +1894,8 @@ function saveProject() {
     projectName: state.projectName,
     created: state.created || new Date().toISOString(),
     modified: new Date().toISOString(),
-    devices: state.devices
+    devices: state.devices,
+    logos: { planer: logos.planer, band: logos.band, booking: logos.booking }
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -1941,32 +1997,116 @@ document.getElementById('projectNameInput').addEventListener('keydown', e => {
 // ============================================================
 // 11. LOGO MANAGEMENT
 // ============================================================
-let _logoTarget = 1;
+const LOGOS_KEY = 'boosterpatch-logos';
+const logos = { planer: '', band: '', booking: '' };
 
-function selectLogo(slot) {
-  _logoTarget = slot;
-  document.getElementById('logoInput').click();
-}
-
-function handleLogoLoad(event) {
-  const file = event.target.files[0];
+function handleLogoUpload(type, input) {
+  const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const slot = document.getElementById('logo' + _logoTarget);
-    if (slot) {
-      slot.innerHTML = '<img src="' + e.target.result + '" alt="Logo ' + _logoTarget + '">';
-    }
-    state.logos[_logoTarget] = e.target.result;
+    logos[type] = e.target.result;
+    applyLogoToHeader(type);
+    updateLogoPreviews();
+    saveLogosLocal();
+    markModified();
+    showToast('Logo gesetzt.', 'success');
   };
   reader.readAsDataURL(file);
-  event.target.value = '';
+  input.value = '';
+}
+
+function removeLogo(type) {
+  logos[type] = '';
+  applyLogoToHeader(type);
+  updateLogoPreviews();
+  saveLogosLocal();
+  markModified();
+  showToast('Logo entfernt.', 'info');
+}
+
+function applyLogoToHeader(type) {
+  if (type === 'planer') {
+    const area = document.getElementById('areaPlaner');
+    if (!area) return;
+    area.innerHTML = '';
+    if (logos.planer) {
+      const img = document.createElement('img');
+      img.src = logos.planer; img.className = 'logo-planer';
+      img.title = 'Logo ändern'; img.onclick = () => document.getElementById('inLogoPlaner').click();
+      area.appendChild(img);
+    }
+  } else if (type === 'band') {
+    const area = document.getElementById('areaBand');
+    if (!area) return;
+    const existing = area.querySelector('.logo-band');
+    if (existing) existing.remove();
+    if (logos.band) {
+      const img = document.createElement('img');
+      img.src = logos.band; img.className = 'logo-band';
+      img.title = 'Logo ändern'; img.onclick = () => document.getElementById('inLogoBand').click();
+      area.insertBefore(img, area.firstChild);
+    }
+  } else if (type === 'booking') {
+    const area = document.getElementById('areaBooking');
+    if (!area) return;
+    area.innerHTML = '';
+    if (logos.booking) {
+      const img = document.createElement('img');
+      img.src = logos.booking; img.className = 'logo-booking';
+      img.title = 'Logo ändern'; img.onclick = () => document.getElementById('inLogoBooking').click();
+      area.appendChild(img);
+    }
+  }
+}
+
+function applyAllLogos() {
+  ['planer', 'band', 'booking'].forEach(t => applyLogoToHeader(t));
+}
+
+function updateLogoPreviews() {
+  ['planer', 'band', 'booking'].forEach(type => {
+    const key = type.charAt(0).toUpperCase() + type.slice(1);
+    const prev = document.getElementById('prev' + key);
+    const rm   = document.getElementById('rm' + key);
+    if (!prev) return;
+    if (logos[type]) {
+      prev.src = logos[type]; prev.style.display = 'block';
+      rm.style.display = 'block';
+    } else {
+      prev.src = ''; prev.style.display = 'none';
+      rm.style.display = 'none';
+    }
+  });
+}
+
+function saveLogosLocal() {
+  try { localStorage.setItem(LOGOS_KEY, JSON.stringify(logos)); } catch (e) {}
+}
+
+function loadLogosLocal() {
+  try {
+    const raw = localStorage.getItem(LOGOS_KEY);
+    if (raw) {
+      const l = JSON.parse(raw);
+      logos.planer  = l.planer  || '';
+      logos.band    = l.band    || '';
+      logos.booking = l.booking || '';
+      applyAllLogos();
+    }
+  } catch (e) {}
+}
+
+function openLogosModal() {
+  updateLogoPreviews();
+  document.getElementById('logosModal').classList.add('open');
 }
 
 // ============================================================
 // 12. INIT
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
+loadLogosLocal();
 updateProjectDisplay();
 updateEmptyState();
 updatePreview();

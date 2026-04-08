@@ -374,14 +374,11 @@
       color: var(--accent-green);
     }
     .eth-entry:active { cursor: grabbing; }
-
-    .eth-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent-green);
-      flex-shrink: 0;
-      box-shadow: 0 0 4px var(--led-glow);
+    .eth-entry.connected {
+      opacity: 0.28;
+      pointer-events: none;
+      cursor: default;
+      filter: grayscale(0.6);
     }
 
     /* === 8. Devices Container (Vertical) === */
@@ -612,6 +609,11 @@
     .xlr-pin:nth-child(4) { bottom: 1px; left: 3px; }
     .xlr-pin:nth-child(5) { bottom: 1px; right: 3px; }
 
+    @keyframes ledPulse {
+      0%, 100% { opacity: 1;   box-shadow: 0 0 6px var(--led-glow); }
+      50%       { opacity: 0.3; box-shadow: 0 0 2px var(--led-glow); }
+    }
+
     .xlr-led {
       position: absolute;
       top: -5px; right: 2px;
@@ -625,6 +627,7 @@
       background: var(--led-on);
       box-shadow: 0 0 6px var(--led-glow);
       border-color: var(--led-on);
+      animation: ledPulse 2.8s ease-in-out infinite;
     }
 
     .xlr-connector.input .xlr-body {
@@ -1127,7 +1130,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.3.4</div>
+        <div class="app-version" id="appVersionDisplay">v0.3.5</div>
       </div>
     </div>
   </div>
@@ -1420,7 +1423,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.3.4';
+const APP_VERSION = 'v0.3.5';
 
 // ============================================================
 // 1. STATE
@@ -1583,7 +1586,7 @@ function createDevice(name, inputCount, outputCount) {
     outputs: outputCount,
     connections: {
       inputs:  Array.from({length: inputCount},  (_, i) => ({
-        id: i+1, universe: i+1, label: '', notes: '', active: true
+        id: i+1, universe: null, label: '', notes: '', active: false
       })),
       outputs: Array.from({length: outputCount}, (_, i) => ({
         id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null
@@ -1627,7 +1630,7 @@ function updateEmptyState() {
 // ============================================================
 // 7. RENDERING — DEVICE CARDS
 // ============================================================
-const CONN_W    = 103; // actual xlr-connector width (seg-display: 6×13 + 5×3 + 2×5)
+const CONN_W    = 71;  // actual xlr-connector width (seg-display: 4×13 + 3×3 + 2×5)
 const CONN_GAP  = 10;  // gap between connectors in connectors-row
 const RACK_BASE = 113; // 2 ears (56) + face-padding (24) + input-section separators (33)
 
@@ -1796,9 +1799,12 @@ function buildXLRConnector(deviceId, type, conn) {
       const c = device.connections.outputs.find(x => x.id === conn.id);
       if (c && c.ethId) {
         c.ethId = null;
+        c.active = false;
         markModified();
         updateConnDisplay(deviceId, 'output', c);
+        syncConnLed(deviceId, 'output', c.id);
         renderPatchTable();
+        renderEthPanel();
         showToast('Verbindung getrennt.', 'info', 1500);
       }
     });
@@ -1907,8 +1913,8 @@ const SEG_MAP = {
 function buildSegDisplay(text) {
   const disp = document.createElement('div');
   disp.className = 'seg-display';
-  const str = (text || '      ').slice(0, 6).padEnd(6, ' ');
-  for (let i = 0; i < 6; i++) {
+  const str = (text || '    ').slice(0, 4).padEnd(4, ' ');
+  for (let i = 0; i < 4; i++) {
     const ch = str[i].toUpperCase();
     const digit = document.createElement('div');
     digit.className = 'seg-digit';
@@ -1925,20 +1931,18 @@ function buildSegDisplay(text) {
 
 function getConnDisplayText(conn, type) {
   if (type === 'input') {
-    // "U" + universe padded to 5 chars = 6 total
-    const u = String(conn.universe || 1).padStart(5, ' ');
-    return 'U' + u;
+    if (!conn.universe) return '    ';
+    return 'U' + String(conn.universe).padStart(3, ' '); // "U  1", "U 42"
   } else {
     if (conn.ethId) {
       const eth = state.ethDatabase.find(e => e.id === conn.ethId);
       if (eth) {
-        // group max 2 chars, padded to 5, then port 1 char = 6 total
-        const g = eth.group.replace('ETH ', '').slice(0, 2);
+        const g = eth.group.replace('ETH ', '').slice(0, 2); // max 2 chars
         const p = String(eth.port).slice(0, 1);
-        return g.padEnd(5, ' ') + p;
+        return g.padEnd(2, ' ') + ' ' + p; // "A  1", "US 1"
       }
     }
-    return '------';
+    return '----';
   }
 }
 
@@ -1946,7 +1950,7 @@ function updateConnDisplay(deviceId, type, conn) {
   const dispEl = document.getElementById('disp_' + deviceId + '_' + type + '_' + conn.id);
   if (!dispEl) return;
   const text = getConnDisplayText(conn, type);
-  const str = text.slice(0, 6).padEnd(6, ' ');
+  const str = text.slice(0, 4).padEnd(4, ' ');
   const digits = dispEl.querySelectorAll('.seg-digit');
   digits.forEach((digit, i) => {
     const ch = str[i].toUpperCase();
@@ -1982,6 +1986,10 @@ function renderEthPanel() {
   const existing = panel.querySelectorAll('.eth-entry, .eth-group-label');
   existing.forEach(el => el.remove());
 
+  const usedEthIds = new Set(
+    state.devices.flatMap(d => d.connections.outputs.map(o => o.ethId).filter(Boolean))
+  );
+
   let lastGroup = '';
   state.ethDatabase.forEach(eth => {
     if (eth.group !== lastGroup) {
@@ -1991,22 +1999,22 @@ function renderEthPanel() {
       groupEl.textContent = eth.group;
       panel.appendChild(groupEl);
     }
+    const isConnected = usedEthIds.has(eth.id);
     const entry = document.createElement('div');
-    entry.className = 'eth-entry';
-    entry.draggable = true;
+    entry.className = 'eth-entry' + (isConnected ? ' connected' : '');
+    entry.draggable = !isConnected;
     entry.dataset.ethId = eth.id;
-    entry.title = 'Auf Output ziehen um zu verbinden';
+    entry.title = isConnected ? 'Bereits verbunden' : 'Auf Output ziehen um zu verbinden';
 
-    entry.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('ethId', eth.id);
-      e.dataTransfer.effectAllowed = 'link';
-    });
+    if (!isConnected) {
+      entry.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('ethId', eth.id);
+        e.dataTransfer.effectAllowed = 'link';
+      });
+    }
 
-    const dot = document.createElement('span');
-    dot.className = 'eth-dot';
     const label = document.createElement('span');
     label.textContent = eth.group + ' / ' + eth.port;
-    entry.appendChild(dot);
     entry.appendChild(label);
     panel.appendChild(entry);
   });
@@ -2018,9 +2026,12 @@ function connectEthToOutput(deviceId, connId, ethId) {
   const conn = device.connections.outputs.find(c => c.id === connId);
   if (!conn) return;
   conn.ethId = ethId;
+  conn.active = true;
   markModified();
   updateConnDisplay(deviceId, 'output', conn);
+  syncConnLed(deviceId, 'output', connId);
   renderPatchTable();
+  renderEthPanel();
   const eth = state.ethDatabase.find(e => e.id === ethId);
   if (eth) showToast('Output verbunden: ' + eth.group + ' / ' + eth.port, 'success', 1800);
 }
@@ -2149,6 +2160,28 @@ function savePtEdit(devId, type, connId, field, value) {
   }
   if (field === 'universe') {
     updateConnDisplay(devId, type, conn);
+    if (type === 'input') {
+      conn.active = !!(parseInt(value) > 0);
+      syncConnLed(devId, type, parseInt(connId));
+    }
+  }
+}
+
+function syncConnLed(deviceId, type, connId) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
+  const conn = conns.find(c => c.id === connId);
+  if (!conn) return;
+  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
+  if (xlrEl) {
+    const led = xlrEl.querySelector('.xlr-led');
+    if (led) led.className = 'xlr-led' + (conn.active ? ' active' : '');
+  }
+  const rowEl = document.getElementById('ptrow_' + deviceId + '_' + type + '_' + connId);
+  if (rowEl) {
+    const ptLed = rowEl.querySelector('.pt-led');
+    if (ptLed) ptLed.className = 'pt-led' + (conn.active ? ' active' : '');
   }
 }
 
@@ -2160,18 +2193,7 @@ function toggleLedFromTable(deviceId, type, connId) {
   if (!conn) return;
   conn.active = !conn.active;
   markModified();
-  // Update XLR LED
-  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
-  if (xlrEl) {
-    const led = xlrEl.querySelector('.xlr-led');
-    if (led) led.className = 'xlr-led' + (conn.active ? ' active' : '');
-  }
-  // Update table LED
-  const rowEl = document.getElementById('ptrow_' + deviceId + '_' + type + '_' + connId);
-  if (rowEl) {
-    const ptLed = rowEl.querySelector('.pt-led');
-    if (ptLed) ptLed.className = 'pt-led' + (conn.active ? ' active' : '');
-  }
+  syncConnLed(deviceId, type, connId);
 }
 
 // ============================================================
@@ -2464,7 +2486,7 @@ function bsConfirm() {
       outputs,
       connections: {
         inputs:  Array.from({length: inputs},  (_, j) => ({
-          id: j+1, universe: j+1, label: '', notes: '', active: true
+          id: j+1, universe: null, label: '', notes: '', active: false
         })),
         outputs: Array.from({length: outputs}, (_, j) => ({
           id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null

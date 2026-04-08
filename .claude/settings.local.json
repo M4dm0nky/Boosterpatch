@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "WebSearch",
-      "WebFetch(domain:github.com)"
+      "WebFetch(domain:github.com)",
+      "Bash(grep -n \"header\\\\s*{\\\\\\\\|\\\\.header-title\\\\|\\\\.header-status\\\\|\\\\.header-actions\" /c/Dropbox/Incomming/github/Materialliste-Licht/LichtMaterialliste.html)"
     ]
   }
 }

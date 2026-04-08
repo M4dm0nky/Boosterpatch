@@ -83,23 +83,40 @@
       grid-area: header;
       background: var(--header-bg);
       border-bottom: 1px solid var(--header-border);
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
       align-items: center;
-      padding: 0 16px;
-      gap: 12px;
-      position: relative;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
       z-index: 10;
     }
 
-    .logo-slots {
+    .hdr-left {
       display: flex;
-      gap: 8px;
       align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
+    }
+
+    .hdr-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px;
+    }
+
+    .hdr-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      justify-content: center;
+      gap: 2px;
     }
 
     .logo-slot {
-      width: 44px;
-      height: 44px;
+      width: 52px;
+      height: 52px;
       border: 1px solid #333;
       background: #141414;
       display: flex;
@@ -113,14 +130,7 @@
       overflow: hidden;
     }
     .logo-slot:hover { border-color: var(--accent-dim); }
-    .logo-slot img { width: 100%; height: 100%; object-fit: contain; }
-
-    .header-divider {
-      width: 1px;
-      height: 40px;
-      background: #282828;
-      margin: 0 8px;
-    }
+    .logo-slot img { max-height: 48px; max-width: 48px; object-fit: contain; display: block; }
 
     .app-title {
       font-family: var(--font-header);
@@ -134,12 +144,13 @@
       color: var(--accent);
     }
 
-    .header-right {
-      margin-left: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
+    .app-version {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 1px;
+      margin-top: 3px;
+      text-align: center;
     }
 
     #projectNameDisplay {
@@ -995,14 +1006,18 @@
 
 <!-- ===== HEADER ===== -->
 <header id="app-header">
-  <div class="logo-slots">
+  <div class="hdr-left">
     <div class="logo-slot" id="logo1" onclick="selectLogo(1)" title="Logo 1 auswählen">L1</div>
     <div class="logo-slot" id="logo2" onclick="selectLogo(2)" title="Logo 2 auswählen">L2</div>
     <div class="logo-slot" id="logo3" onclick="selectLogo(3)" title="Logo 3 auswählen">L3</div>
   </div>
-  <div class="header-divider"></div>
-  <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-  <div class="header-right">
+  <div class="hdr-center">
+    <div>
+      <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
+      <div class="app-version" id="appVersionDisplay">v0.1.1</div>
+    </div>
+  </div>
+  <div class="hdr-right">
     <div id="projectNameDisplay" ondblclick="openProjectNameModal()" title="Doppelklick zum Umbenennen">Kein Projekt</div>
     <div id="modifiedIndicator">● UNGESPEICHERT</div>
   </div>
@@ -1159,6 +1174,8 @@
 
 <script>
 'use strict';
+
+const APP_VERSION = 'v0.1.1';
 
 // ============================================================
 // 1. STATE
@@ -1818,7 +1835,7 @@ function saveProject() {
     return;
   }
   const data = {
-    appVersion: '1.0',
+    appVersion: APP_VERSION,
     projectName: state.projectName,
     created: state.created || new Date().toISOString(),
     modified: new Date().toISOString(),
@@ -1949,6 +1966,7 @@ function handleLogoLoad(event) {
 // ============================================================
 // 12. INIT
 // ============================================================
+document.getElementById('appVersionDisplay').textContent = APP_VERSION;
 updateProjectDisplay();
 updateEmptyState();
 updatePreview();

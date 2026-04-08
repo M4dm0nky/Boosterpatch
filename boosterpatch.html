@@ -708,36 +708,48 @@
     }
 
     /* ===================================================================
-       Retro Indicator Lamp
-       Rund wie ein Signalanzeiger: dunkle Metallkappe + farbige Glaslinse
+       Retro Indicator Lamp — Glaslinse in Metallkappe
+       Farbe IMMER sichtbar (gedimmt=aus, leuchtend=an)
        =================================================================== */
     .retro-lamp {
-      width: 14px;
-      height: 14px;
+      width: 13px;
+      height: 13px;
       border-radius: 50%;
       position: relative;
       flex-shrink: 0;
-      /* Dunkle Metallkappe als Rahmen */
+      /* Basis-Glaslinse (Farbe wird per .lamp-in1 / .lamp-in2 überschrieben) */
       border: 2px solid #1c1c24;
-      /* Aus: dunkle, kaum gefärbte Glaslinse */
-      background: radial-gradient(circle at 40% 35%, #261a0c, #100c08 55%, #080608);
+      background: radial-gradient(circle at 40% 35%, #2a1a0a, #0e0a06 60%, #080608);
       box-shadow:
-        inset 0 1px 3px rgba(255,255,255,0.06),
-        inset 0 -1px 3px rgba(0,0,0,0.6),
-        0 2px 4px rgba(0,0,0,0.9),
-        0 1px 0 rgba(255,255,255,0.04);
-      transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
+        inset 0 1px 3px rgba(255,255,255,0.07),
+        inset 0 -1px 3px rgba(0,0,0,0.55),
+        0 2px 4px rgba(0,0,0,0.85);
+      transition: background 0.28s, box-shadow 0.28s, border-color 0.28s;
     }
     /* Glaslinse Spiegelglanz */
     .retro-lamp::before {
       content: '';
       position: absolute;
-      top: 2px; left: 3px;
+      top: 2px; left: 2px;
       width: 6px; height: 4px;
       border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0) 100%);
+      background: radial-gradient(ellipse, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 100%);
       pointer-events: none;
       z-index: 1;
+    }
+
+    /* AUS: Farbe immer sichtbar, aber dunkel/uneleuchtet */
+    .retro-lamp.lamp-in1 {
+      background: radial-gradient(circle at 40% 35%, #5a2c0a, #2e160a 55%, #160a04);
+      border-color: #3a1c08;
+    }
+    .retro-lamp.lamp-in2 {
+      background: radial-gradient(circle at 40% 35%, #0e2252, #071228 55%, #030812);
+      border-color: #0a1638;
+    }
+    .retro-lamp.lamp-green {
+      background: radial-gradient(circle at 40% 35%, #0a3a1e, #041c0e 55%, #020a06);
+      border-color: #082a14;
     }
 
     /* AN: warmes Glühfaden-Zentrum → Kappenfarbe → dunkler Rand */
@@ -777,52 +789,69 @@
         0 2px 4px rgba(0,0,0,0.7);
       animation: lampGlow 2.8s ease-in-out infinite;
     }
-    /* Input-Statuslampe pulsiert NICHT — nur Helligkeit, kein Flackern */
-    .retro-lamp.input-status-lamp.on {
-      animation: none;
-    }
+    /* Input-Statuslampe pulsiert NICHT */
+    .retro-lamp.input-status-lamp.on { animation: none; }
 
-    /* Routing-Button: herausstehend, klickbar mit echtem 3D-Eindruck */
-    .retro-lamp-btn {
+    /* ===================================================================
+       Routing Push-Button: Metallgehäuse + Glaslinsen-Dome
+       Wie Industriedrucktaster: quadratisches Gehäuse, runder Dom
+       =================================================================== */
+    .lamp-btn-housing {
+      width: 22px;
+      height: 22px;
+      border-radius: 3px;
+      background: linear-gradient(160deg, #2a2c38 0%, #1a1c24 50%, #141620 100%);
+      border: 1px solid #32343e;
+      box-shadow:
+        inset 0 2px 3px rgba(0,0,0,0.6),
+        inset 0 -1px 2px rgba(255,255,255,0.05),
+        0 1px 0 rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       cursor: pointer;
-      /* leicht angehoben = "ragt heraus" */
+      /* Das Gehäuse bleibt statisch, nur der Dom bewegt sich */
+    }
+    .lamp-btn-housing .retro-lamp-btn {
+      /* Dom ragt leicht aus dem Gehäuse heraus */
+      transform: translateY(-1.5px);
+      box-shadow:
+        0 3px 0 rgba(0,0,0,0.8),  /* harter Boden = "steht raus" */
+        0 4px 6px rgba(0,0,0,0.5);
+      transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
+    }
+    .lamp-btn-housing:hover .retro-lamp-btn {
       transform: translateY(-2px);
       box-shadow:
-        0 5px 0 rgba(0,0,0,0.85),
-        0 7px 10px rgba(0,0,0,0.55);
-      transition: transform 0.07s ease-out, box-shadow 0.07s ease-out, filter 0.1s;
+        0 4px 0 rgba(0,0,0,0.8),
+        0 5px 8px rgba(0,0,0,0.45);
+      filter: brightness(1.1);
     }
-    .retro-lamp-btn:hover {
-      transform: translateY(-3px);
+    .lamp-btn-housing:active .retro-lamp-btn {
+      transform: translateY(1px);  /* reingedrückt — wenig, Knopf bleibt Knopf */
       box-shadow:
-        0 6px 0 rgba(0,0,0,0.85),
-        0 9px 12px rgba(0,0,0,0.5);
-      filter: brightness(1.12);
-    }
-    .retro-lamp-btn:active {
-      transform: translateY(2px);   /* reingedrückt */
-      box-shadow:
-        0 1px 0 rgba(0,0,0,0.8),
-        0 2px 3px rgba(0,0,0,0.4),
-        inset 0 2px 4px rgba(0,0,0,0.5);
+        0 1px 0 rgba(0,0,0,0.7),
+        0 1px 3px rgba(0,0,0,0.4),
+        inset 0 1px 3px rgba(0,0,0,0.35);
     }
 
     .output-route-btns {
       display: flex;
-      gap: 5px;
-      margin-top: 5px;
+      gap: 4px;
+      margin-top: 4px;
       justify-content: center;
-      padding-bottom: 4px; /* Platz für den "rausragenden" Schatten */
+      padding-bottom: 3px;
     }
 
-    /* XLR LED — kleine Statuslampe auf dem Connector-Körper, KLAR ausserhalb der Metallkappe */
+    /* XLR LED — ca. 2-Uhr-Position, AUSSERHALB der Metallkappe */
     .xlr-led {
       position: absolute;
-      top: -10px; right: 0px;
+      top: 4px; right: -7px;   /* ~2 Uhr, klar ausserhalb des Körpers */
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, #261a0c, #080608);
+      /* Aus: grünlicher Hauch sichtbar, nicht braun */
+      background: radial-gradient(circle at 40% 35%, #083018, #020e08 60%, #020604);
       border: 1.5px solid #1c1c24;
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);
       transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
@@ -1348,7 +1377,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.5.1</div>
+        <div class="app-version" id="appVersionDisplay">v0.5.2</div>
       </div>
     </div>
   </div>
@@ -1634,7 +1663,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.5.1';
+const APP_VERSION = 'v0.5.2';
 
 // ============================================================
 // 1. STATE
@@ -2079,18 +2108,24 @@ function buildXLRConnector(deviceId, type, conn) {
     routeBtns.className = 'output-route-btns';
     routeBtns.id = 'routebtns_' + deviceId + '_' + conn.id;
     [1, 2].forEach(inNum => {
-      const btn = document.createElement('div');
-      btn.className = 'retro-lamp retro-lamp-btn lamp-in' + inNum;
-      btn.id = 'routebtn_' + deviceId + '_' + conn.id + '_' + inNum;
-      btn.title = 'Route → IN ' + inNum;
-      const isSelected = (conn.routeToInput ?? 1) === inNum;
-      const inputActive = device && device.connections.inputs.find(i => i.id === inNum)?.active;
-      if (isSelected && inputActive) applyLampOn(btn);
-      btn.addEventListener('click', e => {
+      // Housing (quadratisches Metallgehäuse) + Dom (farbige Glaslinse)
+      const housing = document.createElement('div');
+      housing.className = 'lamp-btn-housing';
+      housing.title = 'Route → IN ' + inNum;
+      housing.addEventListener('click', e => {
         e.stopPropagation();
         setOutputRoute(deviceId, conn.id, inNum);
       });
-      routeBtns.appendChild(btn);
+
+      const btn = document.createElement('div');
+      btn.className = 'retro-lamp retro-lamp-btn lamp-in' + inNum;
+      btn.id = 'routebtn_' + deviceId + '_' + conn.id + '_' + inNum;
+      const isSelected = (conn.routeToInput ?? 1) === inNum;
+      const inputActive = device && device.connections.inputs.find(i => i.id === inNum)?.active;
+      if (isSelected && inputActive) applyLampOn(btn);
+
+      housing.appendChild(btn);
+      routeBtns.appendChild(housing);
     });
     wrap.appendChild(routeBtns);
   }

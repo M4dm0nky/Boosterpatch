@@ -789,8 +789,8 @@
         0 2px 4px rgba(0,0,0,0.7);
       animation: lampGlow 2.8s ease-in-out infinite;
     }
-    /* Input-Statuslampe pulsiert NICHT */
-    .retro-lamp.input-status-lamp.on { animation: none; }
+    /* Input-Statuslampe pulsiert NICHT — !important schlägt lamp-in1.on */
+    .retro-lamp.input-status-lamp.on { animation: none !important; }
 
     /* ===================================================================
        Routing Push-Button: Metallgehäuse + Glaslinsen-Dome
@@ -1377,7 +1377,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.5.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.5.3</div>
       </div>
     </div>
   </div>
@@ -1663,7 +1663,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.5.2';
+const APP_VERSION = 'v0.5.3';
 
 // ============================================================
 // 1. STATE
@@ -2063,8 +2063,12 @@ function buildXLRConnector(deviceId, type, conn) {
   body.className = 'xlr-body';
 
   const led = document.createElement('div');
-  led.className = 'xlr-led';
-  if (conn.active) applyLampOn(led);
+  if (conn.active) {
+    led.className = 'xlr-led active';
+    led.style.animationDelay = `-${(performance.now() % 2800) / 1000}s`;
+  } else {
+    led.className = 'xlr-led';
+  }
   body.appendChild(led);
 
   const inner = document.createElement('div');
@@ -2470,8 +2474,14 @@ function syncConnLed(deviceId, type, connId) {
   if (xlrEl) {
     const led = xlrEl.querySelector('.xlr-led');
     if (led) {
-      if (conn.active) { led.className = 'xlr-led'; applyLampOn(led); }
-      else { led.className = 'xlr-led'; removeLampOn(led); }
+      // xlr-led nutzt .active (eigene CSS-Klasse), nicht .on
+      if (conn.active) {
+        led.className = 'xlr-led active';
+        led.style.animationDelay = `-${(performance.now() % 2800) / 1000}s`;
+      } else {
+        led.className = 'xlr-led';
+        led.style.animationDelay = '';
+      }
     }
   }
   // Input status lamp (orange / blue below connector) + Routing-Buttons aktualisieren

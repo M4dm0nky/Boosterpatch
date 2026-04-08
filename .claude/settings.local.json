@@ -3,7 +3,8 @@
     "allow": [
       "WebSearch",
       "WebFetch(domain:github.com)",
-      "Bash(grep -n \"header\\\\s*{\\\\\\\\|\\\\.header-title\\\\|\\\\.header-status\\\\|\\\\.header-actions\" /c/Dropbox/Incomming/github/Materialliste-Licht/LichtMaterialliste.html)"
+      "Bash(grep -n \"header\\\\s*{\\\\\\\\|\\\\.header-title\\\\|\\\\.header-status\\\\|\\\\.header-actions\" /c/Dropbox/Incomming/github/Materialliste-Licht/LichtMaterialliste.html)",
+      "Bash(grep -n \"#[0-9A-Fa-f]\\\\{3,6\\\\}\" \"/Users/marcohoch/Library/CloudStorage/Dropbox/Incomming/github/booster Patch/Boosterpatch/boosterpatch.html\")"
     ]
   }
 }

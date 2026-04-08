@@ -55,6 +55,14 @@
       --led-off:       #0d2018;
       --led-off-ring:  #1a3028;
 
+      /* Retro Lamps */
+      --lamp-in1:       #e8a04a;
+      --lamp-in1-glow:  rgba(232,160,74,0.7);
+      --lamp-in2:       #4a90e8;
+      --lamp-in2-glow:  rgba(74,144,232,0.7);
+      --lamp-off-cap:   #1a1a22;
+      --lamp-filament:  rgba(255,240,180,0.92);
+
       /* Text */
       --text-primary:  #c8d0e8;
       --text-secondary:#5a6080;
@@ -694,25 +702,91 @@
     .xlr-pin:nth-child(4) { bottom: 1px; left: 3px; }
     .xlr-pin:nth-child(5) { bottom: 1px; right: 3px; }
 
-    @keyframes ledPulse {
-      0%, 100% { opacity: 1;   box-shadow: 0 0 6px var(--led-glow); }
-      50%       { opacity: 0.3; box-shadow: 0 0 2px var(--led-glow); }
+    @keyframes lampGlow {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.45; }
     }
 
+    /* === Retro Lamp (Glühbirne unter farbiger Kappe) === */
+    .retro-lamp {
+      width: 11px;
+      height: 13px;
+      border-radius: 50% 50% 35% 35% / 55% 55% 45% 45%;
+      position: relative;
+      flex-shrink: 0;
+      border: 1.5px solid #2a2a36;
+      background: radial-gradient(ellipse at 45% 35%, #2a1808, var(--lamp-off-cap));
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
+      transition: background 0.35s, box-shadow 0.35s, border-color 0.35s;
+    }
+    .retro-lamp::before {
+      content: '';
+      position: absolute;
+      top: 2px; left: 3px;
+      width: 4px; height: 3px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      pointer-events: none;
+    }
+    .retro-lamp.lamp-in1.on {
+      background: radial-gradient(ellipse at 45% 35%, var(--lamp-filament) 0%, var(--lamp-in1) 52%, #8a3008 100%);
+      border-color: var(--lamp-in1);
+      box-shadow: 0 0 7px var(--lamp-in1-glow), 0 0 14px rgba(232,160,74,0.25), inset 0 1px 2px rgba(255,220,120,0.35);
+      animation: lampGlow 2.8s ease-in-out infinite;
+    }
+    .retro-lamp.lamp-in2.on {
+      background: radial-gradient(ellipse at 45% 35%, var(--lamp-filament) 0%, var(--lamp-in2) 52%, #0c2870 100%);
+      border-color: var(--lamp-in2);
+      box-shadow: 0 0 7px var(--lamp-in2-glow), 0 0 14px rgba(74,144,232,0.25), inset 0 1px 2px rgba(180,220,255,0.35);
+      animation: lampGlow 2.8s ease-in-out infinite;
+    }
+    .retro-lamp.lamp-green.on {
+      background: radial-gradient(ellipse at 45% 35%, var(--lamp-filament) 0%, var(--led-on) 52%, #0a4020 100%);
+      border-color: var(--led-on);
+      box-shadow: 0 0 7px var(--led-glow), 0 0 14px rgba(74,232,160,0.25), inset 0 1px 2px rgba(150,255,200,0.35);
+      animation: lampGlow 2.8s ease-in-out infinite;
+    }
+    .retro-lamp-btn {
+      cursor: pointer;
+      transform-origin: center bottom;
+      transition: transform 0.08s;
+    }
+    .retro-lamp-btn:hover { filter: brightness(1.15); }
+    .retro-lamp-btn:active { transform: scaleY(0.82); }
+
+    .output-route-btns {
+      display: flex;
+      gap: 4px;
+      margin-top: 3px;
+      justify-content: center;
+    }
+
+    /* XLR LED — retro bulb style, positioned on connector body */
     .xlr-led {
       position: absolute;
-      top: -5px; right: 2px;
-      width: 7px; height: 7px;
+      top: -6px; right: 1px;
+      width: 9px;
+      height: 11px;
+      border-radius: 50% 50% 35% 35% / 55% 55% 45% 45%;
+      background: radial-gradient(ellipse at 45% 35%, #1a1808, var(--lamp-off-cap));
+      border: 1.5px solid #2a2a36;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.7);
+      transition: background 0.35s, box-shadow 0.35s, border-color 0.35s;
+    }
+    .xlr-led::before {
+      content: '';
+      position: absolute;
+      top: 2px; left: 2px;
+      width: 3px; height: 2px;
       border-radius: 50%;
-      background: var(--led-off);
-      border: 1px solid var(--led-off-ring);
-      transition: background 0.3s, box-shadow 0.3s;
+      background: rgba(255,255,255,0.14);
+      pointer-events: none;
     }
     .xlr-led.active {
-      background: var(--led-on);
-      box-shadow: 0 0 6px var(--led-glow);
+      background: radial-gradient(ellipse at 45% 35%, var(--lamp-filament) 0%, var(--led-on) 52%, #0a4020 100%);
       border-color: var(--led-on);
-      animation: ledPulse 2.8s ease-in-out infinite;
+      box-shadow: 0 0 6px var(--led-glow), 0 0 12px rgba(74,232,160,0.22), inset 0 1px 2px rgba(150,255,200,0.3);
+      animation: lampGlow 2.8s ease-in-out infinite;
     }
 
     .xlr-connector.input .xlr-body {
@@ -1215,7 +1289,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.4.0</div>
+        <div class="app-version" id="appVersionDisplay">v0.5.0</div>
       </div>
     </div>
   </div>
@@ -1501,7 +1575,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.4.0';
+const APP_VERSION = 'v0.5.0';
 
 // ============================================================
 // 1. STATE
@@ -1668,7 +1742,7 @@ function createDevice(name, inputCount, outputCount) {
         id: i+1, universe: null, label: '', notes: '', active: false
       })),
       outputs: Array.from({length: outputCount}, (_, i) => ({
-        id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null
+        id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
       }))
     }
   };
@@ -1927,6 +2001,35 @@ function buildXLRConnector(deviceId, type, conn) {
   lbl.textContent = conn.label || '—';
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
   wrap.appendChild(lbl);
+
+  // --- Input status lamp (orange = IN1, blue = IN2) ---
+  if (type === 'input') {
+    const lamp = document.createElement('div');
+    lamp.className = 'retro-lamp ' + (conn.id === 1 ? 'lamp-in1' : 'lamp-in2');
+    lamp.id = 'input_lamp_' + deviceId + '_' + conn.id;
+    if (conn.active) applyLampOn(lamp);
+    wrap.appendChild(lamp);
+  }
+
+  // --- Output routing selector buttons (IN1 / IN2) ---
+  if (type === 'output') {
+    const routeBtns = document.createElement('div');
+    routeBtns.className = 'output-route-btns';
+    routeBtns.id = 'routebtns_' + deviceId + '_' + conn.id;
+    [1, 2].forEach(inNum => {
+      const btn = document.createElement('div');
+      btn.className = 'retro-lamp retro-lamp-btn lamp-in' + inNum;
+      btn.id = 'routebtn_' + deviceId + '_' + conn.id + '_' + inNum;
+      btn.title = 'Route → IN ' + inNum;
+      if ((conn.routeToInput ?? 1) === inNum) applyLampOn(btn);
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        setOutputRoute(deviceId, conn.id, inNum);
+      });
+      routeBtns.appendChild(btn);
+    });
+    wrap.appendChild(routeBtns);
+  }
 
   return wrap;
 }
@@ -2247,6 +2350,17 @@ function savePtEdit(devId, type, connId, field, value) {
   }
 }
 
+// --- Retro lamp sync helpers ---
+// All active lamps share one global animation clock so they pulse in phase.
+function applyLampOn(el) {
+  el.style.animationDelay = `-${(performance.now() % 2800) / 1000}s`;
+  el.classList.add('on');
+}
+function removeLampOn(el) {
+  el.classList.remove('on');
+  el.style.animationDelay = '';
+}
+
 function syncConnLed(deviceId, type, connId) {
   const device = getDevice(deviceId);
   if (!device) return;
@@ -2256,7 +2370,18 @@ function syncConnLed(deviceId, type, connId) {
   const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
   if (xlrEl) {
     const led = xlrEl.querySelector('.xlr-led');
-    if (led) led.className = 'xlr-led' + (conn.active ? ' active' : '');
+    if (led) {
+      if (conn.active) { led.className = 'xlr-led'; applyLampOn(led); }
+      else { led.className = 'xlr-led'; removeLampOn(led); }
+    }
+  }
+  // Input status lamp (orange / blue below connector)
+  if (type === 'input') {
+    const inputLamp = document.getElementById('input_lamp_' + deviceId + '_' + connId);
+    if (inputLamp) {
+      if (conn.active) applyLampOn(inputLamp);
+      else removeLampOn(inputLamp);
+    }
   }
   const rowEl = document.getElementById('ptrow_' + deviceId + '_' + type + '_' + connId);
   if (rowEl) {
@@ -2274,6 +2399,21 @@ function toggleLedFromTable(deviceId, type, connId) {
   conn.active = !conn.active;
   markModified();
   syncConnLed(deviceId, type, connId);
+}
+
+function setOutputRoute(deviceId, connId, inputNum) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const conn = device.connections.outputs.find(c => c.id === connId);
+  if (!conn) return;
+  conn.routeToInput = inputNum;
+  markModified();
+  [1, 2].forEach(inNum => {
+    const btn = document.getElementById('routebtn_' + deviceId + '_' + connId + '_' + inNum);
+    if (!btn) return;
+    if (inNum === inputNum) applyLampOn(btn);
+    else removeLampOn(btn);
+  });
 }
 
 // ============================================================
@@ -2312,9 +2452,10 @@ function loadProjectData(data) {
   state.created = data.created || new Date().toISOString();
   state.projectCreated = true;
   state.devices = data.devices || [];
-  // Ensure ethId field exists on outputs
+  // Ensure ethId and routeToInput fields exist on outputs (backward compat)
   state.devices.forEach(d => d.connections.outputs.forEach(o => {
     if (o.ethId === undefined) o.ethId = null;
+    if (o.routeToInput === undefined) o.routeToInput = 1;
   }));
   if (data.logos) {
     logos.planer  = data.logos.planer  || '';
@@ -2344,7 +2485,7 @@ function handleImport(event) {
       if (!Array.isArray(data.devices)) throw new Error();
       data.devices.forEach(d => {
         d.id = generateUUID();
-        d.connections.outputs.forEach(o => { if (o.ethId === undefined) o.ethId = null; });
+        d.connections.outputs.forEach(o => { if (o.ethId === undefined) o.ethId = null; if (o.routeToInput === undefined) o.routeToInput = 1; });
         state.devices.push(d);
       });
       markModified();
@@ -2545,7 +2686,7 @@ function bsConfirm() {
           id: j+1, universe: null, label: '', notes: '', active: false
         })),
         outputs: Array.from({length: outputs}, (_, j) => ({
-          id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null
+          id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
         }))
       }
     };

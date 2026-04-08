@@ -64,6 +64,11 @@
       /* Sidebar width */
       --sidebar-w:     80px;
       --header-h:      64px;
+
+      /* 7-Segment */
+      --seg-on:        #f5a020;
+      --seg-on-glow:   rgba(245,160,32,0.65);
+      --seg-off:       #1c0600;
     }
 
     /* === 2. Layout Shell === */
@@ -82,6 +87,11 @@
       font-size: 16px;
     }
 
+    /* scrollbars */
+    *::-webkit-scrollbar { width: 6px; height: 6px; }
+    *::-webkit-scrollbar-track { background: var(--app-bg); }
+    *::-webkit-scrollbar-thumb { background: var(--rack-border); border-radius: 3px; }
+
     /* === 3. Header === */
     #app-header {
       grid-area: header;
@@ -96,26 +106,9 @@
       z-index: 10;
     }
 
-    .hdr-left {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 8px;
-    }
-
-    .hdr-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0 16px;
-    }
-
-    .hdr-right {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 12px;
-    }
+    .hdr-left  { display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
+    .hdr-center { display: flex; align-items: center; justify-content: center; padding: 0 16px; }
+    .hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
 
     .hdr-project-info {
       display: flex;
@@ -154,10 +147,7 @@
       letter-spacing: 4px;
       line-height: 1;
     }
-
-    .app-title span {
-      color: var(--accent);
-    }
+    .app-title span { color: var(--accent); }
 
     .app-version {
       font-family: var(--font-mono);
@@ -225,21 +215,14 @@
       color: var(--accent);
       border-left-color: var(--accent);
     }
-    .sidebar-btn .icon {
-      font-size: 18px;
-      line-height: 1;
-    }
+    .sidebar-btn .icon { font-size: 18px; line-height: 1; }
     .sidebar-btn.danger:hover {
       background: rgba(232,74,74,0.1);
       color: var(--accent-red);
       border-left-color: var(--accent-red);
     }
 
-    .sidebar-sep {
-      height: 1px;
-      background: var(--rack-border);
-      margin: 6px 8px;
-    }
+    .sidebar-sep { height: 1px; background: var(--rack-border); margin: 6px 8px; }
 
     /* hidden file input */
     #fileInput { display: none; }
@@ -247,17 +230,10 @@
     /* === 5. Main Content Area === */
     #main {
       grid-area: main;
-      overflow-y: auto;
-      padding: 20px;
+      overflow: hidden;
       display: flex;
       flex-direction: column;
-      gap: 24px;
     }
-
-    /* scrollbar */
-    #main::-webkit-scrollbar { width: 6px; }
-    #main::-webkit-scrollbar-track { background: var(--app-bg); }
-    #main::-webkit-scrollbar-thumb { background: var(--rack-border); border-radius: 3px; }
 
     /* empty state */
     #emptyState {
@@ -266,7 +242,7 @@
       align-items: center;
       justify-content: center;
       gap: 20px;
-      min-height: calc(100vh - var(--header-h) - 40px);
+      flex: 1;
       padding: 40px 20px;
       color: var(--text-secondary);
       text-align: center;
@@ -295,23 +271,140 @@
       transition: all 0.15s;
     }
     .btn-secondary:hover { background: rgba(232,200,74,0.1); }
-    .btn-large {
-      font-size: 16px !important;
-      padding: 14px 40px !important;
-      letter-spacing: 2px;
+    .btn-large { font-size: 16px !important; padding: 14px 40px !important; letter-spacing: 2px; }
+
+    /* === 6. Tab System === */
+    #appTabs {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+    #appTabs.visible { display: flex; }
+
+    #tabBar {
+      flex-shrink: 0;
+      display: flex;
+      gap: 0;
+      background: var(--app-bg);
+      border-bottom: 2px solid var(--rack-border);
+      padding: 0 16px;
     }
 
-    #devicesContainer { display: flex; flex-direction: column; gap: 20px; }
+    .tab-btn {
+      font-family: var(--font-header);
+      font-size: 15px;
+      letter-spacing: 2px;
+      color: var(--text-secondary);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      text-transform: uppercase;
+    }
+    .tab-btn:hover { color: var(--text-primary); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-    /* === 6. Device Card (Rack Unit) === */
+    .tab-content {
+      display: none;
+      flex: 1;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .tab-content.active { display: flex; flex-direction: column; }
+
+    /* === 7. Patch View (ETH Panel + Devices) === */
+    #patchView {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    #ethPanel {
+      width: 190px;
+      flex-shrink: 0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--rack-border);
+      overflow-y: auto;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .eth-panel-header {
+      font-family: var(--font-header);
+      font-size: 14px;
+      letter-spacing: 3px;
+      color: var(--accent);
+      padding: 12px 12px 8px;
+      border-bottom: 1px solid var(--rack-border);
+      flex-shrink: 0;
+    }
+
+    .eth-group-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-secondary);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 12px 4px;
+    }
+
+    .eth-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      cursor: grab;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-primary);
+      letter-spacing: 1px;
+      border-left: 2px solid transparent;
+      transition: background 0.12s, border-color 0.12s;
+      user-select: none;
+    }
+    .eth-entry:hover {
+      background: var(--sidebar-hover);
+      border-left-color: var(--accent-green);
+      color: var(--accent-green);
+    }
+    .eth-entry:active { cursor: grabbing; }
+
+    .eth-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      flex-shrink: 0;
+      box-shadow: 0 0 4px var(--led-glow);
+    }
+
+    /* === 8. Devices Container (Horizontal) === */
+    #devicesContainer {
+      flex: 1;
+      overflow-x: auto;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 16px;
+    }
+
+    /* === 9. Device Card (Rack Unit) === */
     .device-card {
       position: relative;
       display: flex;
       flex-direction: column;
       gap: 0;
+      flex-shrink: 0;
     }
 
-    /* Rack ears wrapper */
     .rack-unit {
       display: flex;
       align-items: stretch;
@@ -322,9 +415,9 @@
       box-shadow:
         0 4px 16px rgba(0,0,0,0.5),
         inset 0 1px 0 rgba(255,255,255,0.05);
+      min-width: var(--device-min-w, auto);
     }
 
-    /* Rack ears */
     .rack-ear {
       width: 28px;
       flex-shrink: 0;
@@ -349,15 +442,12 @@
     .rack-screw::after {
       content: '';
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%,-50%) rotate(45deg);
-      width: 60%;
-      height: 1px;
+      width: 60%; height: 1px;
       background: #0d0f14;
     }
 
-    /* Device face (front panel) */
     .rack-face {
       flex: 1;
       background: var(--rack-face);
@@ -368,7 +458,6 @@
       min-width: 0;
     }
 
-    /* Top bar: device name + brand + controls */
     .rack-topbar {
       display: flex;
       align-items: center;
@@ -413,11 +502,7 @@
       flex-shrink: 0;
     }
 
-    .rack-controls {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
+    .rack-controls { display: flex; gap: 6px; flex-shrink: 0; }
 
     .rack-ctrl-btn {
       background: var(--rack-ear);
@@ -435,7 +520,6 @@
     .rack-ctrl-btn:hover { background: var(--sidebar-hover); color: var(--accent); border-color: var(--accent); }
     .rack-ctrl-btn.delete:hover { background: rgba(232,74,74,0.15); color: var(--accent-red); border-color: var(--accent-red); }
 
-    /* Connector area: inputs left, outputs right */
     .rack-connectors {
       display: flex;
       align-items: flex-start;
@@ -455,10 +539,7 @@
       margin-right: 16px;
     }
 
-    .connector-section.outputs {
-      flex: 1;
-      min-width: 0;
-    }
+    .connector-section.outputs { flex: 1; min-width: 0; }
 
     .section-label {
       font-family: var(--font-mono);
@@ -471,20 +552,24 @@
 
     .connectors-row {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: nowrap;
       gap: 10px;
     }
 
-    /* === 7. XLR Connector === */
+    /* === 10. XLR Connector === */
     .xlr-connector {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 4px;
+      gap: 3px;
       cursor: pointer;
       transition: transform 0.1s;
     }
     .xlr-connector:hover { transform: translateY(-2px); }
+    .xlr-connector.drag-over .xlr-body {
+      border-color: var(--accent-green);
+      box-shadow: 0 0 12px rgba(74,232,160,0.5);
+    }
 
     .xlr-body {
       width: 42px;
@@ -499,6 +584,7 @@
       box-shadow:
         0 2px 4px rgba(0,0,0,0.5),
         inset 0 1px 2px rgba(255,255,255,0.3);
+      transition: border-color 0.15s, box-shadow 0.15s;
     }
 
     .xlr-inner {
@@ -512,33 +598,23 @@
       justify-content: center;
     }
 
-    /* XLR 5-pin pattern */
-    .xlr-pins {
-      position: relative;
-      width: 18px;
-      height: 18px;
-    }
+    .xlr-pins { position: relative; width: 18px; height: 18px; }
     .xlr-pin {
       position: absolute;
-      width: 3px;
-      height: 3px;
+      width: 3px; height: 3px;
       border-radius: 50%;
       background: #888;
     }
-    /* 5-pin arrangement: pin 1 top-center, 2 upper-left, 3 upper-right, 4 lower-left, 5 lower-right */
     .xlr-pin:nth-child(1) { top: 0;   left: 50%; transform: translateX(-50%); }
     .xlr-pin:nth-child(2) { top: 5px; left: 2px; }
     .xlr-pin:nth-child(3) { top: 5px; right: 2px; }
     .xlr-pin:nth-child(4) { bottom: 1px; left: 3px; }
     .xlr-pin:nth-child(5) { bottom: 1px; right: 3px; }
 
-    /* LED indicator on top of XLR */
     .xlr-led {
       position: absolute;
-      top: -5px;
-      right: 2px;
-      width: 7px;
-      height: 7px;
+      top: -5px; right: 2px;
+      width: 7px; height: 7px;
       border-radius: 50%;
       background: var(--led-off);
       border: 1px solid var(--led-off-ring);
@@ -550,7 +626,6 @@
       border-color: var(--led-on);
     }
 
-    /* Input XLR: slightly different tint */
     .xlr-connector.input .xlr-body {
       background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA 60%, #334455);
       border-color: #88AACC;
@@ -558,10 +633,9 @@
 
     .xlr-connector.selected .xlr-body {
       border-color: var(--accent);
-      box-shadow: 0 0 10px rgba(0,191,255,0.4), 0 2px 4px rgba(0,0,0,0.5);
+      box-shadow: 0 0 10px rgba(232,200,74,0.5), 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* Connector number tag */
     .xlr-num {
       font-family: var(--font-mono);
       font-size: 9px;
@@ -569,133 +643,63 @@
       line-height: 1;
     }
 
-    /* Connector label (editable) */
     .xlr-label {
       font-family: var(--font-ui);
       font-size: 10px;
       font-weight: 600;
       color: var(--text-label);
       text-align: center;
-      max-width: 52px;
+      max-width: 72px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
-    /* === 8. Connector Edit Panel === */
-    .connector-edit-panel {
-      margin-top: 8px;
-      background: var(--sidebar-bg);
-      border: 1px solid var(--accent-dim);
-      padding: 10px 12px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-      animation: fadeIn 0.15s ease;
-    }
-    .connector-edit-panel.open { display: flex; }
-
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-
-    .edit-panel-title {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--accent);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      border-bottom: 1px solid var(--rack-border);
-      padding-bottom: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* === 11. 7-Segment Display === */
+    .seg-display {
+      display: inline-flex;
+      gap: 2px;
+      background: #040404;
+      border: 1px solid #161616;
+      border-radius: 3px;
+      padding: 3px 4px;
+      box-shadow: inset 0 1px 4px rgba(0,0,0,0.9), 0 0 0 1px #000;
+      margin-bottom: 2px;
     }
 
-    .edit-panel-close {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 14px;
-      line-height: 1;
-      padding: 0 2px;
-    }
-    .edit-panel-close:hover { color: var(--accent-red); }
-
-    .edit-row {
-      display: flex;
-      gap: 16px;
-      flex-wrap: wrap;
+    .seg-digit {
+      position: relative;
+      width: 10px;
+      height: 18px;
+      display: inline-block;
+      flex-shrink: 0;
     }
 
-    .edit-field {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      min-width: 90px;
+    .seg {
+      position: absolute;
+      background: var(--seg-off);
+      border-radius: 1px;
+      transition: background 0.08s, box-shadow 0.08s;
+    }
+    .seg.on {
+      background: var(--seg-on);
+      box-shadow: 0 0 4px var(--seg-on-glow), 0 0 8px rgba(245,160,32,0.3);
     }
 
-    .edit-field label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-secondary);
-      letter-spacing: 1px;
-      text-transform: uppercase;
-    }
+    /* Horizontal segments */
+    .seg-a { left: 2px; top: 0;    width: 6px; height: 2px; }
+    .seg-g { left: 2px; top: 8px;  width: 6px; height: 2px; }
+    .seg-d { left: 2px; bottom: 0; width: 6px; height: 2px; }
+    /* Vertical segments */
+    .seg-f { left: 0;  top: 2px;    width: 2px; height: 6px; }
+    .seg-b { right: 0; top: 2px;   width: 2px; height: 6px; }
+    .seg-e { left: 0;  bottom: 2px; width: 2px; height: 6px; }
+    .seg-c { right: 0; bottom: 2px; width: 2px; height: 6px; }
 
-    .edit-field input, .edit-field select {
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      color: var(--text-primary);
-      font-family: var(--font-mono);
-      font-size: 13px;
-      padding: 5px 8px;
-      outline: none;
-      width: 100%;
-      transition: border-color 0.15s;
-    }
-    .edit-field input:focus, .edit-field select:focus { border-color: var(--accent); background: rgba(232,200,74,.04); }
-    .edit-field select option { background: var(--rack-bg); }
-    .edit-field input[type="number"] { width: 80px; }
-
-    .edit-panel-actions {
-      display: flex;
-      gap: 8px;
-      padding-top: 4px;
-    }
-
-    .btn-apply {
-      background: var(--accent);
-      border: 1px solid var(--accent);
-      color: #0d0f14;
-      font-family: var(--font-ui);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 5px 16px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: background 0.15s;
-    }
-    .btn-apply:hover { background: #ffd84a; border-color: #ffd84a; }
-
-    .btn-toggle-led {
-      background: rgba(74,232,160,.1);
-      border: 1px solid rgba(74,232,160,.3);
-      color: var(--accent-green);
-      font-family: var(--font-ui);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 5px 12px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.15s;
-    }
-    .btn-toggle-led.on { background: rgba(74,232,160,.2); border-color: var(--accent-green); color: var(--accent-green); }
-
-    /* === 9. Patch Table === */
-    #patchTableContainer {
-      margin-top: 8px;
+    /* === 12. Patch Table === */
+    #tabDetails {
+      overflow: auto;
+      padding: 20px;
     }
 
     .section-header {
@@ -758,6 +762,10 @@
     }
 
     #patchTable tr:hover td { background: rgba(232,200,74,.04); }
+    #patchTable tr.pt-row-highlight td {
+      background: rgba(232,200,74,.12);
+      transition: background 0.5s;
+    }
 
     .pt-device { font-weight: 700; color: var(--text-primary); }
     .pt-type-in  { color: #4a9ae8; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
@@ -780,18 +788,20 @@
     .pt-editable.empty { color: var(--text-secondary); }
 
     .pt-led {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: var(--led-off);
       border: 1px solid var(--led-off-ring);
       display: inline-block;
+      cursor: pointer;
     }
     .pt-led.active { background: var(--led-on); box-shadow: 0 0 4px var(--led-glow); border-color: var(--led-on); }
 
     .pt-dash { color: var(--rack-border); font-family: var(--font-mono); }
+    .pt-eth { font-family: var(--font-mono); font-size: 12px; color: var(--accent-green); }
+    .pt-eth-empty { color: var(--rack-border); font-family: var(--font-mono); font-size: 11px; }
 
-    /* === 10. Modal === */
+    /* === 13. Modal === */
     .modal-overlay {
       display: none;
       position: fixed;
@@ -850,11 +860,7 @@
       gap: 18px;
     }
 
-    .modal-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
+    .modal-field { display: flex; flex-direction: column; gap: 6px; }
 
     .modal-field label {
       font-family: var(--font-mono);
@@ -865,6 +871,8 @@
     }
 
     .modal-field input[type="text"],
+    .modal-field input[type="date"],
+    .modal-field input[type="number"],
     .modal-field select {
       background: var(--app-bg);
       border: 1px solid var(--rack-border);
@@ -878,39 +886,35 @@
       transition: border-color 0.15s, background 0.15s;
       letter-spacing: .5px;
     }
-    .modal-field input[type="text"]:focus,
-    .modal-field select:focus { border-color: var(--accent); background: rgba(232,200,74,.04); }
+    .modal-field input:focus, .modal-field select:focus {
+      border-color: var(--accent);
+      background: rgba(232,200,74,.04);
+    }
     .modal-field select option { background: var(--rack-bg); }
-
-    .modal-field .radio-group {
-      display: flex;
-      gap: 16px;
+    .modal-field input[type="date"] { color-scheme: dark; }
+    .modal-field .input-error {
+      color: var(--accent-red);
+      font-size: 11px;
+      font-family: var(--font-mono);
+      display: none;
     }
+    .modal-field.has-error input { border-color: var(--accent-red); }
+    .modal-field.has-error .input-error { display: block; }
 
-    .radio-option {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-    }
+    .modal-field .radio-group { display: flex; gap: 16px; }
 
+    .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .radio-option input[type="radio"] { display: none; }
-
     .radio-btn {
-      width: 60px;
-      height: 36px;
+      width: 60px; height: 36px;
       background: var(--app-bg);
       border: 1px solid var(--rack-border);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-header);
-      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-header); font-size: 20px;
       color: var(--text-secondary);
       cursor: pointer;
       transition: all 0.15s;
     }
-
     .radio-option input:checked + .radio-btn {
       background: rgba(232,200,74,.12);
       border-color: var(--accent);
@@ -928,40 +932,18 @@
       justify-content: center;
     }
 
-    .preview-rack {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .preview-label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-secondary);
-      letter-spacing: 1px;
-    }
-
+    .preview-rack { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .preview-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 1px; }
     .preview-conn-row { display: flex; gap: 4px; align-items: center; }
-
     .preview-xlr {
-      width: 22px;
-      height: 22px;
+      width: 22px; height: 22px;
       border-radius: 50%;
       border: 2px solid #888;
       background: radial-gradient(circle at 35% 30%, #BBB, #666);
       display: inline-block;
     }
-    .preview-xlr.input-type {
-      border-color: #88AACC;
-      background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA);
-    }
-
-    .preview-arrow {
-      font-family: var(--font-mono);
-      font-size: 14px;
-      color: var(--accent-dim);
-    }
+    .preview-xlr.input-type { border-color: #88AACC; background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA); }
+    .preview-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--accent-dim); }
 
     .modal-footer {
       display: flex;
@@ -1002,11 +984,82 @@
     }
     .btn-primary:hover { background: #ffd84a; border-color: #ffd84a; }
 
-    /* === 11. Toast === */
+    /* === 14. Booster Setup Table === */
+    .bs-setup-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .bs-setup-table th {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      background: var(--app-bg);
+      border-bottom: 1px solid var(--rack-border);
+      padding: 8px 10px;
+      text-align: left;
+    }
+    .bs-setup-table td {
+      border-bottom: 1px solid var(--rack-bg);
+      padding: 7px 8px;
+      vertical-align: middle;
+    }
+    .bs-setup-table tr:hover td { background: rgba(255,255,255,0.02); }
+    .bs-num-cell {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-secondary);
+      width: 28px;
+      text-align: center;
+    }
+    .bs-setup-table input[type="text"] {
+      background: var(--app-bg);
+      border: 1px solid var(--rack-border);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 5px 8px;
+      width: 180px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .bs-setup-table input[type="text"]:focus { border-color: var(--accent); }
+    .bs-setup-table select {
+      background: var(--app-bg);
+      border: 1px solid var(--rack-border);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 14px;
+      padding: 5px 8px;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .bs-setup-table select:focus { border-color: var(--accent); }
+    .bs-radio-small { display: flex; gap: 6px; }
+    .bs-radio-small label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+    .bs-radio-small input[type="radio"] { display: none; }
+    .bs-radio-btn {
+      width: 34px; height: 28px;
+      background: var(--app-bg);
+      border: 1px solid var(--rack-border);
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-header); font-size: 16px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .bs-radio-small input:checked + .bs-radio-btn {
+      background: rgba(232,200,74,.12);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* === 15. Toast === */
     #toastContainer {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 20px; right: 20px;
       display: flex;
       flex-direction: column;
       gap: 8px;
@@ -1034,16 +1087,14 @@
 
     @keyframes toastIn  { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
     @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
+    @keyframes fadeIn   { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
-    /* === 12. Project Name Modal === */
-    #projectModal .modal-box { width: 380px; }
-
-    /* === 13. Print === */
+    /* === 16. Print === */
     @media print {
-      #sidebar, #app-header { display: none !important; }
+      #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
       body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
       #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
-      .rack-ctrl-btn, .connector-edit-panel { display: none !important; }
+      .rack-ctrl-btn { display: none !important; }
       .xlr-connector { cursor: default; }
       #patchTable { font-size: 11px; }
     }
@@ -1058,7 +1109,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.2.1</div>
+        <div class="app-version" id="appVersionDisplay">v0.3.0</div>
       </div>
     </div>
   </div>
@@ -1073,11 +1124,11 @@
 
 <!-- ===== SIDEBAR ===== -->
 <nav id="sidebar">
-  <button class="sidebar-btn" onclick="openNewDeviceModal()" title="Neues Gerät anlegen">
+  <button class="sidebar-btn" onclick="openNewDeviceModal()" title="Einzelnes Gerät anlegen">
     <span class="icon">⊕</span>
     <span>Neu</span>
   </button>
-  <button class="sidebar-btn" onclick="newProject()" title="Neues Projekt">
+  <button class="sidebar-btn" onclick="newProject()" title="Neues Projekt erstellen">
     <span class="icon">◻</span>
     <span>Projekt</span>
   </button>
@@ -1111,8 +1162,8 @@
 </nav>
 
 <!-- hidden file inputs -->
-<input type="file" id="fileInput" accept=".json" onchange="handleFileLoad(event)">
-<input type="file" id="importInput" accept=".json" onchange="handleImport(event)">
+<input type="file" id="fileInput"    accept=".json"    onchange="handleFileLoad(event)">
+<input type="file" id="importInput" accept=".json"    onchange="handleImport(event)">
 <input type="file" id="inLogoPlaner"  accept="image/*" style="display:none" onchange="handleLogoUpload('planer',this)">
 <input type="file" id="inLogoBand"    accept="image/*" style="display:none" onchange="handleLogoUpload('band',this)">
 <input type="file" id="inLogoBooking" accept="image/*" style="display:none" onchange="handleLogoUpload('booking',this)">
@@ -1143,51 +1194,75 @@
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-primary" onclick="closeModal('logosModal')">Fertig</button>
+      <button class="btn-primary" onclick="closeModal('logosModal')">Fertig</button>
     </div>
   </div>
 </div>
 
 <!-- ===== MAIN ===== -->
 <main id="main">
+
+  <!-- Empty State -->
   <div id="emptyState">
     <div class="empty-icon">⬡</div>
     <h2>BOOSTERPATCH</h2>
     <p>Wähle eine Option um zu starten:</p>
     <div class="empty-actions">
-      <button class="btn btn-primary btn-large" onclick="newProject()">⊕ Neues Projekt</button>
-      <button class="btn btn-secondary btn-large" onclick="triggerLoad()">📂 Projekt laden</button>
+      <button class="btn-primary btn-large" onclick="newProject()">⊕ Neues Projekt</button>
+      <button class="btn-secondary btn-large" onclick="triggerLoad()">📂 Projekt laden</button>
     </div>
   </div>
 
-  <div id="devicesContainer"></div>
-
-  <div id="patchTableContainer" style="display:none;">
-    <div class="section-header">
-      <div class="section-title">PATCHTABELLE</div>
-      <div class="section-badge" id="patchCount">0 Verbindungen</div>
+  <!-- App Tabs (shown when project exists) -->
+  <div id="appTabs">
+    <div id="tabBar">
+      <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
+      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
     </div>
-    <div class="patch-table-wrap">
-      <table id="patchTable">
-        <thead>
-          <tr>
-            <th>Gerät</th>
-            <th>Typ</th>
-            <th>Nr.</th>
-            <th>Status</th>
-            <th>Label</th>
-            <th>Universe</th>
-            <th>DMX Start</th>
-            <th>Notizen</th>
-          </tr>
-        </thead>
-        <tbody id="patchTableBody"></tbody>
-      </table>
+
+    <!-- Tab: Patch View -->
+    <div id="tabPatch" class="tab-content active">
+      <div id="patchView">
+        <!-- ETH Sources Panel -->
+        <div id="ethPanel">
+          <div class="eth-panel-header">ETH QUELLEN</div>
+          <!-- populated by renderEthPanel() -->
+        </div>
+        <!-- Devices (horizontal) -->
+        <div id="devicesContainer"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Details / Patch Table -->
+    <div id="tabDetails" class="tab-content">
+      <div class="section-header">
+        <div class="section-title">PATCHTABELLE</div>
+        <div class="section-badge" id="patchCount">0 Verbindungen</div>
+      </div>
+      <div class="patch-table-wrap">
+        <table id="patchTable">
+          <thead>
+            <tr>
+              <th>Gerät</th>
+              <th>Typ</th>
+              <th>Nr.</th>
+              <th>Status</th>
+              <th>Label</th>
+              <th>Universe</th>
+              <th>DMX Start</th>
+              <th>ETH</th>
+              <th>Notizen</th>
+            </tr>
+          </thead>
+          <tbody id="patchTableBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
+
 </main>
 
-<!-- ===== MODAL: Neues Gerät ===== -->
+<!-- ===== MODAL: Neues Gerät (single) ===== -->
 <div class="modal-overlay" id="newDeviceModal">
   <div class="modal-box">
     <div class="modal-header">
@@ -1238,7 +1313,7 @@
   </div>
 </div>
 
-<!-- ===== MODAL: Projektname ===== -->
+<!-- ===== MODAL: Projektname (umbenennen) ===== -->
 <div class="modal-overlay" id="projectModal">
   <div class="modal-box" style="width:380px">
     <div class="modal-header">
@@ -1258,23 +1333,88 @@
   </div>
 </div>
 
+<!-- ===== MODAL: Neues Projekt ===== -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-header">
+      <div class="modal-title">NEUES PROJEKT</div>
+      <button class="modal-close" onclick="closeModal('newProjectModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field" id="npNameField">
+        <label>Projektname <span style="color:var(--accent-red)">*</span></label>
+        <input type="text" id="newProjectNameInput" placeholder="z.B. My Show 2026" maxlength="60">
+        <div class="input-error">Bitte einen Projektnamen eingeben.</div>
+      </div>
+      <div class="modal-field">
+        <label>Datum (optional)</label>
+        <input type="date" id="newProjectDateInput">
+      </div>
+      <p style="font-size:11px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.6;">
+        Der Projektname wird beim Speichern als Dateiname verwendet.<br>
+        Im nächsten Schritt kannst du Booster anlegen.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('newProjectModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="confirmNewProject()">Weiter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Booster Setup ===== -->
+<div class="modal-overlay" id="boosterSetupModal">
+  <div class="modal-box" style="width:640px;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <div class="modal-title" id="bsModalTitle">BOOSTER ANLEGEN</div>
+      <button class="modal-close" onclick="closeModal('boosterSetupModal')">✕</button>
+    </div>
+
+    <!-- Step 1: Anzahl -->
+    <div id="bsStep1" class="modal-body">
+      <div class="modal-field">
+        <label>Wie viele Booster möchtest du anlegen?</label>
+        <input type="number" id="bsCount" value="1" min="1" max="16"
+          style="width:120px;font-size:28px;font-family:var(--font-header);text-align:center;letter-spacing:4px;">
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.6;">
+        Im nächsten Schritt kannst du für jeden Booster einen eigenen Typ konfigurieren<br>
+        (Name, Anzahl Inputs &amp; Outputs).
+      </p>
+    </div>
+
+    <!-- Step 2: Konfiguration -->
+    <div id="bsStep2" style="display:none;flex:1;overflow:auto;padding:0;">
+      <div id="bsTableWrap" style="padding:16px 24px;"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" id="bsBackBtn" onclick="bsBack()" style="display:none">← Zurück</button>
+      <button class="btn-cancel" id="bsCancelBtn" onclick="closeModal('boosterSetupModal')">Abbrechen</button>
+      <button class="btn-primary" id="bsActionBtn" onclick="bsNext()">Weiter →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ===== TOAST CONTAINER ===== -->
 <div id="toastContainer"></div>
 
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.2.1';
+const APP_VERSION = 'v0.3.0';
 
 // ============================================================
 // 1. STATE
 // ============================================================
 const state = {
   projectName: 'Unbenannt',
+  projectCreated: false,
   created: null,
   modified: false,
   devices: [],
-  logos: { planer: '', band: '', booking: '' }
+  logos: { planer: '', band: '', booking: '' },
+  ethDatabase: []
 };
 
 // ============================================================
@@ -1315,6 +1455,10 @@ function showToast(msg, type = 'info', duration = 2800) {
   }, duration);
 }
 
+function escHtml(str) {
+  return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
 // ============================================================
 // 3. MODALS
 // ============================================================
@@ -1325,23 +1469,37 @@ function closeModal(id) {
   document.getElementById(id).classList.remove('open');
 }
 
-// Close modal on overlay click
 document.querySelectorAll('.modal-overlay').forEach(overlay => {
   overlay.addEventListener('click', e => {
     if (e.target === overlay) overlay.classList.remove('open');
   });
 });
 
-// Keyboard Escape
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
-    closeAllEditPanels();
+    clearSelectedConnectors();
   }
 });
 
 // ============================================================
-// 4. NEW DEVICE MODAL
+// 4. TAB SYSTEM
+// ============================================================
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+  if (tabName === 'patch') {
+    document.getElementById('tabBtnPatch').classList.add('active');
+    document.getElementById('tabPatch').classList.add('active');
+  } else {
+    document.getElementById('tabBtnDetails').classList.add('active');
+    document.getElementById('tabDetails').classList.add('active');
+  }
+}
+
+// ============================================================
+// 5. NEW DEVICE MODAL (single)
 // ============================================================
 function openNewDeviceModal() {
   document.getElementById('newDeviceName').value = '';
@@ -1392,13 +1550,12 @@ function confirmNewDevice() {
   showToast('Gerät "' + name + '" angelegt.', 'success');
 }
 
-// Enter key in name input
 document.getElementById('newDeviceName').addEventListener('keydown', e => {
   if (e.key === 'Enter') confirmNewDevice();
 });
 
 // ============================================================
-// 5. DEVICE CRUD
+// 6. DEVICE CRUD
 // ============================================================
 function createDevice(name, inputCount, outputCount) {
   const device = {
@@ -1407,8 +1564,12 @@ function createDevice(name, inputCount, outputCount) {
     inputs: inputCount,
     outputs: outputCount,
     connections: {
-      inputs:  Array.from({length: inputCount},  (_, i) => ({ id: i+1, universe: 1, label: '', notes: '', active: true })),
-      outputs: Array.from({length: outputCount}, (_, i) => ({ id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false }))
+      inputs:  Array.from({length: inputCount},  (_, i) => ({
+        id: i+1, universe: i+1, label: '', notes: '', active: true
+      })),
+      outputs: Array.from({length: outputCount}, (_, i) => ({
+        id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null
+      }))
     }
   };
   state.devices.push(device);
@@ -1435,20 +1596,38 @@ function getDevice(id) {
 
 function updateEmptyState() {
   const empty = document.getElementById('emptyState');
-  const devContainer = document.getElementById('devicesContainer');
-  const patchContainer = document.getElementById('patchTableContainer');
-  const hasDevices = state.devices.length > 0;
-  empty.style.display = hasDevices ? 'none' : 'flex';
-  devContainer.style.display = hasDevices ? 'flex' : 'none';
-  patchContainer.style.display = hasDevices ? 'block' : 'none';
+  const tabs  = document.getElementById('appTabs');
+  const showApp = state.projectCreated || state.devices.length > 0;
+  empty.style.display = showApp ? 'none' : 'flex';
+  if (showApp) {
+    tabs.classList.add('visible');
+  } else {
+    tabs.classList.remove('visible');
+  }
 }
 
 // ============================================================
-// 6. RENDERING — DEVICE CARDS
+// 7. RENDERING — DEVICE CARDS
 // ============================================================
+const CONN_SLOT_W = 90; // px per connector slot (display width + gap)
+const BASE_DEVICE_W = 200; // ears + input section approx
+
 function renderAllDevices() {
   const container = document.getElementById('devicesContainer');
   container.innerHTML = '';
+
+  if (state.devices.length === 0) {
+    const hint = document.createElement('div');
+    hint.style.cssText = 'padding:40px 20px;color:var(--text-secondary);font-family:var(--font-mono);font-size:11px;letter-spacing:1px;opacity:0.7;';
+    hint.textContent = '← Klick auf ⊕ NEU um Booster anzulegen';
+    container.appendChild(hint);
+    return;
+  }
+
+  const maxOutputs = Math.max(...state.devices.map(d => d.outputs));
+  const minW = maxOutputs * CONN_SLOT_W + BASE_DEVICE_W;
+  container.style.setProperty('--device-min-w', minW + 'px');
+
   state.devices.forEach(d => container.appendChild(buildDeviceCard(d)));
 }
 
@@ -1457,14 +1636,11 @@ function buildDeviceCard(device) {
   card.className = 'device-card';
   card.dataset.deviceId = device.id;
 
-  // -- Rack unit --
   const rackUnit = document.createElement('div');
   rackUnit.className = 'rack-unit';
 
-  // Ear left
   rackUnit.appendChild(buildEar());
 
-  // Face
   const face = document.createElement('div');
   face.className = 'rack-face';
 
@@ -1541,12 +1717,6 @@ function buildDeviceCard(device) {
   rackUnit.appendChild(buildEar(true));
   card.appendChild(rackUnit);
 
-  // Edit panel (appended after rack unit)
-  const editPanel = document.createElement('div');
-  editPanel.className = 'connector-edit-panel';
-  editPanel.id = 'editPanel_' + device.id;
-  card.appendChild(editPanel);
-
   return card;
 }
 
@@ -1569,18 +1739,50 @@ function buildXLRConnector(deviceId, type, conn) {
   wrap.className = 'xlr-connector ' + type;
   wrap.id = 'xlr_' + deviceId + '_' + type + '_' + conn.id;
   wrap.title = (type === 'input' ? 'IN ' : 'OUT ') + conn.id + (conn.label ? ' — ' + conn.label : '');
-  wrap.onclick = () => openConnectorEdit(deviceId, type, conn.id);
+  wrap.onclick = () => openConnectorDetail(deviceId, type, conn.id);
+
+  // Drag & Drop for output connectors
+  if (type === 'output') {
+    wrap.addEventListener('dragover', e => {
+      e.preventDefault();
+      wrap.classList.add('drag-over');
+    });
+    wrap.addEventListener('dragleave', () => wrap.classList.remove('drag-over'));
+    wrap.addEventListener('drop', e => {
+      e.preventDefault();
+      wrap.classList.remove('drag-over');
+      const ethId = e.dataTransfer.getData('ethId');
+      if (ethId) connectEthToOutput(deviceId, conn.id, ethId);
+    });
+    wrap.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      const device = getDevice(deviceId);
+      if (!device) return;
+      const c = device.connections.outputs.find(x => x.id === conn.id);
+      if (c && c.ethId) {
+        c.ethId = null;
+        markModified();
+        updateConnDisplay(deviceId, 'output', c);
+        renderPatchTable();
+        showToast('Verbindung getrennt.', 'info', 1500);
+      }
+    });
+  }
+
+  // 7-Segment Display above connector
+  const dispText = getConnDisplayText(conn, type);
+  const dispEl = buildSegDisplay(dispText);
+  dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
+  wrap.appendChild(dispEl);
 
   // Body
   const body = document.createElement('div');
   body.className = 'xlr-body';
 
-  // LED
   const led = document.createElement('div');
   led.className = 'xlr-led' + (conn.active ? ' active' : '');
   body.appendChild(led);
 
-  // Inner
   const inner = document.createElement('div');
   inner.className = 'xlr-inner';
   const pins = document.createElement('div');
@@ -1594,13 +1796,11 @@ function buildXLRConnector(deviceId, type, conn) {
   body.appendChild(inner);
   wrap.appendChild(body);
 
-  // Number
   const num = document.createElement('div');
   num.className = 'xlr-num';
   num.textContent = (type === 'input' ? 'IN' : 'OUT') + ' ' + conn.id;
   wrap.appendChild(num);
 
-  // Label
   const lbl = document.createElement('div');
   lbl.className = 'xlr-label';
   lbl.textContent = conn.label || '—';
@@ -1610,7 +1810,9 @@ function buildXLRConnector(deviceId, type, conn) {
   return wrap;
 }
 
-// Rename device inline
+// ============================================================
+// 8. RENAME / DUPLICATE
+// ============================================================
 function startRenameDevice(deviceId, nameEl) {
   const device = getDevice(deviceId);
   if (!device) return;
@@ -1625,27 +1827,21 @@ function startRenameDevice(deviceId, nameEl) {
     const newName = input.value.trim() || device.name;
     device.name = newName;
     markModified();
-    // Rebuild card
     const card = document.querySelector('[data-device-id="' + deviceId + '"]');
-    if (card) {
-      const newCard = buildDeviceCard(device);
-      card.replaceWith(newCard);
-    }
+    if (card) card.replaceWith(buildDeviceCard(device));
     renderPatchTable();
   }
   input.addEventListener('blur', finish);
   input.addEventListener('keydown', e => { if (e.key === 'Enter') finish(); });
 }
 
-// Duplicate device
 function duplicateDevice(id) {
   const src = getDevice(id);
   if (!src) return;
   const copy = JSON.parse(JSON.stringify(src));
   copy.id = generateUUID();
   copy.name = src.name + ' (Kopie)';
-  // Reset outputs active
-  copy.connections.outputs.forEach(o => o.active = false);
+  copy.connections.outputs.forEach(o => { o.active = false; o.ethId = null; });
   state.devices.push(copy);
   markModified();
   renderAllDevices();
@@ -1654,138 +1850,174 @@ function duplicateDevice(id) {
 }
 
 // ============================================================
-// 7. CONNECTOR EDIT PANEL
+// 9. 7-SEGMENT DISPLAY
 // ============================================================
-let activeEdit = null;
+// Segment order: a, b, c, d, e, f, g
+// a=top, b=top-right, c=bottom-right, d=bottom, e=bottom-left, f=top-left, g=middle
+const SEG_MAP = {
+  '0':[1,1,1,1,1,1,0], '1':[0,1,1,0,0,0,0], '2':[1,1,0,1,1,0,1],
+  '3':[1,1,1,1,0,0,1], '4':[0,1,1,0,0,1,1], '5':[1,0,1,1,0,1,1],
+  '6':[1,0,1,1,1,1,1], '7':[1,1,1,0,0,0,0], '8':[1,1,1,1,1,1,1],
+  '9':[1,1,1,1,0,1,1],
+  'A':[1,1,1,0,1,1,1], 'B':[0,0,1,1,1,1,1], 'C':[1,0,0,1,1,1,0],
+  'D':[0,1,1,1,1,0,1], 'E':[1,0,0,1,1,1,1], 'F':[1,0,0,0,1,1,1],
+  'G':[1,0,1,1,1,1,0], 'H':[0,1,1,0,1,1,1], 'I':[0,0,0,0,1,1,0],
+  'J':[0,1,1,1,0,0,0], 'L':[0,0,0,1,1,1,0], 'O':[1,1,1,1,1,1,0],
+  'P':[1,1,0,0,1,1,1], 'R':[0,0,0,0,1,0,1], 'S':[1,0,1,1,0,1,1],
+  'T':[0,0,0,1,1,1,1], 'U':[0,1,1,1,1,1,0], 'V':[0,1,1,1,1,1,0],
+  '-':[0,0,0,0,0,0,1], ' ':[0,0,0,0,0,0,0], '/':[0,1,0,0,1,0,1],
+  '.':[0,0,0,1,0,0,0], '[':[1,0,0,1,1,1,0], ']':[1,1,1,1,0,0,0],
+};
 
-function closeAllEditPanels() {
-  document.querySelectorAll('.connector-edit-panel.open').forEach(p => p.classList.remove('open'));
-  document.querySelectorAll('.xlr-connector.selected').forEach(el => el.classList.remove('selected'));
-  activeEdit = null;
+function buildSegDisplay(text) {
+  const disp = document.createElement('div');
+  disp.className = 'seg-display';
+  const str = (text || '      ').slice(0, 6).padEnd(6, ' ');
+  for (let i = 0; i < 6; i++) {
+    const ch = str[i].toUpperCase();
+    const digit = document.createElement('div');
+    digit.className = 'seg-digit';
+    const pattern = SEG_MAP[ch] || SEG_MAP[' '];
+    ['a','b','c','d','e','f','g'].forEach((s, j) => {
+      const seg = document.createElement('div');
+      seg.className = 'seg seg-' + s + (pattern[j] ? ' on' : '');
+      digit.appendChild(seg);
+    });
+    disp.appendChild(digit);
+  }
+  return disp;
 }
 
-function openConnectorEdit(deviceId, type, connId) {
-  // If same connector already open, close it
-  const key = deviceId + '_' + type + '_' + connId;
-  if (activeEdit === key) {
-    closeAllEditPanels();
-    return;
+function getConnDisplayText(conn, type) {
+  if (type === 'input') {
+    // "U" + universe padded to 5 chars = 6 total
+    const u = String(conn.universe || 1).padStart(5, ' ');
+    return 'U' + u;
+  } else {
+    if (conn.ethId) {
+      const eth = state.ethDatabase.find(e => e.id === conn.ethId);
+      if (eth) {
+        // group max 2 chars, padded to 5, then port 1 char = 6 total
+        const g = eth.group.replace('ETH ', '').slice(0, 2);
+        const p = String(eth.port).slice(0, 1);
+        return g.padEnd(5, ' ') + p;
+      }
+    }
+    return '------';
   }
-  closeAllEditPanels();
-  activeEdit = key;
+}
 
+function updateConnDisplay(deviceId, type, conn) {
+  const dispEl = document.getElementById('disp_' + deviceId + '_' + type + '_' + conn.id);
+  if (!dispEl) return;
+  const text = getConnDisplayText(conn, type);
+  const str = text.slice(0, 6).padEnd(6, ' ');
+  const digits = dispEl.querySelectorAll('.seg-digit');
+  digits.forEach((digit, i) => {
+    const ch = str[i].toUpperCase();
+    const pattern = SEG_MAP[ch] || SEG_MAP[' '];
+    const segs = digit.querySelectorAll('.seg');
+    segs.forEach((seg, j) => {
+      if (pattern[j]) seg.classList.add('on');
+      else seg.classList.remove('on');
+    });
+  });
+}
+
+// ============================================================
+// 10. ETH PANEL
+// ============================================================
+function initEthDatabase() {
+  state.ethDatabase = [];
+  const groups = ['A', 'B', 'C', 'US'];
+  groups.forEach(g => {
+    for (let p = 1; p <= 4; p++) {
+      state.ethDatabase.push({
+        id: 'eth_' + g.toLowerCase() + '_' + p,
+        group: 'ETH ' + g,
+        port: p
+      });
+    }
+  });
+}
+
+function renderEthPanel() {
+  const panel = document.getElementById('ethPanel');
+  // Keep header, rebuild entries
+  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label');
+  existing.forEach(el => el.remove());
+
+  let lastGroup = '';
+  state.ethDatabase.forEach(eth => {
+    if (eth.group !== lastGroup) {
+      lastGroup = eth.group;
+      const groupEl = document.createElement('div');
+      groupEl.className = 'eth-group-label';
+      groupEl.textContent = eth.group;
+      panel.appendChild(groupEl);
+    }
+    const entry = document.createElement('div');
+    entry.className = 'eth-entry';
+    entry.draggable = true;
+    entry.dataset.ethId = eth.id;
+    entry.title = 'Auf Output ziehen um zu verbinden';
+
+    entry.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('ethId', eth.id);
+      e.dataTransfer.effectAllowed = 'link';
+    });
+
+    const dot = document.createElement('span');
+    dot.className = 'eth-dot';
+    const label = document.createElement('span');
+    label.textContent = eth.group + ' / ' + eth.port;
+    entry.appendChild(dot);
+    entry.appendChild(label);
+    panel.appendChild(entry);
+  });
+}
+
+function connectEthToOutput(deviceId, connId, ethId) {
   const device = getDevice(deviceId);
   if (!device) return;
-  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
-  const conn = conns.find(c => c.id === connId);
+  const conn = device.connections.outputs.find(c => c.id === connId);
   if (!conn) return;
+  conn.ethId = ethId;
+  markModified();
+  updateConnDisplay(deviceId, 'output', conn);
+  renderPatchTable();
+  const eth = state.ethDatabase.find(e => e.id === ethId);
+  if (eth) showToast('Output verbunden: ' + eth.group + ' / ' + eth.port, 'success', 1800);
+}
 
-  // Mark XLR as selected
+// ============================================================
+// 11. CONNECTOR DETAIL (navigiert zu Details-Tab)
+// ============================================================
+function clearSelectedConnectors() {
+  document.querySelectorAll('.xlr-connector.selected').forEach(el => el.classList.remove('selected'));
+}
+
+function openConnectorDetail(deviceId, type, connId) {
+  clearSelectedConnectors();
   const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
   if (xlrEl) xlrEl.classList.add('selected');
 
-  const panel = document.getElementById('editPanel_' + deviceId);
-  if (!panel) return;
+  switchTab('details');
+  renderPatchTable(); // ensure table is current
 
-  const isInput = type === 'input';
-  panel.innerHTML = `
-    <div class="edit-panel-title">
-      <span>${isInput ? '▶ INPUT' : '◀ OUTPUT'} ${connId} — ${device.name}</span>
-      <button class="edit-panel-close" onclick="closeAllEditPanels()">✕</button>
-    </div>
-    <div class="edit-row">
-      <div class="edit-field">
-        <label>Label</label>
-        <input type="text" id="ep_label" value="${escHtml(conn.label)}" placeholder="z.B. Moving Heads" maxlength="40">
-      </div>
-      <div class="edit-field">
-        <label>Universe</label>
-        <input type="number" id="ep_universe" value="${conn.universe}" min="1" max="256">
-      </div>
-      ${!isInput ? `
-      <div class="edit-field">
-        <label>DMX Start</label>
-        <input type="number" id="ep_start" value="${conn.startChannel}" min="1" max="512">
-      </div>` : ''}
-      <div class="edit-field">
-        <label>Notizen</label>
-        <input type="text" id="ep_notes" value="${escHtml(conn.notes)}" placeholder="Freitext…" maxlength="80">
-      </div>
-    </div>
-    <div class="edit-panel-actions">
-      <button class="btn-apply" onclick="applyConnectorEdit('${deviceId}','${type}',${connId})">Übernehmen</button>
-      <button class="btn-toggle-led ${conn.active ? 'on' : ''}" id="ep_led_btn"
-        onclick="toggleConnectorLed('${deviceId}','${type}',${connId})">
-        ${conn.active ? '● AKTIV' : '○ INAKTIV'}
-      </button>
-    </div>
-  `;
-
-  panel.classList.add('open');
-  panel.querySelector('#ep_label').focus();
-}
-
-function applyConnectorEdit(deviceId, type, connId) {
-  const device = getDevice(deviceId);
-  if (!device) return;
-  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
-  const conn = conns.find(c => c.id === connId);
-  if (!conn) return;
-
-  conn.label   = document.getElementById('ep_label').value.trim();
-  conn.universe = parseInt(document.getElementById('ep_universe').value) || 1;
-  conn.notes   = document.getElementById('ep_notes').value.trim();
-  if (type === 'output') {
-    conn.startChannel = parseInt(document.getElementById('ep_start').value) || 1;
-  }
-
-  markModified();
-
-  // Update XLR connector visual
-  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
-  if (xlrEl) {
-    const lbl = xlrEl.querySelector('.xlr-label');
-    if (lbl) {
-      lbl.textContent = conn.label || '—';
-      lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
+  const rowId = 'ptrow_' + deviceId + '_' + type + '_' + connId;
+  setTimeout(() => {
+    const row = document.getElementById(rowId);
+    if (row) {
+      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      row.classList.add('pt-row-highlight');
+      setTimeout(() => row.classList.remove('pt-row-highlight'), 2200);
     }
-    xlrEl.title = (type === 'input' ? 'IN ' : 'OUT ') + conn.id + (conn.label ? ' — ' + conn.label : '');
-  }
-  renderPatchTable();
-  showToast('Gespeichert.', 'success', 1500);
-}
-
-function toggleConnectorLed(deviceId, type, connId) {
-  const device = getDevice(deviceId);
-  if (!device) return;
-  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
-  const conn = conns.find(c => c.id === connId);
-  if (!conn) return;
-  conn.active = !conn.active;
-  markModified();
-
-  // Update LED in XLR
-  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
-  if (xlrEl) {
-    const led = xlrEl.querySelector('.xlr-led');
-    if (led) led.className = 'xlr-led' + (conn.active ? ' active' : '');
-  }
-
-  // Update toggle button
-  const btn = document.getElementById('ep_led_btn');
-  if (btn) {
-    btn.textContent = conn.active ? '● AKTIV' : '○ INAKTIV';
-    btn.className = 'btn-toggle-led' + (conn.active ? ' on' : '');
-  }
-  renderPatchTable();
-}
-
-function escHtml(str) {
-  return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }, 80);
 }
 
 // ============================================================
-// 8. PATCH TABLE
+// 12. PATCH TABLE
 // ============================================================
 function renderPatchTable() {
   const tbody = document.getElementById('patchTableBody');
@@ -1793,35 +2025,44 @@ function renderPatchTable() {
   let total = 0;
 
   state.devices.forEach(device => {
-    // Inputs
     device.connections.inputs.forEach(conn => {
       total++;
       const tr = document.createElement('tr');
+      tr.id = 'ptrow_' + device.id + '_input_' + conn.id;
       tr.innerHTML = `
         <td class="pt-device">${escHtml(device.name)}</td>
         <td><span class="pt-type-in">IN</span></td>
         <td class="pt-num">${conn.id}</td>
-        <td><span class="pt-led ${conn.active ? 'active' : ''}"></span></td>
+        <td><span class="pt-led ${conn.active ? 'active' : ''}" title="Klick zum Umschalten"
+            onclick="toggleLedFromTable('${device.id}','input',${conn.id})"></span></td>
         <td>${buildPtEditable(device.id,'input',conn.id,'label',conn.label,'Label…')}</td>
         <td>${buildPtEditable(device.id,'input',conn.id,'universe',conn.universe,'1')}</td>
+        <td><span class="pt-dash">—</span></td>
         <td><span class="pt-dash">—</span></td>
         <td>${buildPtEditable(device.id,'input',conn.id,'notes',conn.notes,'Notizen…')}</td>
       `;
       tbody.appendChild(tr);
     });
 
-    // Outputs
     device.connections.outputs.forEach(conn => {
       total++;
+      const eth = conn.ethId ? state.ethDatabase.find(e => e.id === conn.ethId) : null;
+      const ethDisplay = eth
+        ? `<span class="pt-eth">${escHtml(eth.group + ' / ' + eth.port)}</span>`
+        : `<span class="pt-eth-empty">—</span>`;
+
       const tr = document.createElement('tr');
+      tr.id = 'ptrow_' + device.id + '_output_' + conn.id;
       tr.innerHTML = `
         <td class="pt-device">${escHtml(device.name)}</td>
         <td><span class="pt-type-out">OUT</span></td>
         <td class="pt-num">${conn.id}</td>
-        <td><span class="pt-led ${conn.active ? 'active' : ''}"></span></td>
+        <td><span class="pt-led ${conn.active ? 'active' : ''}" title="Klick zum Umschalten"
+            onclick="toggleLedFromTable('${device.id}','output',${conn.id})"></span></td>
         <td>${buildPtEditable(device.id,'output',conn.id,'label',conn.label,'Label…')}</td>
         <td>${buildPtEditable(device.id,'output',conn.id,'universe',conn.universe,'1')}</td>
         <td>${buildPtEditable(device.id,'output',conn.id,'startChannel',conn.startChannel,'1')}</td>
+        <td>${ethDisplay}</td>
         <td>${buildPtEditable(device.id,'output',conn.id,'notes',conn.notes,'Notizen…')}</td>
       `;
       tbody.appendChild(tr);
@@ -1830,7 +2071,6 @@ function renderPatchTable() {
 
   document.getElementById('patchCount').textContent = total + ' Verbindungen';
 
-  // Wire up contenteditable cells
   tbody.querySelectorAll('.pt-editable').forEach(el => {
     el.addEventListener('blur', () => {
       const {devId, type, connId, field} = el.dataset;
@@ -1862,7 +2102,6 @@ function savePtEdit(devId, type, connId, field, value) {
   conn[field] = numFields.includes(field) ? (parseInt(value) || 1) : value;
   markModified();
 
-  // Update XLR label if label field changed
   if (field === 'label') {
     const xlrEl = document.getElementById('xlr_' + devId + '_' + type + '_' + connId);
     if (xlrEl) {
@@ -1873,10 +2112,35 @@ function savePtEdit(devId, type, connId, field, value) {
       }
     }
   }
+  if (field === 'universe') {
+    updateConnDisplay(devId, type, conn);
+  }
+}
+
+function toggleLedFromTable(deviceId, type, connId) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
+  const conn = conns.find(c => c.id === connId);
+  if (!conn) return;
+  conn.active = !conn.active;
+  markModified();
+  // Update XLR LED
+  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
+  if (xlrEl) {
+    const led = xlrEl.querySelector('.xlr-led');
+    if (led) led.className = 'xlr-led' + (conn.active ? ' active' : '');
+  }
+  // Update table LED
+  const rowEl = document.getElementById('ptrow_' + deviceId + '_' + type + '_' + connId);
+  if (rowEl) {
+    const ptLed = rowEl.querySelector('.pt-led');
+    if (ptLed) ptLed.className = 'pt-led' + (conn.active ? ' active' : '');
+  }
 }
 
 // ============================================================
-// 9. FILE I/O
+// 13. FILE I/O
 // ============================================================
 function triggerLoad() {
   if (state.modified && state.devices.length > 0) {
@@ -1909,7 +2173,12 @@ function loadProjectData(data) {
   }
   state.projectName = data.projectName || 'Unbenannt';
   state.created = data.created || new Date().toISOString();
+  state.projectCreated = true;
   state.devices = data.devices || [];
+  // Ensure ethId field exists on outputs
+  state.devices.forEach(d => d.connections.outputs.forEach(o => {
+    if (o.ethId === undefined) o.ethId = null;
+  }));
   if (data.logos) {
     logos.planer  = data.logos.planer  || '';
     logos.band    = data.logos.band    || '';
@@ -1925,8 +2194,8 @@ function loadProjectData(data) {
 }
 
 function saveProject() {
-  if (state.devices.length === 0) {
-    showToast('Keine Geräte zum Speichern.', 'warning');
+  if (state.devices.length === 0 && !state.projectCreated) {
+    showToast('Kein Projekt zum Speichern.', 'warning');
     return;
   }
   const data = {
@@ -1961,7 +2230,8 @@ function handleImport(event) {
       const data = JSON.parse(e.target.result);
       if (!Array.isArray(data.devices)) throw new Error();
       data.devices.forEach(d => {
-        d.id = generateUUID(); // New ID to avoid conflicts
+        d.id = generateUUID();
+        d.connections.outputs.forEach(o => { if (o.ethId === undefined) o.ethId = null; });
         state.devices.push(d);
       });
       markModified();
@@ -1982,22 +2252,49 @@ function exportPrint() {
 }
 
 // ============================================================
-// 10. PROJECT MANAGEMENT
+// 14. PROJECT MANAGEMENT
 // ============================================================
 function newProject() {
   if (state.modified && state.devices.length > 0) {
     if (!confirm('Ungespeicherte Änderungen gehen verloren. Neues Projekt erstellen?')) return;
   }
-  state.projectName = 'Unbenannt';
-  state.created = new Date().toISOString();
+  // Pre-fill today's date
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('newProjectDateInput').value = today;
+  document.getElementById('newProjectNameInput').value = '';
+  document.getElementById('npNameField').classList.remove('has-error');
+  openModal('newProjectModal');
+  setTimeout(() => document.getElementById('newProjectNameInput').focus(), 100);
+}
+
+function confirmNewProject() {
+  const name = document.getElementById('newProjectNameInput').value.trim();
+  if (!name) {
+    document.getElementById('npNameField').classList.add('has-error');
+    document.getElementById('newProjectNameInput').focus();
+    return;
+  }
+  document.getElementById('npNameField').classList.remove('has-error');
+
+  const dateVal = document.getElementById('newProjectDateInput').value;
+  state.projectName = name;
+  state.created = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
+  state.projectCreated = true;
   state.devices = [];
   markSaved();
   updateProjectDisplay();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();
-  showToast('Neues Projekt erstellt.', 'info');
+  closeModal('newProjectModal');
+
+  // Immediately open booster setup
+  setTimeout(() => openBoosterSetupModal(), 150);
 }
+
+document.getElementById('newProjectNameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmNewProject();
+});
 
 function clearAll() {
   if (state.devices.length === 0) return;
@@ -2006,7 +2303,6 @@ function clearAll() {
   markModified();
   renderAllDevices();
   renderPatchTable();
-  updateEmptyState();
   showToast('Alle Geräte gelöscht.', 'warning');
 }
 
@@ -2015,8 +2311,7 @@ function openProjectNameModal() {
   openModal('projectModal');
   setTimeout(() => {
     const inp = document.getElementById('projectNameInput');
-    inp.focus();
-    inp.select();
+    inp.focus(); inp.select();
   }, 100);
 }
 
@@ -2035,7 +2330,130 @@ document.getElementById('projectNameInput').addEventListener('keydown', e => {
 });
 
 // ============================================================
-// 11. LOGO MANAGEMENT
+// 15. BOOSTER SETUP MODAL (2-Step Wizard)
+// ============================================================
+function openBoosterSetupModal() {
+  document.getElementById('bsStep1').style.display = 'flex';
+  document.getElementById('bsStep2').style.display = 'none';
+  document.getElementById('bsCount').value = '1';
+  document.getElementById('bsBackBtn').style.display = 'none';
+  document.getElementById('bsActionBtn').textContent = 'Weiter →';
+  document.getElementById('bsActionBtn').onclick = bsNext;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
+  openModal('boosterSetupModal');
+  setTimeout(() => document.getElementById('bsCount').focus(), 100);
+}
+
+function bsNext() {
+  const count = parseInt(document.getElementById('bsCount').value) || 1;
+  if (count < 1 || count > 16) {
+    showToast('Bitte 1–16 Booster eingeben.', 'warning');
+    return;
+  }
+  // Build step 2 table
+  const wrap = document.getElementById('bsTableWrap');
+  wrap.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.className = 'bs-setup-table';
+  table.innerHTML = `<thead><tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Inputs</th>
+    <th>Outputs</th>
+  </tr></thead>`;
+
+  const tbody = document.createElement('tbody');
+  for (let i = 1; i <= count; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bs-num-cell">${i}</td>
+      <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
+      <td>
+        <div class="bs-radio-small">
+          <label><input type="radio" name="bsIn_${i}" value="1" checked id="bsIn1_${i}">
+            <div class="bs-radio-btn">1</div></label>
+          <label><input type="radio" name="bsIn_${i}" value="2" id="bsIn2_${i}">
+            <div class="bs-radio-btn">2</div></label>
+        </div>
+      </td>
+      <td>
+        <select id="bsOut_${i}">
+          ${[4,5,6,7,8,9,10,11,12].map(n =>
+            `<option value="${n}"${n===8?' selected':''}>${n} Ausgänge</option>`
+          ).join('')}
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+
+  // Switch to step 2
+  document.getElementById('bsStep1').style.display = 'none';
+  document.getElementById('bsStep2').style.display = 'block';
+  document.getElementById('bsBackBtn').style.display = 'inline-flex';
+  document.getElementById('bsActionBtn').textContent = 'Erstellen ✓';
+  document.getElementById('bsActionBtn').onclick = bsConfirm;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER KONFIGURIEREN';
+}
+
+function bsBack() {
+  document.getElementById('bsStep1').style.display = 'flex';
+  document.getElementById('bsStep2').style.display = 'none';
+  document.getElementById('bsBackBtn').style.display = 'none';
+  document.getElementById('bsActionBtn').textContent = 'Weiter →';
+  document.getElementById('bsActionBtn').onclick = bsNext;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
+}
+
+function bsConfirm() {
+  const count = parseInt(document.getElementById('bsCount').value) || 1;
+  let created = 0;
+
+  for (let i = 1; i <= count; i++) {
+    const nameEl = document.getElementById('bsName_' + i);
+    const outEl  = document.getElementById('bsOut_' + i);
+    const inEl   = document.querySelector('input[name="bsIn_' + i + '"]:checked');
+    if (!nameEl || !outEl || !inEl) continue;
+
+    const name = nameEl.value.trim() || ('DMX Booster ' + i);
+    const inputs  = parseInt(inEl.value) || 1;
+    const outputs = parseInt(outEl.value) || 8;
+
+    const device = {
+      id: generateUUID(),
+      name,
+      inputs,
+      outputs,
+      connections: {
+        inputs:  Array.from({length: inputs},  (_, j) => ({
+          id: j+1, universe: j+1, label: '', notes: '', active: true
+        })),
+        outputs: Array.from({length: outputs}, (_, j) => ({
+          id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null
+        }))
+      }
+    };
+    state.devices.push(device);
+    created++;
+  }
+
+  if (created > 0) {
+    markModified();
+    renderAllDevices();
+    renderPatchTable();
+    updateEmptyState();
+    switchTab('patch');
+  }
+
+  closeModal('boosterSetupModal');
+  showToast(created + ' Booster angelegt.', 'success');
+}
+
+// ============================================================
+// 16. LOGO MANAGEMENT
 // ============================================================
 const LOGOS_KEY = 'boosterpatch-logos';
 const logos = { planer: '', band: '', booking: '' };
@@ -2143,9 +2561,11 @@ function openLogosModal() {
 }
 
 // ============================================================
-// 12. INIT
+// 17. INIT
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
+initEthDatabase();
+renderEthPanel();
 loadLogosLocal();
 updateProjectDisplay();
 updateEmptyState();

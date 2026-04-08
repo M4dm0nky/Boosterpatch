@@ -384,14 +384,14 @@
       box-shadow: 0 0 4px var(--led-glow);
     }
 
-    /* === 8. Devices Container (Horizontal) === */
+    /* === 8. Devices Container (Vertical) === */
     #devicesContainer {
       flex: 1;
-      overflow-x: auto;
+      overflow-x: hidden;
       overflow-y: auto;
       display: flex;
-      flex-direction: row;
-      align-items: flex-start;
+      flex-direction: column;
+      align-items: stretch;
       gap: 16px;
       padding: 20px 16px;
     }
@@ -402,7 +402,7 @@
       display: flex;
       flex-direction: column;
       gap: 0;
-      flex-shrink: 0;
+      width: 100%;
     }
 
     .rack-unit {
@@ -415,7 +415,7 @@
       box-shadow:
         0 4px 16px rgba(0,0,0,0.5),
         inset 0 1px 0 rgba(255,255,255,0.05);
-      min-width: var(--device-min-w, auto);
+      max-width: 100%;
     }
 
     .rack-ear {
@@ -1126,7 +1126,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.3.1</div>
+        <div class="app-version" id="appVersionDisplay">v0.3.2</div>
       </div>
     </div>
   </div>
@@ -1419,7 +1419,7 @@
 <script>
 'use strict';
 
-const APP_VERSION = 'v0.3.1';
+const APP_VERSION = 'v0.3.2';
 
 // ============================================================
 // 1. STATE

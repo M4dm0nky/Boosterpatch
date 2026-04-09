@@ -26,6 +26,9 @@ function renderEthPanel() {
 
   let lastGroup = '';
   state.ethDatabase.forEach(eth => {
+    const isConnected = usedEthIds.has(eth.id);
+    if (!isConnected) return; // Nur belegte ETH-Einträge zeigen
+
     if (eth.group !== lastGroup) {
       lastGroup = eth.group;
       const groupEl = document.createElement('div');
@@ -33,20 +36,10 @@ function renderEthPanel() {
       groupEl.textContent = eth.group;
       panel.appendChild(groupEl);
     }
-    const isConnected = usedEthIds.has(eth.id);
     const entry = document.createElement('div');
-    entry.className = 'eth-entry' + (isConnected ? ' connected' : '');
-    entry.draggable = !isConnected;
+    entry.className = 'eth-entry connected';
     entry.dataset.ethId = eth.id;
-    entry.title = isConnected ? 'Bereits verbunden' : 'Auf Output ziehen um zu verbinden';
-
-    if (!isConnected) {
-      entry.addEventListener('dragstart', e => {
-        e.dataTransfer.setData('ethId', eth.id);
-        e.dataTransfer.effectAllowed = 'link';
-      });
-    }
-
+    entry.title = 'Bereits verbunden';
     const label = document.createElement('span');
     label.textContent = eth.group + ' / ' + eth.port;
     entry.appendChild(label);

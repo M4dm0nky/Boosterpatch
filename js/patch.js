@@ -60,7 +60,8 @@ function connectEthToOutput(deviceId, connId, ethId) {
   const conn = device.connections.outputs.find(c => c.id === connId);
   if (!conn) return;
   conn.ethId = ethId;
-  conn.active = true;
+  const routedInput = device.connections.inputs.find(i => i.id === (conn.routeToInput ?? 1));
+  conn.active = !!(routedInput && routedInput.active);
   markModified();
   updateConnDisplay(deviceId, 'output', conn);
   syncConnLed(deviceId, 'output', connId);
@@ -259,6 +260,7 @@ function savePtEdit(devId, type, connId, field, value) {
     if (type === 'input') {
       conn.active = !!(parseInt(value) > 0);
       syncConnLed(devId, type, parseInt(connId));
+      syncOutputLedsForInput(devId, parseInt(connId));
     }
   }
 }
@@ -325,6 +327,12 @@ function setOutputRoute(deviceId, connId, inputNum) {
   const conn = device.connections.outputs.find(c => c.id === connId);
   if (!conn) return;
   conn.routeToInput = inputNum;
+  // Recalculate output active state based on new routed input
+  if (conn.ethId) {
+    const routedInput = device.connections.inputs.find(i => i.id === inputNum);
+    conn.active = !!(routedInput && routedInput.active);
+    syncConnLed(deviceId, 'output', connId);
+  }
   markModified();
   [1, 2].forEach(inNum => {
     const btn = document.getElementById('routebtn_' + deviceId + '_' + connId + '_' + inNum);
@@ -333,6 +341,18 @@ function setOutputRoute(deviceId, connId, inputNum) {
     const inputActive = device.connections.inputs.find(i => i.id === inNum)?.active;
     if (isSelected && inputActive) applyLampOn(btn);
     else removeLampOn(btn);
+  });
+}
+
+function syncOutputLedsForInput(deviceId, inputId) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const input = device.connections.inputs.find(i => i.id === inputId);
+  device.connections.outputs.forEach(out => {
+    if ((out.routeToInput ?? 1) === inputId && out.ethId) {
+      out.active = !!(input && input.active);
+      syncConnLed(deviceId, 'output', out.id);
+    }
   });
 }
 

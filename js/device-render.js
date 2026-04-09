@@ -182,12 +182,14 @@ function buildXLRConnector(deviceId, type, conn) {
   const dispText = getConnDisplayText(conn, type);
   const dispEl = buildSegDisplay(dispText);
   dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
-  dispEl.style.cursor = 'pointer';
-  dispEl.title = 'Universum bearbeiten';
-  dispEl.addEventListener('click', e => {
-    e.stopPropagation();
-    openUnivPopover(deviceId, type, conn.id, dispEl);
-  });
+  if (type === 'input') {
+    dispEl.style.cursor = 'pointer';
+    dispEl.title = 'Universum bearbeiten';
+    dispEl.addEventListener('click', e => {
+      e.stopPropagation();
+      openUnivPopover(deviceId, type, conn.id, dispEl);
+    });
+  }
   wrap.appendChild(dispEl);
 
   // Body

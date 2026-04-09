@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.3</div>
       </div>
     </div>
   </div>
@@ -126,6 +126,7 @@
     <div id="tabBar">
       <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
       <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
+      <button class="tab-btn" id="tabBtnFixtures" onclick="switchTab('fixtures')">FIXTURES</button>
     </div>
 
     <!-- Tab: Patch View -->
@@ -133,11 +134,31 @@
       <div id="patchView">
         <!-- ETH Sources Panel -->
         <div id="ethPanel">
-          <div class="eth-panel-header">ETH QUELLEN</div>
+          <div class="eth-panel-header">CORES</div>
           <!-- populated by renderEthPanel() -->
         </div>
         <!-- Devices (horizontal) -->
         <div id="devicesContainer"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Fixture Database -->
+    <div id="tabFixtures" class="tab-content">
+      <div class="section-header">
+        <div class="section-title">FIXTURE DATENBANK</div>
+        <div class="section-badge" id="fixtureCount">0 Fixtures</div>
+      </div>
+      <div class="patch-table-wrap">
+        <table id="fixtureTable">
+          <thead>
+            <tr>
+              <th>Fixture ID</th>
+              <th>Typ</th>
+              <th>Line</th>
+            </tr>
+          </thead>
+          <tbody id="fixtureTableBody"></tbody>
+        </table>
       </div>
     </div>
 

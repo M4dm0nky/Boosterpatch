@@ -21,6 +21,7 @@ function handleFixtureTxtImport(event) {
     state.fixtureDatabase = fixtures;
     markModified();
     updateFixtureDbStatus();
+    renderFixtureTab();
     renderAllDevices();
     renderPatchTable();
     showToast(fixtures.length + ' Fixtures importiert.', 'success');
@@ -77,6 +78,27 @@ function connectLineToOutput(deviceId, connId, lineId) {
   renderEthPanel();
   const count = getFixturesForLine(lineId).length;
   showToast('Line gesetzt: ' + lineId + ' (' + count + ' Fixture' + (count !== 1 ? 's' : '') + ')', 'success', 2000);
+}
+
+function renderFixtureTab() {
+  const tbody = document.getElementById('fixtureTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (state.fixtureDatabase.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="3" style="text-align:center;color:var(--text-secondary);font-style:italic;padding:20px;">Keine Fixture-Daten — bitte Datei über FIXTURES → "Fixture-Datei laden" importieren.</td>';
+    tbody.appendChild(tr);
+  } else {
+    state.fixtureDatabase.forEach(f => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escHtml(f.fixtureId) + '</td><td>' + escHtml(f.type) + '</td><td>' + escHtml(f.line) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  const countEl = document.getElementById('fixtureCount');
+  if (countEl) countEl.textContent = state.fixtureDatabase.length + ' Fixtures';
 }
 
 function updateFixtureDbStatus() {

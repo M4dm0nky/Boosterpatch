@@ -1782,7 +1782,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.3</div>
       </div>
     </div>
   </div>
@@ -1890,6 +1890,7 @@ body {
     <div id="tabBar">
       <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
       <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
+      <button class="tab-btn" id="tabBtnFixtures" onclick="switchTab('fixtures')">FIXTURES</button>
     </div>
 
     <!-- Tab: Patch View -->
@@ -1897,11 +1898,31 @@ body {
       <div id="patchView">
         <!-- ETH Sources Panel -->
         <div id="ethPanel">
-          <div class="eth-panel-header">ETH QUELLEN</div>
+          <div class="eth-panel-header">CORES</div>
           <!-- populated by renderEthPanel() -->
         </div>
         <!-- Devices (horizontal) -->
         <div id="devicesContainer"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Fixture Database -->
+    <div id="tabFixtures" class="tab-content">
+      <div class="section-header">
+        <div class="section-title">FIXTURE DATENBANK</div>
+        <div class="section-badge" id="fixtureCount">0 Fixtures</div>
+      </div>
+      <div class="patch-table-wrap">
+        <table id="fixtureTable">
+          <thead>
+            <tr>
+              <th>Fixture ID</th>
+              <th>Typ</th>
+              <th>Line</th>
+            </tr>
+          </thead>
+          <tbody id="fixtureTableBody"></tbody>
+        </table>
       </div>
     </div>
 
@@ -2107,7 +2128,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.7.2';
+const APP_VERSION = 'v0.7.3';
 
 // ============================================================
 // 1. STATE
@@ -2201,6 +2222,10 @@ function switchTab(tabName) {
   if (tabName === 'patch') {
     document.getElementById('tabBtnPatch').classList.add('active');
     document.getElementById('tabPatch').classList.add('active');
+  } else if (tabName === 'fixtures') {
+    document.getElementById('tabBtnFixtures').classList.add('active');
+    document.getElementById('tabFixtures').classList.add('active');
+    renderFixtureTab();
   } else {
     document.getElementById('tabBtnDetails').classList.add('active');
     document.getElementById('tabDetails').classList.add('active');
@@ -3402,6 +3427,7 @@ function handleFixtureTxtImport(event) {
     state.fixtureDatabase = fixtures;
     markModified();
     updateFixtureDbStatus();
+    renderFixtureTab();
     renderAllDevices();
     renderPatchTable();
     showToast(fixtures.length + ' Fixtures importiert.', 'success');
@@ -3458,6 +3484,27 @@ function connectLineToOutput(deviceId, connId, lineId) {
   renderEthPanel();
   const count = getFixturesForLine(lineId).length;
   showToast('Line gesetzt: ' + lineId + ' (' + count + ' Fixture' + (count !== 1 ? 's' : '') + ')', 'success', 2000);
+}
+
+function renderFixtureTab() {
+  const tbody = document.getElementById('fixtureTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '';
+
+  if (state.fixtureDatabase.length === 0) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td colspan="3" style="text-align:center;color:var(--text-secondary);font-style:italic;padding:20px;">Keine Fixture-Daten — bitte Datei über FIXTURES → "Fixture-Datei laden" importieren.</td>';
+    tbody.appendChild(tr);
+  } else {
+    state.fixtureDatabase.forEach(f => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = '<td>' + escHtml(f.fixtureId) + '</td><td>' + escHtml(f.type) + '</td><td>' + escHtml(f.line) + '</td>';
+      tbody.appendChild(tr);
+    });
+  }
+
+  const countEl = document.getElementById('fixtureCount');
+  if (countEl) countEl.textContent = state.fixtureDatabase.length + ' Fixtures';
 }
 
 function updateFixtureDbStatus() {
@@ -3611,6 +3658,7 @@ function loadProjectData(data) {
   markSaved();
   updateProjectDisplay();
   updateFixtureDbStatus();
+  renderFixtureTab();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();

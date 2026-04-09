@@ -31,6 +31,10 @@ function switchTab(tabName) {
   if (tabName === 'patch') {
     document.getElementById('tabBtnPatch').classList.add('active');
     document.getElementById('tabPatch').classList.add('active');
+  } else if (tabName === 'fixtures') {
+    document.getElementById('tabBtnFixtures').classList.add('active');
+    document.getElementById('tabFixtures').classList.add('active');
+    renderFixtureTab();
   } else {
     document.getElementById('tabBtnDetails').classList.add('active');
     document.getElementById('tabDetails').classList.add('active');

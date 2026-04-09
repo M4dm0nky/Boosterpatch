@@ -63,6 +63,7 @@ function loadProjectData(data) {
   markSaved();
   updateProjectDisplay();
   updateFixtureDbStatus();
+  renderFixtureTab();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();

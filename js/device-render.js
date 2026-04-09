@@ -252,19 +252,7 @@ function buildXLRConnector(deviceId, type, conn) {
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
 
   if (type === 'output') {
-    const fixCount = getFixturesForLine(conn.label).length;
-    const labelText = document.createElement('span');
-    labelText.textContent = conn.label || '—';
-    lbl.appendChild(labelText);
-
-    if (fixCount > 0) {
-      const badge = document.createElement('span');
-      badge.className = 'fix-count-badge';
-      badge.textContent = fixCount;
-      badge.title = fixCount + ' Fixture(s) auf dieser Line';
-      lbl.appendChild(badge);
-    }
-
+    lbl.textContent = conn.label || '—';
     lbl.style.cursor = 'pointer';
     lbl.title = conn.label
       ? 'Klick: Fixtures auf "' + conn.label + '" anzeigen'
@@ -402,6 +390,10 @@ function getConnDisplayText(conn, type) {
     if (!conn.universe) return '----';
     return 'U' + String(conn.universe).padStart(3, ' ');
   } else {
+    // Line-Label hat Priorität — erste 4 Zeichen ins Display
+    if (conn.label) {
+      return conn.label.slice(0, 4).padEnd(4, ' ');
+    }
     if (conn.ethId) {
       const eth = state.ethDatabase.find(e => e.id === conn.ethId);
       if (eth) {

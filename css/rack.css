@@ -73,6 +73,17 @@
   min-width: 0;
 }
 
+.rack-hint {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  opacity: 0.35;
+  text-align: right;
+  padding-right: 4px;
+  user-select: none;
+}
+
 .rack-topbar {
   display: flex;
   align-items: center;

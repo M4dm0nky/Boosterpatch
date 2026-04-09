@@ -121,6 +121,12 @@ function buildDeviceCard(device) {
   connArea.appendChild(outputSec);
 
   face.appendChild(connArea);
+
+  const hint = document.createElement('div');
+  hint.className = 'rack-hint';
+  hint.textContent = 'RECHTSKLICK → RESET';
+  face.appendChild(hint);
+
   rackUnit.appendChild(face);
   rackUnit.appendChild(buildEar(true));
   card.appendChild(rackUnit);
@@ -147,6 +153,22 @@ function buildXLRConnector(deviceId, type, conn) {
   wrap.className = 'xlr-connector ' + type;
   wrap.id = 'xlr_' + deviceId + '_' + type + '_' + conn.id;
   wrap.title = (type === 'input' ? 'IN ' : 'OUT ') + conn.id + (conn.label ? ' — ' + conn.label : '');
+  // Right-click on input connector resets universe
+  if (type === 'input') {
+    wrap.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (!conn.universe) return;
+      conn.universe = null;
+      conn.active = false;
+      markModified();
+      updateConnDisplay(deviceId, 'input', conn);
+      syncConnLed(deviceId, 'input', conn.id);
+      syncOutputLedsForInput(deviceId, conn.id);
+      renderPatchTable();
+      showToast('Universum zurückgesetzt.', 'info', 1500);
+    });
+  }
+
   // Drag & Drop for output connectors
   if (type === 'output') {
     wrap.addEventListener('dragover', e => {
@@ -188,18 +210,6 @@ function buildXLRConnector(deviceId, type, conn) {
     dispEl.addEventListener('click', e => {
       e.stopPropagation();
       openUnivPopover(deviceId, type, conn.id, dispEl);
-    });
-    dispEl.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      if (!conn.universe) return;
-      conn.universe = null;
-      conn.active = false;
-      markModified();
-      updateConnDisplay(deviceId, 'input', conn);
-      syncConnLed(deviceId, 'input', conn.id);
-      syncOutputLedsForInput(deviceId, conn.id);
-      renderPatchTable();
-      showToast('Universum zurückgesetzt.', 'info', 1500);
     });
   }
   wrap.appendChild(dispEl);

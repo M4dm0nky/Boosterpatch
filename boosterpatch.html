@@ -624,6 +624,17 @@ body {
   min-width: 0;
 }
 
+.rack-hint {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: var(--text-secondary);
+  opacity: 0.35;
+  text-align: right;
+  padding-right: 4px;
+  user-select: none;
+}
+
 .rack-topbar {
   display: flex;
   align-items: center;
@@ -1595,7 +1606,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.63</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.65</div>
       </div>
     </div>
   </div>
@@ -1904,7 +1915,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.6.63';
+const APP_VERSION = 'v0.6.65';
 
 // ============================================================
 // 1. STATE
@@ -2127,6 +2138,12 @@ function buildDeviceCard(device) {
   connArea.appendChild(outputSec);
 
   face.appendChild(connArea);
+
+  const hint = document.createElement('div');
+  hint.className = 'rack-hint';
+  hint.textContent = 'RECHTSKLICK → RESET';
+  face.appendChild(hint);
+
   rackUnit.appendChild(face);
   rackUnit.appendChild(buildEar(true));
   card.appendChild(rackUnit);
@@ -2153,6 +2170,22 @@ function buildXLRConnector(deviceId, type, conn) {
   wrap.className = 'xlr-connector ' + type;
   wrap.id = 'xlr_' + deviceId + '_' + type + '_' + conn.id;
   wrap.title = (type === 'input' ? 'IN ' : 'OUT ') + conn.id + (conn.label ? ' — ' + conn.label : '');
+  // Right-click on input connector resets universe
+  if (type === 'input') {
+    wrap.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (!conn.universe) return;
+      conn.universe = null;
+      conn.active = false;
+      markModified();
+      updateConnDisplay(deviceId, 'input', conn);
+      syncConnLed(deviceId, 'input', conn.id);
+      syncOutputLedsForInput(deviceId, conn.id);
+      renderPatchTable();
+      showToast('Universum zurückgesetzt.', 'info', 1500);
+    });
+  }
+
   // Drag & Drop for output connectors
   if (type === 'output') {
     wrap.addEventListener('dragover', e => {
@@ -2194,18 +2227,6 @@ function buildXLRConnector(deviceId, type, conn) {
     dispEl.addEventListener('click', e => {
       e.stopPropagation();
       openUnivPopover(deviceId, type, conn.id, dispEl);
-    });
-    dispEl.addEventListener('contextmenu', e => {
-      e.preventDefault();
-      if (!conn.universe) return;
-      conn.universe = null;
-      conn.active = false;
-      markModified();
-      updateConnDisplay(deviceId, 'input', conn);
-      syncConnLed(deviceId, 'input', conn.id);
-      syncOutputLedsForInput(deviceId, conn.id);
-      renderPatchTable();
-      showToast('Universum zurückgesetzt.', 'info', 1500);
     });
   }
   wrap.appendChild(dispEl);

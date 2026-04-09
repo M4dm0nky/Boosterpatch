@@ -1595,7 +1595,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.61</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.62</div>
       </div>
     </div>
   </div>
@@ -1630,7 +1630,7 @@ body {
 </nav>
 
 <!-- hidden file inputs -->
-<input type="file" id="fileInput"    accept=".json"    onchange="handleFileLoad(event)">
+<input type="file" id="fileInput"    accept=".json"    style="display:none" onchange="handleFileLoad(event)">
 
 <!-- ===== MODAL: Speichern ===== -->
 <div class="modal-overlay" id="saveModal">
@@ -1642,7 +1642,7 @@ body {
     <div class="modal-body" id="saveModalBody"></div>
   </div>
 </div>
-<input type="file" id="importInput" accept=".json"    onchange="handleImport(event)">
+<input type="file" id="importInput" accept=".json"    style="display:none" onchange="handleImport(event)">
 <input type="file" id="inLogoPlaner"  accept="image/*" style="display:none" onchange="handleLogoUpload('planer',this)">
 <input type="file" id="inLogoBand"    accept="image/*" style="display:none" onchange="handleLogoUpload('band',this)">
 <input type="file" id="inLogoBooking" accept="image/*" style="display:none" onchange="handleLogoUpload('booking',this)">
@@ -1904,7 +1904,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.6.61';
+const APP_VERSION = 'v0.6.62';
 
 // ============================================================
 // 1. STATE

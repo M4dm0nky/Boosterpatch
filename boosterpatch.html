@@ -7,1365 +7,1369 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;900&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    /* === 0. Global Scale === */
-    html { zoom: 1.2; }
-
-    /* === 1. Reset & Variables === */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --font-header:  'Bebas Neue', sans-serif;
-      --font-ui:      'Barlow Condensed', sans-serif;
-      --font-mono:    'Share Tech Mono', monospace;
-
-      /* App Shell — Materialliste Palette */
-      --app-bg:        #0d0f14;
-      --sidebar-bg:    #141720;
-      --sidebar-hover: rgba(232,200,74,.06);
-      --sidebar-active:rgba(232,200,74,.14);
-      --header-bg:     #0a0c14;
-      --header-border: #e8c84a;
-      --header-text:   #c8d0e8;
-
-      /* Accent */
-      --accent:        #e8c84a;
-      --accent-dim:    #c8a832;
-      --accent-green:  #4ae8a0;
-      --accent-red:    #e84a4a;
-      --accent-orange: #e8a04a;
-
-      /* Rack Device */
-      --rack-bg:       #1c2030;
-      --rack-face:     #141720;
-      --rack-border:   #2a3050;
-      --rack-ear:      #1c2030;
-      --rack-screw:    #3a4060;
-      --rack-stripe:   #1a1f30;
-
-      /* XLR */
-      --xlr-body:      #888888;
-      --xlr-ring:      #AAAAAA;
-      --xlr-inner:     #1c2030;
-      --xlr-pin:       #5a6080;
-
-      /* LED */
-      --led-on:        #4ae8a0;
-      --led-glow:      rgba(74,232,160,0.5);
-      --led-off:       #0d2018;
-      --led-off-ring:  #1a3028;
-
-      /* Retro Lamps */
-      --lamp-in1:       #e8a04a;
-      --lamp-in1-glow:  rgba(232,160,74,0.7);
-      --lamp-in2:       #4a90e8;
-      --lamp-in2-glow:  rgba(74,144,232,0.7);
-      --lamp-off-cap:   #1a1a22;
-      --lamp-filament:  rgba(255,240,180,0.92);
-
-      /* Text */
-      --text-primary:  #c8d0e8;
-      --text-secondary:#5a6080;
-      --text-mono:     #e8c84a;
-      --text-label:    #8a94b0;
-
-      /* Sidebar width */
-      --sidebar-w:     200px;
-      --header-h:      64px;
-
-      /* 7-Segment — VFD/Nixie Röhren-Stil */
-      --seg-on:        #ffb200;
-      --seg-on-glow:   rgba(255,178,0,0.95);
-      --seg-off:       rgba(35,12,0,0.22);
-    }
-
-    /* === 2. Layout Shell === */
-    html, body { height: 100%; overflow: hidden; }
-
-    body {
-      display: grid;
-      grid-template-rows: var(--header-h) 1fr;
-      grid-template-columns: var(--sidebar-w) 1fr;
-      grid-template-areas:
-        "header header"
-        "sidebar main";
-      background: var(--app-bg);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 16px;
-    }
-
-    /* scrollbars */
-    *::-webkit-scrollbar { width: 6px; height: 6px; }
-    *::-webkit-scrollbar-track { background: var(--app-bg); }
-    *::-webkit-scrollbar-thumb { background: var(--rack-border); border-radius: 3px; }
-
-    /* === 3. Header === */
-    #app-header {
-      grid-area: header;
-      background: linear-gradient(135deg, #0a0c14 0%, #12182e 50%, #0a0c14 100%);
-      border-bottom: 2px solid var(--header-border);
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      padding: 0 24px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-
-    .hdr-left  { display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
-    .hdr-center { display: flex; align-items: center; justify-content: center; padding: 0 16px; }
-    .hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
-
-    .hdr-project-info {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .logo-planer  { max-height: 52px; max-width: 160px; object-fit: contain; object-position: left center;  display: block; cursor: pointer; }
-    .logo-band    { max-height: 46px; max-width: 140px; object-fit: contain;                                 display: block; cursor: pointer; }
-    .logo-booking { max-height: 52px; max-width: 160px; object-fit: contain; object-position: right center; display: block; cursor: pointer; }
-
-    /* Logo Option in Modal */
-    .logo-option {
-      display: flex; align-items: center; gap: 14px; padding: 14px;
-      background: var(--rack-bg); border: 1px solid var(--rack-border); margin-bottom: 10px;
-      cursor: pointer; transition: border-color 0.15s;
-    }
-    .logo-option:hover { border-color: var(--accent); }
-    .logo-option-icon { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
-    .logo-option-text strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; font-weight: 700; }
-    .logo-option-text span { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; }
-    .logo-option-action { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
-    .logo-prev { max-height: 32px; max-width: 80px; object-fit: contain; display: none; }
-    .logo-rm {
-      font-size: 10px; color: var(--accent-red); background: transparent;
-      border: 1px solid rgba(232,74,74,.3); padding: 2px 8px; cursor: pointer; display: none;
-      font-family: var(--font-ui); letter-spacing: 1px; transition: background 0.15s;
-    }
-    .logo-rm:hover { background: rgba(232,74,74,.15); }
-
-    .app-title {
-      font-family: var(--font-header);
-      font-size: 2.2rem;
-      color: #fff;
-      letter-spacing: 4px;
-      line-height: 1;
-    }
-    .app-title span { color: var(--accent); }
-
-    .app-version {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--text-secondary);
-      letter-spacing: 2px;
-      margin-top: 3px;
-      text-align: center;
-    }
-
-    #projectNameDisplay {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--accent);
-      max-width: 280px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      letter-spacing: 1px;
-    }
-
-    #modifiedIndicator {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--accent-red);
-      letter-spacing: 1px;
-      visibility: hidden;
-    }
-    #modifiedIndicator.visible { visibility: visible; }
-
-    /* === 4. Sidebar === */
-    #sidebar {
-      grid-area: sidebar;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--rack-border);
-      display: flex;
-      flex-direction: column;
-      padding: 12px 0 8px;
-      overflow-y: auto;
-      overflow-x: hidden;
-    }
-
-    .sb-section-title {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      padding: 4px 14px 6px;
-      margin-top: 4px;
-    }
-
-    .sb-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 7px 14px;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: var(--font-ui);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      text-align: left;
-      transition: background 0.12s, color 0.12s, border-color 0.12s;
-      border-left: 2px solid transparent;
-      width: 100%;
-    }
-    .sb-btn:hover {
-      background: var(--sidebar-hover);
-      color: var(--accent);
-      border-left-color: var(--accent);
-    }
-    .sb-btn.primary {
-      color: var(--accent);
-      font-weight: 700;
-    }
-    .sb-btn.primary:hover {
-      background: rgba(232,200,74,0.1);
-      border-left-color: var(--accent);
-    }
-    .sb-btn.green { color: var(--accent-green); }
-    .sb-btn.green:hover {
-      background: rgba(74,232,160,0.08);
-      color: var(--accent-green);
-      border-left-color: var(--accent-green);
-    }
-    .sb-btn.danger:hover {
-      background: rgba(232,74,74,0.1);
-      color: var(--accent-red);
-      border-left-color: var(--accent-red);
-    }
-
-    .sb-sep { height: 1px; background: var(--rack-border); margin: 8px 10px; }
-
-    .sb-device-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 14px 5px 20px;
-      cursor: pointer;
-      color: var(--text-secondary);
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 0.5px;
-      transition: background 0.12s, color 0.12s;
-      border-left: 2px solid transparent;
-    }
-    .sb-device-item:hover {
-      background: var(--sidebar-hover);
-      color: var(--text-primary);
-      border-left-color: var(--rack-border);
-    }
-    .sb-device-name {
-      flex: 1;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .sb-device-badge {
-      font-size: 9px;
-      color: var(--text-secondary);
-      flex-shrink: 0;
-    }
-
-    /* Save dialog options */
-    .save-option {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 14px;
-      cursor: pointer;
-      border: 1px solid var(--rack-border);
-      margin-bottom: 8px;
-      background: var(--rack-bg);
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .save-option:hover {
-      border-color: var(--accent);
-      background: rgba(232,200,74,0.04);
-    }
-    .save-option-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.2; }
-    .save-option-text strong {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-primary);
-      letter-spacing: 1px;
-      margin-bottom: 2px;
-    }
-    .save-option-text span {
-      font-size: 10px;
-      color: var(--text-secondary);
-      letter-spacing: 0.5px;
-      font-family: var(--font-mono);
-    }
-
-    /* hidden file input */
-    #fileInput { display: none; }
-
-    /* === 5. Main Content Area === */
-    #main {
-      grid-area: main;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* empty state */
-    #emptyState {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      flex: 1;
-      padding: 40px 20px;
-      color: var(--text-secondary);
-      text-align: center;
-    }
-    #emptyState .empty-icon { font-size: 64px; opacity: 0.2; }
-    #emptyState h2 { font-family: var(--font-header); font-size: 42px; letter-spacing: 6px; color: var(--text-primary); }
-    #emptyState p { font-size: 15px; font-weight: 400; max-width: 300px; line-height: 1.5; }
-    .empty-actions {
-      display: flex;
-      gap: 16px;
-      margin-top: 12px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .btn-secondary {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      padding: 12px 32px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.15s;
-    }
-    .btn-secondary:hover { background: rgba(232,200,74,0.1); }
-    .btn-large { font-size: 16px !important; padding: 14px 40px !important; letter-spacing: 2px; }
-
-    /* === 6. Tab System === */
-    #appTabs {
-      display: none;
-      flex-direction: column;
-      flex: 1;
-      overflow: hidden;
-      min-height: 0;
-    }
-    #appTabs.visible { display: flex; }
-
-    #tabBar {
-      flex-shrink: 0;
-      display: flex;
-      gap: 0;
-      background: var(--app-bg);
-      border-bottom: 2px solid var(--rack-border);
-      padding: 0 16px;
-    }
-
-    .tab-btn {
-      font-family: var(--font-header);
-      font-size: 15px;
-      letter-spacing: 2px;
-      color: var(--text-secondary);
-      background: transparent;
-      border: none;
-      border-bottom: 2px solid transparent;
-      margin-bottom: -2px;
-      padding: 10px 20px;
-      cursor: pointer;
-      transition: color 0.15s, border-color 0.15s;
-      text-transform: uppercase;
-    }
-    .tab-btn:hover { color: var(--text-primary); }
-    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-    .tab-content {
-      display: none;
-      flex: 1;
-      overflow: hidden;
-      min-height: 0;
-    }
-    .tab-content.active { display: flex; flex-direction: column; }
-
-    /* === 7. Patch View (ETH Panel + Devices) === */
-    #patchView {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    #ethPanel {
-      width: 133px;
-      flex-shrink: 0;
-      background: var(--sidebar-bg);
-      border-right: 1px solid var(--rack-border);
-      overflow-y: auto;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .eth-panel-header {
-      font-family: var(--font-header);
-      font-size: 14px;
-      letter-spacing: 3px;
-      color: var(--accent);
-      padding: 12px 12px 8px;
-      border-bottom: 1px solid var(--rack-border);
-      flex-shrink: 0;
-    }
-
-    .eth-group-label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-secondary);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      padding: 8px 12px 4px;
-    }
-
-    .eth-entry {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 12px;
-      cursor: grab;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-primary);
-      letter-spacing: 1px;
-      border-left: 2px solid transparent;
-      transition: background 0.12s, border-color 0.12s;
-      user-select: none;
-    }
-    .eth-entry:hover {
-      background: var(--sidebar-hover);
-      border-left-color: var(--accent-green);
-      color: var(--accent-green);
-    }
-    .eth-entry:active { cursor: grabbing; }
-    .eth-entry.connected {
-      opacity: 0.28;
-      pointer-events: none;
-      cursor: default;
-      filter: grayscale(0.6);
-    }
-
-    /* === 8. Devices Container (Vertical) === */
-    #devicesContainer {
-      flex: 1;
-      overflow-x: hidden;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 16px;
-      padding: 20px 16px;
-    }
-
-    /* === 9. Device Card (Rack Unit) === */
-    .device-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-      width: var(--device-natural-w, 100%);
-      zoom: var(--rack-scale, 1);
-    }
-
-    .rack-unit {
-      display: flex;
-      align-items: stretch;
-      gap: 0;
-      background: var(--rack-bg);
-      border: 1px solid var(--rack-border);
-      border-radius: 3px;
-      box-shadow:
-        0 4px 16px rgba(0,0,0,0.5),
-        inset 0 1px 0 rgba(255,255,255,0.05);
-      max-width: unset;
-    }
-
-    .rack-ear {
-      width: 28px;
-      flex-shrink: 0;
-      background: var(--rack-ear);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-right: 1px solid var(--rack-border);
-    }
-    .rack-ear.right { border-right: none; border-left: 1px solid var(--rack-border); }
-
-    .rack-screw {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #4a5070, #1c2030);
-      border: 1px solid #3a4060;
-      position: relative;
-    }
-    .rack-screw::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%,-50%) rotate(45deg);
-      width: 60%; height: 1px;
-      background: #0d0f14;
-    }
-
-    .rack-face {
-      flex: 1;
-      background: var(--rack-face);
-      padding: 10px 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      min-width: 0;
-    }
-
-    .rack-topbar {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--rack-border);
-    }
-
-    .device-name-label {
-      font-family: var(--font-header);
-      font-size: 18px;
-      letter-spacing: 3px;
-      color: var(--text-primary);
-      cursor: pointer;
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .device-name-label:hover { color: var(--accent); }
-
-    .device-name-input {
-      font-family: var(--font-header);
-      font-size: 18px;
-      letter-spacing: 3px;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid var(--accent);
-      color: var(--accent);
-      outline: none;
-      flex: 1;
-      min-width: 0;
-    }
-
-    .brand-label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      color: var(--accent-dim);
-      letter-spacing: 2px;
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .rack-controls { display: flex; gap: 6px; flex-shrink: 0; }
-
-    .rack-ctrl-btn {
-      background: var(--rack-ear);
-      border: 1px solid var(--rack-border);
-      color: var(--text-secondary);
-      font-size: 11px;
-      padding: 3px 10px;
-      cursor: pointer;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      transition: background 0.15s, color 0.15s, border-color 0.15s;
-    }
-    .rack-ctrl-btn:hover { background: var(--sidebar-hover); color: var(--accent); border-color: var(--accent); }
-    .rack-ctrl-btn.delete:hover { background: rgba(232,74,74,0.15); color: var(--accent-red); border-color: var(--accent-red); }
-
-    .rack-connectors {
-      display: flex;
-      align-items: flex-start;
-      gap: 0;
-    }
-
-    .connector-section {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .connector-section.inputs {
-      flex-shrink: 0;
-      padding-right: 16px;
-      border-right: 1px solid var(--rack-border);
-      margin-right: 16px;
-    }
-
-    .connector-section.outputs { flex: 1; min-width: 0; }
-
-    .section-label {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-secondary);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 2px;
-    }
-
-    .connectors-row {
-      display: flex;
-      flex-wrap: nowrap;
-      gap: 10px;
-    }
-
-    /* === 10. XLR Connector === */
-    .xlr-connector {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      cursor: pointer;
-      transition: transform 0.1s;
-    }
-    .xlr-connector:hover { transform: translateY(-2px); }
-    .xlr-connector.drag-over .xlr-body {
-      border-color: var(--accent-green);
-      box-shadow: 0 0 12px rgba(74,232,160,0.5);
-    }
-
-    .xlr-body {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #BBBBBB, #777777 60%, #444444);
-      border: 2px solid #AAAAAA;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      box-shadow:
-        0 2px 4px rgba(0,0,0,0.5),
-        inset 0 1px 2px rgba(255,255,255,0.3);
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    .xlr-inner {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 40% 35%, #2a3050, #0d0f14);
-      border: 1px solid #3a4060;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .xlr-pins { position: relative; width: 18px; height: 18px; }
-    .xlr-pin {
-      position: absolute;
-      width: 3px; height: 3px;
-      border-radius: 50%;
-      background: #888;
-    }
-    .xlr-pin:nth-child(1) { top: 0;   left: 50%; transform: translateX(-50%); }
-    .xlr-pin:nth-child(2) { top: 5px; left: 2px; }
-    .xlr-pin:nth-child(3) { top: 5px; right: 2px; }
-    .xlr-pin:nth-child(4) { bottom: 1px; left: 3px; }
-    .xlr-pin:nth-child(5) { bottom: 1px; right: 3px; }
-
-    @keyframes lampGlow {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.5; }
-    }
-
-    /* ===================================================================
-       Retro Indicator Lamp — Glaslinse in Metallkappe
-       Farbe IMMER sichtbar (gedimmt=aus, leuchtend=an)
-       =================================================================== */
-    .retro-lamp {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      position: relative;
-      flex-shrink: 0;
-      /* Basis-Glaslinse (Farbe wird per .lamp-in1 / .lamp-in2 überschrieben) */
-      border: 2px solid #1c1c24;
-      background: radial-gradient(circle at 40% 35%, #2a1a0a, #0e0a06 60%, #080608);
-      box-shadow:
-        inset 0 1px 3px rgba(255,255,255,0.07),
-        inset 0 -1px 3px rgba(0,0,0,0.55),
-        0 2px 4px rgba(0,0,0,0.85);
-      transition: background 0.28s, box-shadow 0.28s, border-color 0.28s;
-    }
-    /* Glaslinse Spiegelglanz */
-    .retro-lamp::before {
-      content: '';
-      position: absolute;
-      top: 2px; left: 2px;
-      width: 6px; height: 4px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 100%);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* AUS: Farbe immer sichtbar, aber dunkel/uneleuchtet */
-    .retro-lamp.lamp-in1 {
-      background: radial-gradient(circle at 40% 35%, #5a2c0a, #2e160a 55%, #160a04);
-      border-color: #3a1c08;
-    }
-    .retro-lamp.lamp-in2 {
-      background: radial-gradient(circle at 40% 35%, #0e2252, #071228 55%, #030812);
-      border-color: #0a1638;
-    }
-    .retro-lamp.lamp-green {
-      background: radial-gradient(circle at 40% 35%, #0a3a1e, #041c0e 55%, #020a06);
-      border-color: #082a14;
-    }
-
-    /* AN: warmes Glühfaden-Zentrum → Kappenfarbe → dunkler Rand */
-    .retro-lamp.lamp-in1.on {
-      background: radial-gradient(circle at 40% 35%,
-        #fff0c0 0%, #ffcc70 22%, var(--lamp-in1) 58%, #4a1800 100%);
-      border-color: #5a2800;
-      box-shadow:
-        0 0 9px var(--lamp-in1-glow),
-        0 0 20px rgba(232,160,74,0.28),
-        inset 0 1px 3px rgba(255,220,100,0.25),
-        inset 0 -1px 3px rgba(0,0,0,0.3),
-        0 2px 4px rgba(0,0,0,0.7);
-      animation: lampGlow 2.8s ease-in-out infinite;
-    }
-    .retro-lamp.lamp-in2.on {
-      background: radial-gradient(circle at 40% 35%,
-        #e0f0ff 0%, #90ccff 22%, var(--lamp-in2) 58%, #051040 100%);
-      border-color: #0a1e60;
-      box-shadow:
-        0 0 9px var(--lamp-in2-glow),
-        0 0 20px rgba(74,144,232,0.28),
-        inset 0 1px 3px rgba(180,220,255,0.22),
-        inset 0 -1px 3px rgba(0,0,0,0.3),
-        0 2px 4px rgba(0,0,0,0.7);
-      animation: lampGlow 2.8s ease-in-out infinite;
-    }
-    .retro-lamp.lamp-green.on {
-      background: radial-gradient(circle at 40% 35%,
-        #e0fff0 0%, #80ffcc 22%, var(--led-on) 58%, #042018 100%);
-      border-color: #0a3020;
-      box-shadow:
-        0 0 9px var(--led-glow),
-        0 0 20px rgba(74,232,160,0.28),
-        inset 0 1px 3px rgba(150,255,200,0.22),
-        inset 0 -1px 3px rgba(0,0,0,0.3),
-        0 2px 4px rgba(0,0,0,0.7);
-      animation: lampGlow 2.8s ease-in-out infinite;
-    }
-    /* Input-Statuslampe pulsiert NICHT — !important schlägt lamp-in1.on */
-    .retro-lamp.input-status-lamp.on { animation: none !important; }
-
-    /* ===================================================================
-       Routing Push-Button: Metallgehäuse + Glaslinsen-Dome
-       Wie Industriedrucktaster: quadratisches Gehäuse, runder Dom
-       =================================================================== */
-    .lamp-btn-housing {
-      width: 22px;
-      height: 22px;
-      border-radius: 3px;
-      background: linear-gradient(160deg, #2a2c38 0%, #1a1c24 50%, #141620 100%);
-      border: 1px solid #32343e;
-      box-shadow:
-        inset 0 2px 3px rgba(0,0,0,0.6),
-        inset 0 -1px 2px rgba(255,255,255,0.05),
-        0 1px 0 rgba(255,255,255,0.06);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      /* Das Gehäuse bleibt statisch, nur der Dom bewegt sich */
-    }
-    .lamp-btn-housing .retro-lamp-btn {
-      /* Dom ragt leicht aus dem Gehäuse heraus */
-      transform: translateY(-1.5px);
-      box-shadow:
-        0 3px 0 rgba(0,0,0,0.8),  /* harter Boden = "steht raus" */
-        0 4px 6px rgba(0,0,0,0.5);
-      transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
-    }
-    .lamp-btn-housing:hover .retro-lamp-btn {
-      transform: translateY(-2px);
-      box-shadow:
-        0 4px 0 rgba(0,0,0,0.8),
-        0 5px 8px rgba(0,0,0,0.45);
-      filter: brightness(1.1);
-    }
-    .lamp-btn-housing:active .retro-lamp-btn {
-      transform: translateY(1px);  /* reingedrückt — wenig, Knopf bleibt Knopf */
-      box-shadow:
-        0 1px 0 rgba(0,0,0,0.7),
-        0 1px 3px rgba(0,0,0,0.4),
-        inset 0 1px 3px rgba(0,0,0,0.35);
-    }
-
-    .output-route-btns {
-      display: flex;
-      gap: 4px;
-      margin-top: 4px;
-      justify-content: center;
-      padding-bottom: 3px;
-    }
-
-    /* XLR LED — ca. 2-Uhr-Position, AUSSERHALB der Metallkappe */
-    .xlr-led {
-      position: absolute;
-      top: 4px; right: -7px;   /* ~2 Uhr, klar ausserhalb des Körpers */
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      /* Aus: grünlicher Hauch sichtbar, nicht braun */
-      background: radial-gradient(circle at 40% 35%, #083018, #020e08 60%, #020604);
-      border: 1.5px solid #1c1c24;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);
-      transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
-    }
-    .xlr-led::before {
-      content: '';
-      position: absolute;
-      top: 1px; left: 2px;
-      width: 4px; height: 3px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 100%);
-      pointer-events: none;
-    }
-    .xlr-led.active {
-      background: radial-gradient(circle at 40% 35%,
-        #e0fff0 0%, #80ffcc 22%, var(--led-on) 58%, #042018 100%);
-      border-color: #0a3020;
-      box-shadow:
-        0 0 6px var(--led-glow),
-        0 0 12px rgba(74,232,160,0.22),
-        inset 0 1px 2px rgba(150,255,200,0.2),
-        0 1px 3px rgba(0,0,0,0.6);
-      animation: lampGlow 2.8s ease-in-out infinite;
-    }
-
-    .xlr-connector.input .xlr-body {
-      background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA 60%, #334455);
-      border-color: #88AACC;
-    }
-
-    .xlr-connector.selected .xlr-body {
-      border-color: var(--accent);
-      box-shadow: 0 0 10px rgba(232,200,74,0.5), 0 2px 4px rgba(0,0,0,0.5);
-    }
-
-    .xlr-num {
-      font-family: var(--font-mono);
-      font-size: 9px;
-      color: var(--text-secondary);
-      line-height: 1;
-    }
-
-    .xlr-label {
-      font-family: var(--font-ui);
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-label);
-      text-align: center;
-      max-width: 72px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    /* === 11. 7-Segment Display — VFD/Nixie Röhren-Stil === */
-    .seg-display {
-      display: inline-flex;
-      gap: 3px;
-      background: radial-gradient(ellipse at 40% 30%, #0e0800 0%, #040200 100%);
-      border: 1px solid #1a1000;
-      border-radius: 4px;
-      padding: 4px 5px;
-      box-shadow:
-        inset 0 0 8px rgba(0,0,0,0.95),
-        inset 0 1px 0 rgba(255,200,80,0.04),
-        0 0 0 1px #000,
-        0 2px 6px rgba(0,0,0,0.7);
-      margin-bottom: 3px;
-      position: relative;
-    }
-    /* Subtile Glas-Reflexion oben */
-    .seg-display::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: 3px;
-      background: linear-gradient(180deg, rgba(255,220,120,0.04) 0%, transparent 40%);
-      pointer-events: none;
-    }
-
-    .seg-digit {
-      position: relative;
-      width: 13px;
-      height: 23px;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    .seg {
-      position: absolute;
-      background: var(--seg-off);
-      border-radius: 1px;
-      transition: background 0.06s, box-shadow 0.06s;
-    }
-    .seg.on {
-      background: var(--seg-on);
-      box-shadow:
-        0 0 3px var(--seg-on-glow),
-        0 0 7px rgba(255,178,0,0.7),
-        0 0 14px rgba(255,140,0,0.35);
-    }
-
-    /* Horizontal segments — dickere Balken, abgeschrägte Ecken via border-radius */
-    .seg-a { left: 2px;  top: 0;    width: 9px; height: 3px; border-radius: 1.5px; }
-    .seg-g { left: 2px;  top: 10px; width: 9px; height: 3px; border-radius: 1.5px; }
-    .seg-d { left: 2px;  bottom: 0; width: 9px; height: 3px; border-radius: 1.5px; }
-    /* Vertikale Segmente */
-    .seg-f { left: 0;   top: 2px;    width: 3px; height: 8px; border-radius: 1.5px; }
-    .seg-b { right: 0;  top: 2px;   width: 3px; height: 8px; border-radius: 1.5px; }
-    .seg-e { left: 0;   bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
-    .seg-c { right: 0;  bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
-
-    /* === 12. Patch Table === */
-    #tabDetails {
-      overflow: auto;
-      padding: 20px;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid var(--rack-border);
-    }
-
-    .section-title {
-      font-family: var(--font-header);
-      font-size: 20px;
-      letter-spacing: 3px;
-      color: var(--accent);
-    }
-
-    .section-badge {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      color: var(--text-secondary);
-      background: var(--sidebar-bg);
-      border: 1px solid var(--rack-border);
-      padding: 2px 8px;
-      letter-spacing: 1px;
-    }
-
-    .patch-table-wrap { overflow-x: auto; }
-
-    #patchTable {
-      width: 100%;
-      border-collapse: collapse;
-      font-family: var(--font-ui);
-      font-size: 13px;
-    }
-
-    #patchTable th {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      background: var(--app-bg);
-      border-bottom: 1px solid var(--rack-border);
-      border-right: 1px solid var(--rack-bg);
-      padding: 8px 10px;
-      text-align: left;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-
-    #patchTable td {
-      border-bottom: 1px solid var(--rack-bg);
-      border-right: 1px solid var(--rack-bg);
-      padding: 6px 10px;
-      vertical-align: middle;
-      white-space: nowrap;
-      font-size: 14px;
-    }
-
-    #patchTable tr:hover td { background: rgba(232,200,74,.04); }
-    #patchTable tr.pt-row-highlight td {
-      background: rgba(232,200,74,.12);
-      transition: background 0.5s;
-    }
-
-    .pt-device { font-weight: 700; color: var(--text-primary); }
-    .pt-type-in  { color: #4a9ae8; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-    .pt-type-out { color: var(--accent-green); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
-    .pt-num { font-family: var(--font-mono); color: var(--text-secondary); font-size: 13px; }
-
-    .pt-editable {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--accent);
-      cursor: pointer;
-      padding: 3px 6px;
-      border: 1px solid transparent;
-      min-width: 40px;
-      display: inline-block;
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .pt-editable:hover { border-color: var(--rack-border); background: var(--sidebar-bg); }
-    .pt-editable:focus { outline: none; border-color: var(--accent); background: rgba(232,200,74,.05); color: var(--text-primary); }
-    .pt-editable.empty { color: var(--text-secondary); }
-
-    .pt-led {
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: var(--led-off);
-      border: 1px solid var(--led-off-ring);
-      display: inline-block;
-      cursor: pointer;
-    }
-    .pt-led.active { background: var(--led-on); box-shadow: 0 0 4px var(--led-glow); border-color: var(--led-on); }
-
-    .pt-dash { color: var(--rack-border); font-family: var(--font-mono); }
-    .pt-eth { font-family: var(--font-mono); font-size: 12px; color: var(--accent-green); }
-    .pt-eth-empty { color: var(--rack-border); font-family: var(--font-mono); font-size: 11px; }
-
-    /* === 13. Modal === */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      align-items: center;
-      justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-
-    .modal-box {
-      background: var(--sidebar-bg);
-      border: 1px solid var(--rack-border);
-      width: 420px;
-      max-width: 95vw;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-      animation: modalIn 0.2s ease;
-    }
-
-    @keyframes modalIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 24px;
-      background: var(--rack-bg);
-      border-bottom: 1px solid var(--rack-border);
-    }
-
-    .modal-title {
-      font-family: var(--font-header);
-      font-size: 22px;
-      letter-spacing: 3px;
-      color: var(--accent);
-    }
-
-    .modal-close {
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 22px;
-      cursor: pointer;
-      line-height: 1;
-      padding: 2px 4px;
-      transition: color 0.15s;
-    }
-    .modal-close:hover { color: var(--accent-red); }
-
-    .modal-body {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    .modal-field { display: flex; flex-direction: column; gap: 6px; }
-
-    .modal-field label {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 2px;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-    }
-
-    .modal-field input[type="text"],
-    .modal-field input[type="date"],
-    .modal-field input[type="number"],
-    .modal-field select {
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 17px;
-      font-weight: 600;
-      padding: 9px 12px;
-      outline: none;
-      width: 100%;
-      transition: border-color 0.15s, background 0.15s;
-      letter-spacing: .5px;
-    }
-    .modal-field input:focus, .modal-field select:focus {
-      border-color: var(--accent);
-      background: rgba(232,200,74,.04);
-    }
-    .modal-field select option { background: var(--rack-bg); }
-    .modal-field input[type="date"] { color-scheme: dark; }
-    .modal-field .input-error {
-      color: var(--accent-red);
-      font-size: 11px;
-      font-family: var(--font-mono);
-      display: none;
-    }
-    .modal-field.has-error input { border-color: var(--accent-red); }
-    .modal-field.has-error .input-error { display: block; }
-
-    .modal-field .radio-group { display: flex; gap: 16px; }
-
-    .radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .radio-option input[type="radio"] { display: none; }
-    .radio-btn {
-      width: 60px; height: 36px;
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-header); font-size: 20px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .radio-option input:checked + .radio-btn {
-      background: rgba(232,200,74,.12);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* Device preview in modal */
-    #devicePreview {
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      padding: 12px;
-      min-height: 80px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .preview-rack { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .preview-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 1px; }
-    .preview-conn-row { display: flex; gap: 4px; align-items: center; }
-    .preview-xlr {
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      border: 2px solid #888;
-      background: radial-gradient(circle at 35% 30%, #BBB, #666);
-      display: inline-block;
-    }
-    .preview-xlr.input-type { border-color: #88AACC; background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA); }
-    .preview-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--accent-dim); }
-
-    .modal-footer {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-      padding: 16px 24px;
-      border-top: 1px solid var(--rack-border);
-      background: var(--rack-bg);
-    }
-
-    .btn-cancel {
-      background: transparent;
-      border: 1px solid var(--rack-border);
-      color: var(--text-secondary);
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      padding: 8px 20px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.15s;
-    }
-    .btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
-
-    .btn-primary {
-      background: var(--accent);
-      border: 1px solid var(--accent);
-      color: #0d0f14;
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      padding: 8px 24px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: background 0.15s;
-    }
-    .btn-primary:hover { background: #ffd84a; border-color: #ffd84a; }
-
-    /* === 14. Booster Setup Table === */
-    .bs-setup-table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-    .bs-setup-table th {
-      font-family: var(--font-mono);
-      font-size: 10px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      background: var(--app-bg);
-      border-bottom: 1px solid var(--rack-border);
-      padding: 8px 10px;
-      text-align: left;
-    }
-    .bs-setup-table td {
-      border-bottom: 1px solid var(--rack-bg);
-      padding: 7px 8px;
-      vertical-align: middle;
-    }
-    .bs-setup-table tr:hover td { background: rgba(255,255,255,0.02); }
-    .bs-num-cell {
-      font-family: var(--font-mono);
-      font-size: 12px;
-      color: var(--text-secondary);
-      width: 28px;
-      text-align: center;
-    }
-    .bs-setup-table input[type="text"] {
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 600;
-      padding: 5px 8px;
-      width: 180px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .bs-setup-table input[type="text"]:focus { border-color: var(--accent); }
-    .bs-setup-table select {
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 14px;
-      padding: 5px 8px;
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    .bs-setup-table select:focus { border-color: var(--accent); }
-    .bs-radio-small { display: flex; gap: 6px; }
-    .bs-radio-small label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
-    .bs-radio-small input[type="radio"] { display: none; }
-    .bs-radio-btn {
-      width: 34px; height: 28px;
-      background: var(--app-bg);
-      border: 1px solid var(--rack-border);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-header); font-size: 16px;
-      color: var(--text-secondary);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .bs-radio-small input:checked + .bs-radio-btn {
-      background: rgba(232,200,74,.12);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    /* === 15. Toast === */
-    #toastContainer {
-      position: fixed;
-      bottom: 20px; right: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      z-index: 200;
-    }
-
-    .toast {
-      background: var(--sidebar-bg);
-      border: 1px solid var(--rack-border);
-      border-left: 3px solid var(--accent);
-      color: var(--text-primary);
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: .5px;
-      padding: 10px 16px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.6);
-      animation: toastIn 0.2s ease;
-      min-width: 200px;
-    }
-    .toast.success { border-left-color: var(--accent-green); }
-    .toast.error   { border-left-color: var(--accent-red); }
-    .toast.warning { border-left-color: var(--accent-orange); }
-    .toast.out     { animation: toastOut 0.3s ease forwards; }
-
-    @keyframes toastIn  { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
-    @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
-    @keyframes fadeIn   { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-
-    /* === 16. Print === */
-    @media print {
-      #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
-      body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
-      #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
-      .rack-ctrl-btn { display: none !important; }
-      .xlr-connector { cursor: default; }
-      #patchTable { font-size: 11px; }
-    }
+    <style>
+    /* ===== css/variables.css ===== */
+/* === 0. Global Scale === */
+html { zoom: 1.2; }
+
+/* === 1. Reset & Variables === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-header:  'Bebas Neue', sans-serif;
+  --font-ui:      'Barlow Condensed', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+
+  /* App Shell — Materialliste Palette */
+  --app-bg:        #0d0f14;
+  --sidebar-bg:    #141720;
+  --sidebar-hover: rgba(232,200,74,.06);
+  --sidebar-active:rgba(232,200,74,.14);
+  --header-bg:     #0a0c14;
+  --header-border: #e8c84a;
+  --header-text:   #c8d0e8;
+
+  /* Accent */
+  --accent:        #e8c84a;
+  --accent-dim:    #c8a832;
+  --accent-green:  #4ae8a0;
+  --accent-red:    #e84a4a;
+  --accent-orange: #e8a04a;
+
+  /* Rack Device */
+  --rack-bg:       #1c2030;
+  --rack-face:     #141720;
+  --rack-border:   #2a3050;
+  --rack-ear:      #1c2030;
+  --rack-screw:    #3a4060;
+  --rack-stripe:   #1a1f30;
+
+  /* XLR */
+  --xlr-body:      #888888;
+  --xlr-ring:      #AAAAAA;
+  --xlr-inner:     #1c2030;
+  --xlr-pin:       #5a6080;
+
+  /* LED */
+  --led-on:        #4ae8a0;
+  --led-glow:      rgba(74,232,160,0.5);
+  --led-off:       #0d2018;
+  --led-off-ring:  #1a3028;
+
+  /* Retro Lamps */
+  --lamp-in1:       #e8a04a;
+  --lamp-in1-glow:  rgba(232,160,74,0.7);
+  --lamp-in2:       #4a90e8;
+  --lamp-in2-glow:  rgba(74,144,232,0.7);
+  --lamp-off-cap:   #1a1a22;
+  --lamp-filament:  rgba(255,240,180,0.92);
+
+  /* Text */
+  --text-primary:  #c8d0e8;
+  --text-secondary:#5a6080;
+  --text-mono:     #e8c84a;
+  --text-label:    #8a94b0;
+
+  /* Sidebar width */
+  --sidebar-w:     200px;
+  --header-h:      64px;
+
+  /* 7-Segment — VFD/Nixie Röhren-Stil */
+  --seg-on:        #ffb200;
+  --seg-on-glow:   rgba(255,178,0,0.95);
+  --seg-off:       rgba(35,12,0,0.22);
+}
+
+    /* ===== css/layout.css ===== */
+/* === 2. Layout Shell === */
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  display: grid;
+  grid-template-rows: var(--header-h) 1fr;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-areas:
+    "header header"
+    "sidebar main";
+  background: var(--app-bg);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 16px;
+}
+
+/* scrollbars */
+*::-webkit-scrollbar { width: 6px; height: 6px; }
+*::-webkit-scrollbar-track { background: var(--app-bg); }
+*::-webkit-scrollbar-thumb { background: var(--rack-border); border-radius: 3px; }
+
+/* === 3. Header === */
+#app-header {
+  grid-area: header;
+  background: linear-gradient(135deg, #0a0c14 0%, #12182e 50%, #0a0c14 100%);
+  border-bottom: 2px solid var(--header-border);
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.hdr-left  { display: flex; align-items: center; justify-content: flex-start; gap: 8px; }
+.hdr-center { display: flex; align-items: center; justify-content: center; padding: 0 16px; }
+.hdr-right { display: flex; align-items: center; justify-content: flex-end; gap: 12px; }
+
+.hdr-project-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.logo-planer  { max-height: 52px; max-width: 160px; object-fit: contain; object-position: left center;  display: block; cursor: pointer; }
+.logo-band    { max-height: 46px; max-width: 140px; object-fit: contain;                                 display: block; cursor: pointer; }
+.logo-booking { max-height: 52px; max-width: 160px; object-fit: contain; object-position: right center; display: block; cursor: pointer; }
+
+/* Logo Option in Modal */
+.logo-option {
+  display: flex; align-items: center; gap: 14px; padding: 14px;
+  background: var(--rack-bg); border: 1px solid var(--rack-border); margin-bottom: 10px;
+  cursor: pointer; transition: border-color 0.15s;
+}
+.logo-option:hover { border-color: var(--accent); }
+.logo-option-icon { font-size: 1.3rem; width: 32px; text-align: center; flex-shrink: 0; }
+.logo-option-text strong { display: block; font-size: 14px; color: var(--text-primary); margin-bottom: 2px; font-weight: 700; }
+.logo-option-text span { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; }
+.logo-option-action { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.logo-prev { max-height: 32px; max-width: 80px; object-fit: contain; display: none; }
+.logo-rm {
+  font-size: 10px; color: var(--accent-red); background: transparent;
+  border: 1px solid rgba(232,74,74,.3); padding: 2px 8px; cursor: pointer; display: none;
+  font-family: var(--font-ui); letter-spacing: 1px; transition: background 0.15s;
+}
+.logo-rm:hover { background: rgba(232,74,74,.15); }
+
+.app-title {
+  font-family: var(--font-header);
+  font-size: 2.2rem;
+  color: #fff;
+  letter-spacing: 4px;
+  line-height: 1;
+}
+.app-title span { color: var(--accent); }
+
+.app-version {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  margin-top: 3px;
+  text-align: center;
+}
+
+#projectNameDisplay {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 1px;
+}
+
+#modifiedIndicator {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent-red);
+  letter-spacing: 1px;
+  visibility: hidden;
+}
+#modifiedIndicator.visible { visibility: visible; }
+
+/* === 4. Sidebar === */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rack-border);
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.sb-section-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  padding: 4px 14px 6px;
+  margin-top: 4px;
+}
+
+.sb-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-align: left;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  border-left: 2px solid transparent;
+  width: 100%;
+}
+.sb-btn:hover {
+  background: var(--sidebar-hover);
+  color: var(--accent);
+  border-left-color: var(--accent);
+}
+.sb-btn.primary {
+  color: var(--accent);
+  font-weight: 700;
+}
+.sb-btn.primary:hover {
+  background: rgba(232,200,74,0.1);
+  border-left-color: var(--accent);
+}
+.sb-btn.green { color: var(--accent-green); }
+.sb-btn.green:hover {
+  background: rgba(74,232,160,0.08);
+  color: var(--accent-green);
+  border-left-color: var(--accent-green);
+}
+.sb-btn.danger:hover {
+  background: rgba(232,74,74,0.1);
+  color: var(--accent-red);
+  border-left-color: var(--accent-red);
+}
+
+.sb-sep { height: 1px; background: var(--rack-border); margin: 8px 10px; }
+
+.sb-device-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px 5px 20px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.5px;
+  transition: background 0.12s, color 0.12s;
+  border-left: 2px solid transparent;
+}
+.sb-device-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--text-primary);
+  border-left-color: var(--rack-border);
+}
+.sb-device-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sb-device-badge {
+  font-size: 9px;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+/* Save dialog options */
+.save-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  cursor: pointer;
+  border: 1px solid var(--rack-border);
+  margin-bottom: 8px;
+  background: var(--rack-bg);
+  transition: border-color 0.15s, background 0.15s;
+}
+.save-option:hover {
+  border-color: var(--accent);
+  background: rgba(232,200,74,0.04);
+}
+.save-option-icon { font-size: 1.4rem; flex-shrink: 0; line-height: 1.2; }
+.save-option-text strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.save-option-text span {
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  font-family: var(--font-mono);
+}
+
+/* hidden file input */
+#fileInput { display: none; }
+
+/* === 5. Main Content Area === */
+#main {
+  grid-area: main;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* empty state */
+#emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex: 1;
+  padding: 40px 20px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+#emptyState .empty-icon { font-size: 64px; opacity: 0.2; }
+#emptyState h2 { font-family: var(--font-header); font-size: 42px; letter-spacing: 6px; color: var(--text-primary); }
+#emptyState p { font-size: 15px; font-weight: 400; max-width: 300px; line-height: 1.5; }
+.empty-actions {
+  display: flex;
+  gap: 16px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.btn-secondary {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 12px 32px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { background: rgba(232,200,74,0.1); }
+.btn-large { font-size: 16px !important; padding: 14px 40px !important; letter-spacing: 2px; }
+
+/* === 6. Tab System === */
+#appTabs {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+#appTabs.visible { display: flex; }
+
+#tabBar {
+  flex-shrink: 0;
+  display: flex;
+  gap: 0;
+  background: var(--app-bg);
+  border-bottom: 2px solid var(--rack-border);
+  padding: 0 16px;
+}
+
+.tab-btn {
+  font-family: var(--font-header);
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+  text-transform: uppercase;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tab-content {
+  display: none;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+.tab-content.active { display: flex; flex-direction: column; }
+
+/* === 7. Patch View (ETH Panel + Devices) === */
+#patchView {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+#ethPanel {
+  width: 133px;
+  flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--rack-border);
+  overflow-y: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.eth-panel-header {
+  font-family: var(--font-header);
+  font-size: 14px;
+  letter-spacing: 3px;
+  color: var(--accent);
+  padding: 12px 12px 8px;
+  border-bottom: 1px solid var(--rack-border);
+  flex-shrink: 0;
+}
+
+.eth-group-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 12px 4px;
+}
+
+.eth-entry {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  cursor: grab;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  letter-spacing: 1px;
+  border-left: 2px solid transparent;
+  transition: background 0.12s, border-color 0.12s;
+  user-select: none;
+}
+.eth-entry:hover {
+  background: var(--sidebar-hover);
+  border-left-color: var(--accent-green);
+  color: var(--accent-green);
+}
+.eth-entry:active { cursor: grabbing; }
+.eth-entry.connected {
+  opacity: 0.28;
+  pointer-events: none;
+  cursor: default;
+  filter: grayscale(0.6);
+}
+
+    /* ===== css/rack.css ===== */
+/* === 8. Devices Container (Vertical) === */
+#devicesContainer {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  padding: 20px 16px;
+}
+
+/* === 9. Device Card (Rack Unit) === */
+.device-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  width: var(--device-natural-w, 100%);
+  zoom: var(--rack-scale, 1);
+}
+
+.rack-unit {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  background: var(--rack-bg);
+  border: 1px solid var(--rack-border);
+  border-radius: 3px;
+  box-shadow:
+    0 4px 16px rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+  max-width: unset;
+}
+
+.rack-ear {
+  width: 28px;
+  flex-shrink: 0;
+  background: var(--rack-ear);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-right: 1px solid var(--rack-border);
+}
+.rack-ear.right { border-right: none; border-left: 1px solid var(--rack-border); }
+
+.rack-screw {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #4a5070, #1c2030);
+  border: 1px solid #3a4060;
+  position: relative;
+}
+.rack-screw::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%) rotate(45deg);
+  width: 60%; height: 1px;
+  background: #0d0f14;
+}
+
+.rack-face {
+  flex: 1;
+  background: var(--rack-face);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.rack-topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--rack-border);
+}
+
+.device-name-label {
+  font-family: var(--font-header);
+  font-size: 18px;
+  letter-spacing: 3px;
+  color: var(--text-primary);
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.device-name-label:hover { color: var(--accent); }
+
+.device-name-input {
+  font-family: var(--font-header);
+  font-size: 18px;
+  letter-spacing: 3px;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--accent);
+  color: var(--accent);
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.brand-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-dim);
+  letter-spacing: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rack-controls { display: flex; gap: 6px; flex-shrink: 0; }
+
+.rack-ctrl-btn {
+  background: var(--rack-ear);
+  border: 1px solid var(--rack-border);
+  color: var(--text-secondary);
+  font-size: 11px;
+  padding: 3px 10px;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.rack-ctrl-btn:hover { background: var(--sidebar-hover); color: var(--accent); border-color: var(--accent); }
+.rack-ctrl-btn.delete:hover { background: rgba(232,74,74,0.15); color: var(--accent-red); border-color: var(--accent-red); }
+
+.rack-connectors {
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+}
+
+.connector-section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.connector-section.inputs {
+  flex-shrink: 0;
+  padding-right: 16px;
+  border-right: 1px solid var(--rack-border);
+  margin-right: 16px;
+}
+
+.connector-section.outputs { flex: 1; min-width: 0; }
+
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.connectors-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 10px;
+}
+
+/* === 10. XLR Connector === */
+.xlr-connector {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.xlr-connector:hover { transform: translateY(-2px); }
+.xlr-connector.drag-over .xlr-body {
+  border-color: var(--accent-green);
+  box-shadow: 0 0 12px rgba(74,232,160,0.5);
+}
+
+.xlr-body {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #BBBBBB, #777777 60%, #444444);
+  border: 2px solid #AAAAAA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.5),
+    inset 0 1px 2px rgba(255,255,255,0.3);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.xlr-inner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #2a3050, #0d0f14);
+  border: 1px solid #3a4060;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.xlr-pins { position: relative; width: 18px; height: 18px; }
+.xlr-pin {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: #888;
+}
+.xlr-pin:nth-child(1) { top: 0;   left: 50%; transform: translateX(-50%); }
+.xlr-pin:nth-child(2) { top: 5px; left: 2px; }
+.xlr-pin:nth-child(3) { top: 5px; right: 2px; }
+.xlr-pin:nth-child(4) { bottom: 1px; left: 3px; }
+.xlr-pin:nth-child(5) { bottom: 1px; right: 3px; }
+
+@keyframes lampGlow {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+/* ===================================================================
+   Retro Indicator Lamp — Glaslinse in Metallkappe
+   Farbe IMMER sichtbar (gedimmt=aus, leuchtend=an)
+   =================================================================== */
+.retro-lamp {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  position: relative;
+  flex-shrink: 0;
+  /* Basis-Glaslinse (Farbe wird per .lamp-in1 / .lamp-in2 überschrieben) */
+  border: 2px solid #1c1c24;
+  background: radial-gradient(circle at 40% 35%, #2a1a0a, #0e0a06 60%, #080608);
+  box-shadow:
+    inset 0 1px 3px rgba(255,255,255,0.07),
+    inset 0 -1px 3px rgba(0,0,0,0.55),
+    0 2px 4px rgba(0,0,0,0.85);
+  transition: background 0.28s, box-shadow 0.28s, border-color 0.28s;
+}
+/* Glaslinse Spiegelglanz */
+.retro-lamp::before {
+  content: '';
+  position: absolute;
+  top: 2px; left: 2px;
+  width: 6px; height: 4px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* AUS: Farbe immer sichtbar, aber dunkel/uneleuchtet */
+.retro-lamp.lamp-in1 {
+  background: radial-gradient(circle at 40% 35%, #5a2c0a, #2e160a 55%, #160a04);
+  border-color: #3a1c08;
+}
+.retro-lamp.lamp-in2 {
+  background: radial-gradient(circle at 40% 35%, #0e2252, #071228 55%, #030812);
+  border-color: #0a1638;
+}
+.retro-lamp.lamp-green {
+  background: radial-gradient(circle at 40% 35%, #0a3a1e, #041c0e 55%, #020a06);
+  border-color: #082a14;
+}
+
+/* AN: warmes Glühfaden-Zentrum → Kappenfarbe → dunkler Rand */
+.retro-lamp.lamp-in1.on {
+  background: radial-gradient(circle at 40% 35%,
+    #fff0c0 0%, #ffcc70 22%, var(--lamp-in1) 58%, #4a1800 100%);
+  border-color: #5a2800;
+  box-shadow:
+    0 0 9px var(--lamp-in1-glow),
+    0 0 20px rgba(232,160,74,0.28),
+    inset 0 1px 3px rgba(255,220,100,0.25),
+    inset 0 -1px 3px rgba(0,0,0,0.3),
+    0 2px 4px rgba(0,0,0,0.7);
+  animation: lampGlow 2.8s ease-in-out infinite;
+}
+.retro-lamp.lamp-in2.on {
+  background: radial-gradient(circle at 40% 35%,
+    #e0f0ff 0%, #90ccff 22%, var(--lamp-in2) 58%, #051040 100%);
+  border-color: #0a1e60;
+  box-shadow:
+    0 0 9px var(--lamp-in2-glow),
+    0 0 20px rgba(74,144,232,0.28),
+    inset 0 1px 3px rgba(180,220,255,0.22),
+    inset 0 -1px 3px rgba(0,0,0,0.3),
+    0 2px 4px rgba(0,0,0,0.7);
+  animation: lampGlow 2.8s ease-in-out infinite;
+}
+.retro-lamp.lamp-green.on {
+  background: radial-gradient(circle at 40% 35%,
+    #e0fff0 0%, #80ffcc 22%, var(--led-on) 58%, #042018 100%);
+  border-color: #0a3020;
+  box-shadow:
+    0 0 9px var(--led-glow),
+    0 0 20px rgba(74,232,160,0.28),
+    inset 0 1px 3px rgba(150,255,200,0.22),
+    inset 0 -1px 3px rgba(0,0,0,0.3),
+    0 2px 4px rgba(0,0,0,0.7);
+  animation: lampGlow 2.8s ease-in-out infinite;
+}
+/* Input-Statuslampe pulsiert NICHT — !important schlägt lamp-in1.on */
+.retro-lamp.input-status-lamp.on { animation: none !important; }
+
+/* ===================================================================
+   Routing Push-Button: Metallgehäuse + Glaslinsen-Dome
+   Wie Industriedrucktaster: quadratisches Gehäuse, runder Dom
+   =================================================================== */
+.lamp-btn-housing {
+  width: 22px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(160deg, #2a2c38 0%, #1a1c24 50%, #141620 100%);
+  border: 1px solid #32343e;
+  box-shadow:
+    inset 0 2px 3px rgba(0,0,0,0.6),
+    inset 0 -1px 2px rgba(255,255,255,0.05),
+    0 1px 0 rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.lamp-btn-housing .retro-lamp-btn {
+  transform: translateY(-1.5px);
+  box-shadow:
+    0 3px 0 rgba(0,0,0,0.8),
+    0 4px 6px rgba(0,0,0,0.5);
+  transition: transform 0.06s ease-out, box-shadow 0.06s ease-out;
+}
+.lamp-btn-housing:hover .retro-lamp-btn {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 0 rgba(0,0,0,0.8),
+    0 5px 8px rgba(0,0,0,0.45);
+  filter: brightness(1.1);
+}
+.lamp-btn-housing:active .retro-lamp-btn {
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.7),
+    0 1px 3px rgba(0,0,0,0.4),
+    inset 0 1px 3px rgba(0,0,0,0.35);
+}
+
+.output-route-btns {
+  display: flex;
+  gap: 4px;
+  margin-top: 4px;
+  justify-content: center;
+  padding-bottom: 3px;
+}
+
+/* XLR LED — ca. 2-Uhr-Position, AUSSERHALB der Metallkappe */
+.xlr-led {
+  position: absolute;
+  top: 4px; right: -7px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #083018, #020e08 60%, #020604);
+  border: 1.5px solid #1c1c24;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.6), 0 1px 3px rgba(0,0,0,0.8);
+  transition: background 0.3s, box-shadow 0.3s, border-color 0.3s;
+}
+.xlr-led::before {
+  content: '';
+  position: absolute;
+  top: 1px; left: 2px;
+  width: 4px; height: 3px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+.xlr-led.active {
+  background: radial-gradient(circle at 40% 35%,
+    #e0fff0 0%, #80ffcc 22%, var(--led-on) 58%, #042018 100%);
+  border-color: #0a3020;
+  box-shadow:
+    0 0 6px var(--led-glow),
+    0 0 12px rgba(74,232,160,0.22),
+    inset 0 1px 2px rgba(150,255,200,0.2),
+    0 1px 3px rgba(0,0,0,0.6);
+  animation: lampGlow 2.8s ease-in-out infinite;
+}
+
+.xlr-connector.input .xlr-body {
+  background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA 60%, #334455);
+  border-color: #88AACC;
+}
+
+.xlr-connector.selected .xlr-body {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px rgba(232,200,74,0.5), 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.xlr-num {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-secondary);
+  line-height: 1;
+}
+
+.xlr-label {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-label);
+  text-align: center;
+  max-width: 72px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+    /* ===== css/patch-table.css ===== */
+/* === 12. Patch Table === */
+#tabDetails {
+  overflow: auto;
+  padding: 20px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--rack-border);
+}
+
+.section-title {
+  font-family: var(--font-header);
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--accent);
+}
+
+.section-badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  background: var(--sidebar-bg);
+  border: 1px solid var(--rack-border);
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+
+.patch-table-wrap { overflow-x: auto; }
+
+#patchTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: 13px;
+}
+
+#patchTable th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--rack-border);
+  border-right: 1px solid var(--rack-bg);
+  padding: 8px 10px;
+  text-align: left;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+#patchTable td {
+  border-bottom: 1px solid var(--rack-bg);
+  border-right: 1px solid var(--rack-bg);
+  padding: 6px 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+#patchTable tr:hover td { background: rgba(232,200,74,.04); }
+#patchTable tr.pt-row-highlight td {
+  background: rgba(232,200,74,.12);
+  transition: background 0.5s;
+}
+
+.pt-device { font-weight: 700; color: var(--text-primary); }
+.pt-type-in  { color: #4a9ae8; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.pt-type-out { color: var(--accent-green); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1px; }
+.pt-num { font-family: var(--font-mono); color: var(--text-secondary); font-size: 13px; }
+
+.pt-editable {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 3px 6px;
+  border: 1px solid transparent;
+  min-width: 40px;
+  display: inline-block;
+  transition: border-color 0.15s, background 0.15s;
+}
+.pt-editable:hover { border-color: var(--rack-border); background: var(--sidebar-bg); }
+.pt-editable:focus { outline: none; border-color: var(--accent); background: rgba(232,200,74,.05); color: var(--text-primary); }
+.pt-editable.empty { color: var(--text-secondary); }
+
+.pt-led {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--led-off);
+  border: 1px solid var(--led-off-ring);
+  display: inline-block;
+  cursor: pointer;
+}
+.pt-led.active { background: var(--led-on); box-shadow: 0 0 4px var(--led-glow); border-color: var(--led-on); }
+
+.pt-dash { color: var(--rack-border); font-family: var(--font-mono); }
+.pt-eth { font-family: var(--font-mono); font-size: 12px; color: var(--accent-green); }
+.pt-eth-empty { color: var(--rack-border); font-family: var(--font-mono); font-size: 11px; }
+
+    /* ===== css/modal.css ===== */
+/* === 13. Modal === */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--rack-border);
+  width: 420px;
+  max-width: 95vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
+  animation: modalIn 0.2s ease;
+}
+
+@keyframes modalIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  background: var(--rack-bg);
+  border-bottom: 1px solid var(--rack-border);
+}
+
+.modal-title {
+  font-family: var(--font-header);
+  font-size: 22px;
+  letter-spacing: 3px;
+  color: var(--accent);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 22px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--accent-red); }
+
+.modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.modal-field { display: flex; flex-direction: column; gap: 6px; }
+
+.modal-field label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.modal-field input[type="text"],
+.modal-field input[type="date"],
+.modal-field input[type="number"],
+.modal-field select {
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 600;
+  padding: 9px 12px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.15s, background 0.15s;
+  letter-spacing: .5px;
+}
+.modal-field input:focus, .modal-field select:focus {
+  border-color: var(--accent);
+  background: rgba(232,200,74,.04);
+}
+.modal-field select option { background: var(--rack-bg); }
+.modal-field input[type="date"] { color-scheme: dark; }
+.modal-field .input-error {
+  color: var(--accent-red);
+  font-size: 11px;
+  font-family: var(--font-mono);
+  display: none;
+}
+.modal-field.has-error input { border-color: var(--accent-red); }
+.modal-field.has-error .input-error { display: block; }
+
+.modal-field .radio-group { display: flex; gap: 16px; }
+
+.radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.radio-option input[type="radio"] { display: none; }
+.radio-btn {
+  width: 60px; height: 36px;
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-header); font-size: 20px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.radio-option input:checked + .radio-btn {
+  background: rgba(232,200,74,.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Device preview in modal */
+#devicePreview {
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  padding: 12px;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.preview-rack { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.preview-label { font-family: var(--font-mono); font-size: 9px; color: var(--text-secondary); letter-spacing: 1px; }
+.preview-conn-row { display: flex; gap: 4px; align-items: center; }
+.preview-xlr {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid #888;
+  background: radial-gradient(circle at 35% 30%, #BBB, #666);
+  display: inline-block;
+}
+.preview-xlr.input-type { border-color: #88AACC; background: radial-gradient(circle at 35% 30%, #AABBCC, #6688AA); }
+.preview-arrow { font-family: var(--font-mono); font-size: 14px; color: var(--accent-dim); }
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--rack-border);
+  background: var(--rack-bg);
+}
+
+.btn-cancel {
+  background: transparent;
+  border: 1px solid var(--rack-border);
+  color: var(--text-secondary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  padding: 8px 20px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.btn-cancel:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+
+.btn-primary {
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: #0d0f14;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  padding: 8px 24px;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: #ffd84a; border-color: #ffd84a; }
+
+/* === 14. Booster Setup Table === */
+.bs-setup-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.bs-setup-table th {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  background: var(--app-bg);
+  border-bottom: 1px solid var(--rack-border);
+  padding: 8px 10px;
+  text-align: left;
+}
+.bs-setup-table td {
+  border-bottom: 1px solid var(--rack-bg);
+  padding: 7px 8px;
+  vertical-align: middle;
+}
+.bs-setup-table tr:hover td { background: rgba(255,255,255,0.02); }
+.bs-num-cell {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  width: 28px;
+  text-align: center;
+}
+.bs-setup-table input[type="text"] {
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 5px 8px;
+  width: 180px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.bs-setup-table input[type="text"]:focus { border-color: var(--accent); }
+.bs-setup-table select {
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  padding: 5px 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.bs-setup-table select:focus { border-color: var(--accent); }
+.bs-radio-small { display: flex; gap: 6px; }
+.bs-radio-small label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+.bs-radio-small input[type="radio"] { display: none; }
+.bs-radio-btn {
+  width: 34px; height: 28px;
+  background: var(--app-bg);
+  border: 1px solid var(--rack-border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-header); font-size: 16px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.bs-radio-small input:checked + .bs-radio-btn {
+  background: rgba(232,200,74,.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+    /* ===== css/misc.css ===== */
+/* === 11. 7-Segment Display — VFD/Nixie Röhren-Stil === */
+.seg-display {
+  display: inline-flex;
+  gap: 3px;
+  background: radial-gradient(ellipse at 40% 30%, #0e0800 0%, #040200 100%);
+  border: 1px solid #1a1000;
+  border-radius: 4px;
+  padding: 4px 5px;
+  box-shadow:
+    inset 0 0 8px rgba(0,0,0,0.95),
+    inset 0 1px 0 rgba(255,200,80,0.04),
+    0 0 0 1px #000,
+    0 2px 6px rgba(0,0,0,0.7);
+  margin-bottom: 3px;
+  position: relative;
+}
+/* Subtile Glas-Reflexion oben */
+.seg-display::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255,220,120,0.04) 0%, transparent 40%);
+  pointer-events: none;
+}
+
+.seg-digit {
+  position: relative;
+  width: 13px;
+  height: 23px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.seg {
+  position: absolute;
+  background: var(--seg-off);
+  border-radius: 1px;
+  transition: background 0.06s, box-shadow 0.06s;
+}
+.seg.on {
+  background: var(--seg-on);
+  box-shadow:
+    0 0 3px var(--seg-on-glow),
+    0 0 7px rgba(255,178,0,0.7),
+    0 0 14px rgba(255,140,0,0.35);
+}
+
+/* Horizontal segments — dickere Balken, abgeschrägte Ecken via border-radius */
+.seg-a { left: 2px;  top: 0;    width: 9px; height: 3px; border-radius: 1.5px; }
+.seg-g { left: 2px;  top: 10px; width: 9px; height: 3px; border-radius: 1.5px; }
+.seg-d { left: 2px;  bottom: 0; width: 9px; height: 3px; border-radius: 1.5px; }
+/* Vertikale Segmente */
+.seg-f { left: 0;   top: 2px;    width: 3px; height: 8px; border-radius: 1.5px; }
+.seg-b { right: 0;  top: 2px;   width: 3px; height: 8px; border-radius: 1.5px; }
+.seg-e { left: 0;   bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
+.seg-c { right: 0;  bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
+
+/* === 15. Toast === */
+#toastContainer {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 200;
+}
+
+.toast {
+  background: var(--sidebar-bg);
+  border: 1px solid var(--rack-border);
+  border-left: 3px solid var(--accent);
+  color: var(--text-primary);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .5px;
+  padding: 10px 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+  animation: toastIn 0.2s ease;
+  min-width: 200px;
+}
+.toast.success { border-left-color: var(--accent-green); }
+.toast.error   { border-left-color: var(--accent-red); }
+.toast.warning { border-left-color: var(--accent-orange); }
+.toast.out     { animation: toastOut 0.3s ease forwards; }
+
+@keyframes toastIn  { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: none; } }
+@keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
+@keyframes fadeIn   { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+/* === 16. Print === */
+@media print {
+  #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
+  body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
+  #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
+  .rack-ctrl-btn { display: none !important; }
+  .xlr-connector { cursor: default; }
+  #patchTable { font-size: 11px; }
+}
+
   </style>
 </head>
 <body>
@@ -1377,7 +1381,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.5.3</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.0</div>
       </div>
     </div>
   </div>
@@ -1661,9 +1665,10 @@
 <div id="toastContainer"></div>
 
 <script>
+// ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.5.3';
+const APP_VERSION = 'v0.6.0';
 
 // ============================================================
 // 1. STATE
@@ -1721,6 +1726,7 @@ function escHtml(str) {
   return (str || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
+// ===== js/ui.js =====
 // ============================================================
 // 3. MODALS
 // ============================================================
@@ -1760,114 +1766,7 @@ function switchTab(tabName) {
   }
 }
 
-// ============================================================
-// 5. NEW DEVICE MODAL (single)
-// ============================================================
-function openNewDeviceModal() {
-  document.getElementById('newDeviceName').value = '';
-  document.getElementById('input1').checked = true;
-  document.getElementById('outputCount').value = '8';
-  updatePreview();
-  openModal('newDeviceModal');
-  setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
-}
-
-function updatePreview() {
-  const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
-  const outputs = parseInt(document.getElementById('outputCount').value);
-  const preview = document.getElementById('devicePreview');
-
-  let html = '<div class="preview-rack">';
-  html += '<div>';
-  html += '<div class="preview-label" style="margin-bottom:4px">INPUT</div>';
-  html += '<div class="preview-conn-row">';
-  for (let i = 0; i < inputs; i++) {
-    html += '<div class="preview-xlr input-type" title="IN ' + (i+1) + '"></div>';
-  }
-  html += '</div></div>';
-  html += '<div class="preview-arrow">→</div>';
-  html += '<div>';
-  html += '<div class="preview-label" style="margin-bottom:4px">OUTPUT (' + outputs + ')</div>';
-  html += '<div class="preview-conn-row">';
-  for (let i = 0; i < outputs; i++) {
-    html += '<div class="preview-xlr" title="OUT ' + (i+1) + '"></div>';
-  }
-  html += '</div></div>';
-  html += '</div>';
-  preview.innerHTML = html;
-}
-
-function confirmNewDevice() {
-  const name = document.getElementById('newDeviceName').value.trim();
-  if (!name) {
-    showToast('Bitte einen Gerätenamen eingeben.', 'warning');
-    document.getElementById('newDeviceName').focus();
-    return;
-  }
-  const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
-  const outputs = parseInt(document.getElementById('outputCount').value);
-
-  createDevice(name, inputs, outputs);
-  closeModal('newDeviceModal');
-  showToast('Gerät "' + name + '" angelegt.', 'success');
-}
-
-document.getElementById('newDeviceName').addEventListener('keydown', e => {
-  if (e.key === 'Enter') confirmNewDevice();
-});
-
-// ============================================================
-// 6. DEVICE CRUD
-// ============================================================
-function createDevice(name, inputCount, outputCount) {
-  const device = {
-    id: generateUUID(),
-    name,
-    inputs: inputCount,
-    outputs: outputCount,
-    connections: {
-      inputs:  Array.from({length: inputCount},  (_, i) => ({
-        id: i+1, universe: null, label: '', notes: '', active: false
-      })),
-      outputs: Array.from({length: outputCount}, (_, i) => ({
-        id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
-      }))
-    }
-  };
-  state.devices.push(device);
-  markModified();
-  renderAllDevices();
-  renderPatchTable();
-  updateEmptyState();
-  return device;
-}
-
-function deleteDevice(id) {
-  if (!confirm('Gerät wirklich löschen?')) return;
-  state.devices = state.devices.filter(d => d.id !== id);
-  markModified();
-  renderAllDevices();
-  renderPatchTable();
-  updateEmptyState();
-  showToast('Gerät gelöscht.', 'warning');
-}
-
-function getDevice(id) {
-  return state.devices.find(d => d.id === id);
-}
-
-function updateEmptyState() {
-  const empty = document.getElementById('emptyState');
-  const tabs  = document.getElementById('appTabs');
-  const showApp = state.projectCreated || state.devices.length > 0;
-  empty.style.display = showApp ? 'none' : 'flex';
-  if (showApp) {
-    tabs.classList.add('visible');
-  } else {
-    tabs.classList.remove('visible');
-  }
-}
-
+// ===== js/device-render.js =====
 // ============================================================
 // 7. RENDERING — DEVICE CARDS
 // ============================================================
@@ -1879,7 +1778,6 @@ function updateRackScale() {
   const container = document.getElementById('devicesContainer');
   const naturalW = parseInt(container.style.getPropertyValue('--device-natural-w')) || 0;
   if (!naturalW) return;
-  // clientWidth minus horizontal padding (16px × 2 = 32px)
   const availW = container.clientWidth - 32;
   if (availW <= 0) return;
   const scale = availW / naturalW;
@@ -2105,14 +2003,12 @@ function buildXLRConnector(deviceId, type, conn) {
   }
 
   // --- Output routing selector buttons (IN1 / IN2) ---
-  // Leuchtet nur wenn ausgewählt UND der entsprechende Input ein Universe hat
   if (type === 'output') {
     const device = getDevice(deviceId);
     const routeBtns = document.createElement('div');
     routeBtns.className = 'output-route-btns';
     routeBtns.id = 'routebtns_' + deviceId + '_' + conn.id;
     [1, 2].forEach(inNum => {
-      // Housing (quadratisches Metallgehäuse) + Dom (farbige Glaslinse)
       const housing = document.createElement('div');
       housing.className = 'lamp-btn-housing';
       housing.title = 'Route → IN ' + inNum;
@@ -2218,14 +2114,14 @@ function buildSegDisplay(text) {
 function getConnDisplayText(conn, type) {
   if (type === 'input') {
     if (!conn.universe) return '    ';
-    return 'U' + String(conn.universe).padStart(3, ' '); // "U  1", "U 42"
+    return 'U' + String(conn.universe).padStart(3, ' ');
   } else {
     if (conn.ethId) {
       const eth = state.ethDatabase.find(e => e.id === conn.ethId);
       if (eth) {
-        const g = eth.group.replace('ETH ', '').slice(0, 2); // max 2 chars
+        const g = eth.group.replace('ETH ', '').slice(0, 2);
         const p = String(eth.port).slice(0, 1);
-        return g.padEnd(2, ' ') + ' ' + p; // "A  1", "US 1"
+        return g.padEnd(2, ' ') + ' ' + p;
       }
     }
     return '----';
@@ -2249,6 +2145,313 @@ function updateConnDisplay(deviceId, type, conn) {
   });
 }
 
+// ===== js/device-crud.js =====
+// ============================================================
+// 5. NEW DEVICE MODAL (single)
+// ============================================================
+function openNewDeviceModal() {
+  document.getElementById('newDeviceName').value = '';
+  document.getElementById('input1').checked = true;
+  document.getElementById('outputCount').value = '8';
+  updatePreview();
+  openModal('newDeviceModal');
+  setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
+}
+
+function updatePreview() {
+  const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
+  const outputs = parseInt(document.getElementById('outputCount').value);
+  const preview = document.getElementById('devicePreview');
+
+  let html = '<div class="preview-rack">';
+  html += '<div>';
+  html += '<div class="preview-label" style="margin-bottom:4px">INPUT</div>';
+  html += '<div class="preview-conn-row">';
+  for (let i = 0; i < inputs; i++) {
+    html += '<div class="preview-xlr input-type" title="IN ' + (i+1) + '"></div>';
+  }
+  html += '</div></div>';
+  html += '<div class="preview-arrow">→</div>';
+  html += '<div>';
+  html += '<div class="preview-label" style="margin-bottom:4px">OUTPUT (' + outputs + ')</div>';
+  html += '<div class="preview-conn-row">';
+  for (let i = 0; i < outputs; i++) {
+    html += '<div class="preview-xlr" title="OUT ' + (i+1) + '"></div>';
+  }
+  html += '</div></div>';
+  html += '</div>';
+  preview.innerHTML = html;
+}
+
+function confirmNewDevice() {
+  const name = document.getElementById('newDeviceName').value.trim();
+  if (!name) {
+    showToast('Bitte einen Gerätenamen eingeben.', 'warning');
+    document.getElementById('newDeviceName').focus();
+    return;
+  }
+  const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
+  const outputs = parseInt(document.getElementById('outputCount').value);
+
+  createDevice(name, inputs, outputs);
+  closeModal('newDeviceModal');
+  showToast('Gerät "' + name + '" angelegt.', 'success');
+}
+
+document.getElementById('newDeviceName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmNewDevice();
+});
+
+// ============================================================
+// 6. DEVICE CRUD
+// ============================================================
+function createDevice(name, inputCount, outputCount) {
+  const device = {
+    id: generateUUID(),
+    name,
+    inputs: inputCount,
+    outputs: outputCount,
+    connections: {
+      inputs:  Array.from({length: inputCount},  (_, i) => ({
+        id: i+1, universe: null, label: '', notes: '', active: false
+      })),
+      outputs: Array.from({length: outputCount}, (_, i) => ({
+        id: i+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
+      }))
+    }
+  };
+  state.devices.push(device);
+  markModified();
+  renderAllDevices();
+  renderPatchTable();
+  updateEmptyState();
+  return device;
+}
+
+function deleteDevice(id) {
+  if (!confirm('Gerät wirklich löschen?')) return;
+  state.devices = state.devices.filter(d => d.id !== id);
+  markModified();
+  renderAllDevices();
+  renderPatchTable();
+  updateEmptyState();
+  showToast('Gerät gelöscht.', 'warning');
+}
+
+function getDevice(id) {
+  return state.devices.find(d => d.id === id);
+}
+
+function updateEmptyState() {
+  const empty = document.getElementById('emptyState');
+  const tabs  = document.getElementById('appTabs');
+  const showApp = state.projectCreated || state.devices.length > 0;
+  empty.style.display = showApp ? 'none' : 'flex';
+  if (showApp) {
+    tabs.classList.add('visible');
+  } else {
+    tabs.classList.remove('visible');
+  }
+}
+
+// ============================================================
+// 14. PROJECT MANAGEMENT
+// ============================================================
+function newProject() {
+  if (state.modified && state.devices.length > 0) {
+    if (!confirm('Ungespeicherte Änderungen gehen verloren. Neues Projekt erstellen?')) return;
+  }
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('newProjectDateInput').value = today;
+  document.getElementById('newProjectNameInput').value = '';
+  document.getElementById('npNameField').classList.remove('has-error');
+  openModal('newProjectModal');
+  setTimeout(() => document.getElementById('newProjectNameInput').focus(), 100);
+}
+
+function confirmNewProject() {
+  const name = document.getElementById('newProjectNameInput').value.trim();
+  if (!name) {
+    document.getElementById('npNameField').classList.add('has-error');
+    document.getElementById('newProjectNameInput').focus();
+    return;
+  }
+  document.getElementById('npNameField').classList.remove('has-error');
+
+  const dateVal = document.getElementById('newProjectDateInput').value;
+  state.projectName = name;
+  state.created = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
+  state.projectCreated = true;
+  state.devices = [];
+  markSaved();
+  updateProjectDisplay();
+  renderAllDevices();
+  renderPatchTable();
+  updateEmptyState();
+  closeModal('newProjectModal');
+
+  setTimeout(() => openBoosterSetupModal(), 150);
+}
+
+document.getElementById('newProjectNameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmNewProject();
+});
+
+function clearAll() {
+  if (state.devices.length === 0) return;
+  if (!confirm('Alle Geräte löschen?')) return;
+  state.devices = [];
+  markModified();
+  renderAllDevices();
+  renderPatchTable();
+  showToast('Alle Geräte gelöscht.', 'warning');
+}
+
+function openProjectNameModal() {
+  document.getElementById('projectNameInput').value = state.projectName;
+  openModal('projectModal');
+  setTimeout(() => {
+    const inp = document.getElementById('projectNameInput');
+    inp.focus(); inp.select();
+  }, 100);
+}
+
+function confirmProjectName() {
+  const name = document.getElementById('projectNameInput').value.trim();
+  if (name) {
+    state.projectName = name;
+    markModified();
+    updateProjectDisplay();
+  }
+  closeModal('projectModal');
+}
+
+document.getElementById('projectNameInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmProjectName();
+});
+
+// ============================================================
+// 15. BOOSTER SETUP MODAL (2-Step Wizard)
+// ============================================================
+function openBoosterSetupModal() {
+  document.getElementById('bsStep1').style.display = 'flex';
+  document.getElementById('bsStep2').style.display = 'none';
+  document.getElementById('bsCount').value = '1';
+  document.getElementById('bsBackBtn').style.display = 'none';
+  document.getElementById('bsActionBtn').textContent = 'Weiter →';
+  document.getElementById('bsActionBtn').onclick = bsNext;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
+  openModal('boosterSetupModal');
+  setTimeout(() => document.getElementById('bsCount').focus(), 100);
+}
+
+function bsNext() {
+  const count = parseInt(document.getElementById('bsCount').value) || 1;
+  if (count < 1 || count > 16) {
+    showToast('Bitte 1–16 Booster eingeben.', 'warning');
+    return;
+  }
+  const wrap = document.getElementById('bsTableWrap');
+  wrap.innerHTML = '';
+
+  const table = document.createElement('table');
+  table.className = 'bs-setup-table';
+  table.innerHTML = `<thead><tr>
+    <th>#</th>
+    <th>Name</th>
+    <th>Inputs</th>
+    <th>Outputs</th>
+  </tr></thead>`;
+
+  const tbody = document.createElement('tbody');
+  for (let i = 1; i <= count; i++) {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="bs-num-cell">${i}</td>
+      <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
+      <td>
+        <div class="bs-radio-small">
+          <label><input type="radio" name="bsIn_${i}" value="1" checked id="bsIn1_${i}">
+            <div class="bs-radio-btn">1</div></label>
+          <label><input type="radio" name="bsIn_${i}" value="2" id="bsIn2_${i}">
+            <div class="bs-radio-btn">2</div></label>
+        </div>
+      </td>
+      <td>
+        <select id="bsOut_${i}">
+          ${[4,5,6,7,8,9,10,11,12].map(n =>
+            `<option value="${n}"${n===8?' selected':''}>${n} Ausgänge</option>`
+          ).join('')}
+        </select>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  }
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+
+  document.getElementById('bsStep1').style.display = 'none';
+  document.getElementById('bsStep2').style.display = 'block';
+  document.getElementById('bsBackBtn').style.display = 'inline-flex';
+  document.getElementById('bsActionBtn').textContent = 'Erstellen ✓';
+  document.getElementById('bsActionBtn').onclick = bsConfirm;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER KONFIGURIEREN';
+}
+
+function bsBack() {
+  document.getElementById('bsStep1').style.display = 'flex';
+  document.getElementById('bsStep2').style.display = 'none';
+  document.getElementById('bsBackBtn').style.display = 'none';
+  document.getElementById('bsActionBtn').textContent = 'Weiter →';
+  document.getElementById('bsActionBtn').onclick = bsNext;
+  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
+}
+
+function bsConfirm() {
+  const count = parseInt(document.getElementById('bsCount').value) || 1;
+  let created = 0;
+
+  for (let i = 1; i <= count; i++) {
+    const nameEl = document.getElementById('bsName_' + i);
+    const outEl  = document.getElementById('bsOut_' + i);
+    const inEl   = document.querySelector('input[name="bsIn_' + i + '"]:checked');
+    if (!nameEl || !outEl || !inEl) continue;
+
+    const name = nameEl.value.trim() || ('DMX Booster ' + i);
+    const inputs  = parseInt(inEl.value) || 1;
+    const outputs = parseInt(outEl.value) || 8;
+
+    const device = {
+      id: generateUUID(),
+      name,
+      inputs,
+      outputs,
+      connections: {
+        inputs:  Array.from({length: inputs},  (_, j) => ({
+          id: j+1, universe: null, label: '', notes: '', active: false
+        })),
+        outputs: Array.from({length: outputs}, (_, j) => ({
+          id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
+        }))
+      }
+    };
+    state.devices.push(device);
+    created++;
+  }
+
+  if (created > 0) {
+    markModified();
+    renderAllDevices();
+    renderPatchTable();
+    updateEmptyState();
+    switchTab('patch');
+  }
+
+  closeModal('boosterSetupModal');
+  showToast(created + ' Booster angelegt.', 'success');
+}
+
+// ===== js/patch.js =====
 // ============================================================
 // 10. ETH PANEL
 // ============================================================
@@ -2268,7 +2471,6 @@ function initEthDatabase() {
 
 function renderEthPanel() {
   const panel = document.getElementById('ethPanel');
-  // Keep header, rebuild entries
   const existing = panel.querySelectorAll('.eth-entry, .eth-group-label');
   existing.forEach(el => el.remove());
 
@@ -2335,7 +2537,7 @@ function openConnectorDetail(deviceId, type, connId) {
   if (xlrEl) xlrEl.classList.add('selected');
 
   switchTab('details');
-  renderPatchTable(); // ensure table is current
+  renderPatchTable();
 
   const rowId = 'ptrow_' + deviceId + '_' + type + '_' + connId;
   setTimeout(() => {
@@ -2454,7 +2656,6 @@ function savePtEdit(devId, type, connId, field, value) {
 }
 
 // --- Retro lamp sync helpers ---
-// All active lamps share one global animation clock so they pulse in phase.
 function applyLampOn(el) {
   el.style.animationDelay = `-${(performance.now() % 2800) / 1000}s`;
   el.classList.add('on');
@@ -2484,14 +2685,12 @@ function syncConnLed(deviceId, type, connId) {
       }
     }
   }
-  // Input status lamp (orange / blue below connector) + Routing-Buttons aktualisieren
   if (type === 'input') {
     const inputLamp = document.getElementById('input_lamp_' + deviceId + '_' + connId);
     if (inputLamp) {
       if (conn.active) applyLampOn(inputLamp);
       else removeLampOn(inputLamp);
     }
-    // Routing-Buttons aller Outputs, die auf diesen Input zeigen, aktualisieren
     syncRoutingBtnsForInput(deviceId, connId);
   }
   const rowEl = document.getElementById('ptrow_' + deviceId + '_' + type + '_' + connId);
@@ -2529,7 +2728,6 @@ function setOutputRoute(deviceId, connId, inputNum) {
   });
 }
 
-// Wenn sich ein Input-Status ändert, alle Output-Routing-Buttons dieses Inputs aktualisieren
 function syncRoutingBtnsForInput(deviceId, inputId) {
   const device = getDevice(deviceId);
   if (!device) return;
@@ -2543,6 +2741,7 @@ function syncRoutingBtnsForInput(deviceId, inputId) {
   });
 }
 
+// ===== js/storage.js =====
 // ============================================================
 // 13. FILE I/O
 // ============================================================
@@ -2630,207 +2829,6 @@ function handleImport(event) {
 
 function exportPrint() {
   window.print();
-}
-
-// ============================================================
-// 14. PROJECT MANAGEMENT
-// ============================================================
-function newProject() {
-  if (state.modified && state.devices.length > 0) {
-    if (!confirm('Ungespeicherte Änderungen gehen verloren. Neues Projekt erstellen?')) return;
-  }
-  // Pre-fill today's date
-  const today = new Date().toISOString().slice(0, 10);
-  document.getElementById('newProjectDateInput').value = today;
-  document.getElementById('newProjectNameInput').value = '';
-  document.getElementById('npNameField').classList.remove('has-error');
-  openModal('newProjectModal');
-  setTimeout(() => document.getElementById('newProjectNameInput').focus(), 100);
-}
-
-function confirmNewProject() {
-  const name = document.getElementById('newProjectNameInput').value.trim();
-  if (!name) {
-    document.getElementById('npNameField').classList.add('has-error');
-    document.getElementById('newProjectNameInput').focus();
-    return;
-  }
-  document.getElementById('npNameField').classList.remove('has-error');
-
-  const dateVal = document.getElementById('newProjectDateInput').value;
-  state.projectName = name;
-  state.created = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
-  state.projectCreated = true;
-  state.devices = [];
-  markSaved();
-  updateProjectDisplay();
-  renderAllDevices();
-  renderPatchTable();
-  updateEmptyState();
-  closeModal('newProjectModal');
-
-  // Immediately open booster setup
-  setTimeout(() => openBoosterSetupModal(), 150);
-}
-
-document.getElementById('newProjectNameInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') confirmNewProject();
-});
-
-function clearAll() {
-  if (state.devices.length === 0) return;
-  if (!confirm('Alle Geräte löschen?')) return;
-  state.devices = [];
-  markModified();
-  renderAllDevices();
-  renderPatchTable();
-  showToast('Alle Geräte gelöscht.', 'warning');
-}
-
-function openProjectNameModal() {
-  document.getElementById('projectNameInput').value = state.projectName;
-  openModal('projectModal');
-  setTimeout(() => {
-    const inp = document.getElementById('projectNameInput');
-    inp.focus(); inp.select();
-  }, 100);
-}
-
-function confirmProjectName() {
-  const name = document.getElementById('projectNameInput').value.trim();
-  if (name) {
-    state.projectName = name;
-    markModified();
-    updateProjectDisplay();
-  }
-  closeModal('projectModal');
-}
-
-document.getElementById('projectNameInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') confirmProjectName();
-});
-
-// ============================================================
-// 15. BOOSTER SETUP MODAL (2-Step Wizard)
-// ============================================================
-function openBoosterSetupModal() {
-  document.getElementById('bsStep1').style.display = 'flex';
-  document.getElementById('bsStep2').style.display = 'none';
-  document.getElementById('bsCount').value = '1';
-  document.getElementById('bsBackBtn').style.display = 'none';
-  document.getElementById('bsActionBtn').textContent = 'Weiter →';
-  document.getElementById('bsActionBtn').onclick = bsNext;
-  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
-  openModal('boosterSetupModal');
-  setTimeout(() => document.getElementById('bsCount').focus(), 100);
-}
-
-function bsNext() {
-  const count = parseInt(document.getElementById('bsCount').value) || 1;
-  if (count < 1 || count > 16) {
-    showToast('Bitte 1–16 Booster eingeben.', 'warning');
-    return;
-  }
-  // Build step 2 table
-  const wrap = document.getElementById('bsTableWrap');
-  wrap.innerHTML = '';
-
-  const table = document.createElement('table');
-  table.className = 'bs-setup-table';
-  table.innerHTML = `<thead><tr>
-    <th>#</th>
-    <th>Name</th>
-    <th>Inputs</th>
-    <th>Outputs</th>
-  </tr></thead>`;
-
-  const tbody = document.createElement('tbody');
-  for (let i = 1; i <= count; i++) {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td class="bs-num-cell">${i}</td>
-      <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
-      <td>
-        <div class="bs-radio-small">
-          <label><input type="radio" name="bsIn_${i}" value="1" checked id="bsIn1_${i}">
-            <div class="bs-radio-btn">1</div></label>
-          <label><input type="radio" name="bsIn_${i}" value="2" id="bsIn2_${i}">
-            <div class="bs-radio-btn">2</div></label>
-        </div>
-      </td>
-      <td>
-        <select id="bsOut_${i}">
-          ${[4,5,6,7,8,9,10,11,12].map(n =>
-            `<option value="${n}"${n===8?' selected':''}>${n} Ausgänge</option>`
-          ).join('')}
-        </select>
-      </td>
-    `;
-    tbody.appendChild(tr);
-  }
-  table.appendChild(tbody);
-  wrap.appendChild(table);
-
-  // Switch to step 2
-  document.getElementById('bsStep1').style.display = 'none';
-  document.getElementById('bsStep2').style.display = 'block';
-  document.getElementById('bsBackBtn').style.display = 'inline-flex';
-  document.getElementById('bsActionBtn').textContent = 'Erstellen ✓';
-  document.getElementById('bsActionBtn').onclick = bsConfirm;
-  document.getElementById('bsModalTitle').textContent = 'BOOSTER KONFIGURIEREN';
-}
-
-function bsBack() {
-  document.getElementById('bsStep1').style.display = 'flex';
-  document.getElementById('bsStep2').style.display = 'none';
-  document.getElementById('bsBackBtn').style.display = 'none';
-  document.getElementById('bsActionBtn').textContent = 'Weiter →';
-  document.getElementById('bsActionBtn').onclick = bsNext;
-  document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
-}
-
-function bsConfirm() {
-  const count = parseInt(document.getElementById('bsCount').value) || 1;
-  let created = 0;
-
-  for (let i = 1; i <= count; i++) {
-    const nameEl = document.getElementById('bsName_' + i);
-    const outEl  = document.getElementById('bsOut_' + i);
-    const inEl   = document.querySelector('input[name="bsIn_' + i + '"]:checked');
-    if (!nameEl || !outEl || !inEl) continue;
-
-    const name = nameEl.value.trim() || ('DMX Booster ' + i);
-    const inputs  = parseInt(inEl.value) || 1;
-    const outputs = parseInt(outEl.value) || 8;
-
-    const device = {
-      id: generateUUID(),
-      name,
-      inputs,
-      outputs,
-      connections: {
-        inputs:  Array.from({length: inputs},  (_, j) => ({
-          id: j+1, universe: null, label: '', notes: '', active: false
-        })),
-        outputs: Array.from({length: outputs}, (_, j) => ({
-          id: j+1, universe: 1, startChannel: 1, label: '', notes: '', active: false, ethId: null, routeToInput: 1
-        }))
-      }
-    };
-    state.devices.push(device);
-    created++;
-  }
-
-  if (created > 0) {
-    markModified();
-    renderAllDevices();
-    renderPatchTable();
-    updateEmptyState();
-    switchTab('patch');
-  }
-
-  closeModal('boosterSetupModal');
-  showToast(created + ' Booster angelegt.', 'success');
 }
 
 // ============================================================
@@ -2945,7 +2943,6 @@ function openLogosModal() {
 // 17. STORAGE SYSTEM
 // ============================================================
 
-// --- buildSaveData (extracted from saveProject) ---
 function buildSaveData() {
   return {
     appVersion: APP_VERSION,
@@ -3179,8 +3176,9 @@ function scrollToDevice(id) {
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+// ===== js/main.js =====
 // ============================================================
-// 17. INIT
+// INIT
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
 initEthDatabase();
@@ -3210,6 +3208,8 @@ updateProjectDisplay();
 
   scheduleAutoSave();
 })();
+
 </script>
+
 </body>
 </html>

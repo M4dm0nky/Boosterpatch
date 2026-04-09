@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.6.0 — 2026-04-09
+
+**Refactoring — Build-System mit Multi-File Quellstruktur**
+
+- Quellcode aufgeteilt: `src/template.html`, `css/*.css`, `js/*.js`
+- `build.py` assembliert alle Teile zu einer vollständigen Single-File `boosterpatch.html`
+- `boosterpatch.html` ist weiterhin die fertige, serverlose Single-File App (direkt im Browser öffnen)
+- CSS: `css/variables.css`, `css/layout.css`, `css/rack.css`, `css/patch-table.css`, `css/modal.css`, `css/misc.css`
+- JavaScript: `js/state.js`, `js/ui.js`, `js/device-render.js`, `js/device-crud.js`, `js/patch.js`, `js/storage.js`, `js/main.js`
+- Keine funktionalen Änderungen — reine Strukturumstellung für bessere Wartbarkeit
+
+---
+
 ## v0.3.1 — 2026-04-08
 
 **7-Segment Display — VFD/Nixie Röhren-Optik**

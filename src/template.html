@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BOOSTERPATCH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;500;600;700;900&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- BUILD:CSS -->
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="app-header">
+  <div class="hdr-left" id="areaPlaner"></div>
+  <div class="hdr-center">
+    <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
+      <div>
+        <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
+        <div class="app-version" id="appVersionDisplay">v0.6.0</div>
+      </div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div id="areaBooking"></div>
+    <div class="hdr-project-info">
+      <div id="projectNameDisplay" ondblclick="openProjectNameModal()" title="Doppelklick zum Umbenennen">Kein Projekt</div>
+      <div id="modifiedIndicator">● UNGESPEICHERT</div>
+    </div>
+  </div>
+</header>
+
+<!-- ===== SIDEBAR ===== -->
+<nav id="sidebar">
+  <div class="sb-section-title">PROJEKT</div>
+  <button class="sb-btn primary" onclick="saveProjectDialog()">💾 Speichern</button>
+  <button class="sb-btn" onclick="triggerLoad()">📂 Öffnen</button>
+  <button class="sb-btn" onclick="saveProjectAs()">↓ Speichern als …</button>
+  <button class="sb-btn" onclick="newProject()">◻ Neues Projekt</button>
+  <button class="sb-btn" onclick="openLogosModal()">🖼 Logos</button>
+  <div class="sb-sep"></div>
+
+  <div class="sb-section-title">BOOSTER</div>
+  <button class="sb-btn green" onclick="openBoosterSetupModal()">⊕ Neuer Booster</button>
+  <div id="sidebarDeviceList"></div>
+  <div class="sb-sep"></div>
+
+  <div class="sb-section-title">WERKZEUGE</div>
+  <button class="sb-btn" onclick="importDevices()">📥 Import</button>
+  <button class="sb-btn" onclick="exportPrint()">🖨 Export</button>
+  <button class="sb-btn danger" onclick="clearAll()">✕ Leeren</button>
+</nav>
+
+<!-- hidden file inputs -->
+<input type="file" id="fileInput"    accept=".json"    onchange="handleFileLoad(event)">
+
+<!-- ===== MODAL: Speichern ===== -->
+<div class="modal-overlay" id="saveModal">
+  <div class="modal-box" style="width:400px;">
+    <div class="modal-header">
+      <div class="modal-title">SPEICHERN</div>
+      <button class="modal-close" onclick="closeModal('saveModal')">✕</button>
+    </div>
+    <div class="modal-body" id="saveModalBody"></div>
+  </div>
+</div>
+<input type="file" id="importInput" accept=".json"    onchange="handleImport(event)">
+<input type="file" id="inLogoPlaner"  accept="image/*" style="display:none" onchange="handleLogoUpload('planer',this)">
+<input type="file" id="inLogoBand"    accept="image/*" style="display:none" onchange="handleLogoUpload('band',this)">
+<input type="file" id="inLogoBooking" accept="image/*" style="display:none" onchange="handleLogoUpload('booking',this)">
+
+<!-- ===== LOGO MODAL ===== -->
+<div class="modal-overlay" id="logosModal">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-header">
+      <div class="modal-title">LOGOS</div>
+      <button class="modal-close" onclick="closeModal('logosModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:11px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6;font-family:var(--font-mono);">Logos werden im Header platziert und mit dem Projekt gespeichert.</p>
+      <div class="logo-option" onclick="document.getElementById('inLogoPlaner').click()">
+        <div class="logo-option-icon">🏢</div>
+        <div class="logo-option-text"><strong>Produktionsfirma</strong><span>Links oben</span></div>
+        <div class="logo-option-action"><img id="prevPlaner" class="logo-prev"><button class="logo-rm" id="rmPlaner" onclick="event.stopPropagation();removeLogo('planer')">✕ Entfernen</button></div>
+      </div>
+      <div class="logo-option" onclick="document.getElementById('inLogoBand').click()">
+        <div class="logo-option-icon">🎸</div>
+        <div class="logo-option-text"><strong>Band / Produktion</strong><span>Mitte, neben dem Titel</span></div>
+        <div class="logo-option-action"><img id="prevBand" class="logo-prev"><button class="logo-rm" id="rmBand" onclick="event.stopPropagation();removeLogo('band')">✕ Entfernen</button></div>
+      </div>
+      <div class="logo-option" onclick="document.getElementById('inLogoBooking').click()">
+        <div class="logo-option-icon">📋</div>
+        <div class="logo-option-text"><strong>Booking / Agentur</strong><span>Rechts oben</span></div>
+        <div class="logo-option-action"><img id="prevBooking" class="logo-prev"><button class="logo-rm" id="rmBooking" onclick="event.stopPropagation();removeLogo('booking')">✕ Entfernen</button></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" onclick="closeModal('logosModal')">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MAIN ===== -->
+<main id="main">
+
+  <!-- Empty State -->
+  <div id="emptyState">
+    <div class="empty-icon">⬡</div>
+    <h2>BOOSTERPATCH</h2>
+    <p>Wähle eine Option um zu starten:</p>
+    <div class="empty-actions">
+      <button class="btn-primary btn-large" onclick="newProject()">⊕ Neues Projekt</button>
+      <button class="btn-secondary btn-large" onclick="triggerLoad()">📂 Projekt laden</button>
+    </div>
+  </div>
+
+  <!-- App Tabs (shown when project exists) -->
+  <div id="appTabs">
+    <div id="tabBar">
+      <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
+      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
+    </div>
+
+    <!-- Tab: Patch View -->
+    <div id="tabPatch" class="tab-content active">
+      <div id="patchView">
+        <!-- ETH Sources Panel -->
+        <div id="ethPanel">
+          <div class="eth-panel-header">ETH QUELLEN</div>
+          <!-- populated by renderEthPanel() -->
+        </div>
+        <!-- Devices (horizontal) -->
+        <div id="devicesContainer"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Details / Patch Table -->
+    <div id="tabDetails" class="tab-content">
+      <div class="section-header">
+        <div class="section-title">PATCHTABELLE</div>
+        <div class="section-badge" id="patchCount">0 Verbindungen</div>
+      </div>
+      <div class="patch-table-wrap">
+        <table id="patchTable">
+          <thead>
+            <tr>
+              <th>Gerät</th>
+              <th>Typ</th>
+              <th>Nr.</th>
+              <th>Status</th>
+              <th>Label</th>
+              <th>Universe</th>
+              <th>DMX Start</th>
+              <th>ETH</th>
+              <th>Notizen</th>
+            </tr>
+          </thead>
+          <tbody id="patchTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ===== MODAL: Neues Gerät (single) ===== -->
+<div class="modal-overlay" id="newDeviceModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">NEUES GERÄT</div>
+      <button class="modal-close" onclick="closeModal('newDeviceModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label>Gerätename</label>
+        <input type="text" id="newDeviceName" placeholder="z.B. DMX Booster FOH" maxlength="40">
+      </div>
+      <div class="modal-field">
+        <label>DMX Eingänge (Inputs)</label>
+        <div class="radio-group">
+          <label class="radio-option">
+            <input type="radio" name="inputCount" value="1" id="input1" checked onchange="updatePreview()">
+            <div class="radio-btn">1</div>
+          </label>
+          <label class="radio-option">
+            <input type="radio" name="inputCount" value="2" id="input2" onchange="updatePreview()">
+            <div class="radio-btn">2</div>
+          </label>
+        </div>
+      </div>
+      <div class="modal-field">
+        <label>DMX Ausgänge (Outputs)</label>
+        <select id="outputCount" onchange="updatePreview()">
+          <option value="4">4 Ausgänge</option>
+          <option value="5">5 Ausgänge</option>
+          <option value="6">6 Ausgänge</option>
+          <option value="7">7 Ausgänge</option>
+          <option value="8" selected>8 Ausgänge</option>
+          <option value="9">9 Ausgänge</option>
+          <option value="10">10 Ausgänge</option>
+          <option value="11">11 Ausgänge</option>
+          <option value="12">12 Ausgänge</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>Vorschau</label>
+        <div id="devicePreview"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('newDeviceModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="confirmNewDevice()">Erstellen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Projektname (umbenennen) ===== -->
+<div class="modal-overlay" id="projectModal">
+  <div class="modal-box" style="width:380px">
+    <div class="modal-header">
+      <div class="modal-title">PROJEKTNAME</div>
+      <button class="modal-close" onclick="closeModal('projectModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label>Projektname</label>
+        <input type="text" id="projectNameInput" placeholder="z.B. My Show 2026" maxlength="60">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('projectModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="confirmProjectName()">Übernehmen</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Neues Projekt ===== -->
+<div class="modal-overlay" id="newProjectModal">
+  <div class="modal-box" style="width:460px;">
+    <div class="modal-header">
+      <div class="modal-title">NEUES PROJEKT</div>
+      <button class="modal-close" onclick="closeModal('newProjectModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field" id="npNameField">
+        <label>Projektname <span style="color:var(--accent-red)">*</span></label>
+        <input type="text" id="newProjectNameInput" placeholder="z.B. My Show 2026" maxlength="60">
+        <div class="input-error">Bitte einen Projektnamen eingeben.</div>
+      </div>
+      <div class="modal-field">
+        <label>Datum (optional)</label>
+        <input type="date" id="newProjectDateInput">
+      </div>
+      <p style="font-size:11px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.6;">
+        Der Projektname wird beim Speichern als Dateiname verwendet.<br>
+        Im nächsten Schritt kannst du Booster anlegen.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('newProjectModal')">Abbrechen</button>
+      <button class="btn-primary" onclick="confirmNewProject()">Weiter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL: Booster Setup ===== -->
+<div class="modal-overlay" id="boosterSetupModal">
+  <div class="modal-box" style="width:640px;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <div class="modal-title" id="bsModalTitle">BOOSTER ANLEGEN</div>
+      <button class="modal-close" onclick="closeModal('boosterSetupModal')">✕</button>
+    </div>
+
+    <!-- Step 1: Anzahl -->
+    <div id="bsStep1" class="modal-body">
+      <div class="modal-field">
+        <label>Wie viele Booster möchtest du anlegen?</label>
+        <input type="number" id="bsCount" value="1" min="1" max="16"
+          style="width:120px;font-size:28px;font-family:var(--font-header);text-align:center;letter-spacing:4px;">
+      </div>
+      <p style="font-size:12px;color:var(--text-secondary);font-family:var(--font-mono);line-height:1.6;">
+        Im nächsten Schritt kannst du für jeden Booster einen eigenen Typ konfigurieren<br>
+        (Name, Anzahl Inputs &amp; Outputs).
+      </p>
+    </div>
+
+    <!-- Step 2: Konfiguration -->
+    <div id="bsStep2" style="display:none;flex:1;overflow:auto;padding:0;">
+      <div id="bsTableWrap" style="padding:16px 24px;"></div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" id="bsBackBtn" onclick="bsBack()" style="display:none">← Zurück</button>
+      <button class="btn-cancel" id="bsCancelBtn" onclick="closeModal('boosterSetupModal')">Abbrechen</button>
+      <button class="btn-primary" id="bsActionBtn" onclick="bsNext()">Weiter →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toastContainer"></div>
+
+<!-- BUILD:JS -->
+
+</body>
+</html>

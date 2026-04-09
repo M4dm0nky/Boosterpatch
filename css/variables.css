@@ -1,0 +1,70 @@
+/* === 0. Global Scale === */
+html { zoom: 1.2; }
+
+/* === 1. Reset & Variables === */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --font-header:  'Bebas Neue', sans-serif;
+  --font-ui:      'Barlow Condensed', sans-serif;
+  --font-mono:    'Share Tech Mono', monospace;
+
+  /* App Shell — Materialliste Palette */
+  --app-bg:        #0d0f14;
+  --sidebar-bg:    #141720;
+  --sidebar-hover: rgba(232,200,74,.06);
+  --sidebar-active:rgba(232,200,74,.14);
+  --header-bg:     #0a0c14;
+  --header-border: #e8c84a;
+  --header-text:   #c8d0e8;
+
+  /* Accent */
+  --accent:        #e8c84a;
+  --accent-dim:    #c8a832;
+  --accent-green:  #4ae8a0;
+  --accent-red:    #e84a4a;
+  --accent-orange: #e8a04a;
+
+  /* Rack Device */
+  --rack-bg:       #1c2030;
+  --rack-face:     #141720;
+  --rack-border:   #2a3050;
+  --rack-ear:      #1c2030;
+  --rack-screw:    #3a4060;
+  --rack-stripe:   #1a1f30;
+
+  /* XLR */
+  --xlr-body:      #888888;
+  --xlr-ring:      #AAAAAA;
+  --xlr-inner:     #1c2030;
+  --xlr-pin:       #5a6080;
+
+  /* LED */
+  --led-on:        #4ae8a0;
+  --led-glow:      rgba(74,232,160,0.5);
+  --led-off:       #0d2018;
+  --led-off-ring:  #1a3028;
+
+  /* Retro Lamps */
+  --lamp-in1:       #e8a04a;
+  --lamp-in1-glow:  rgba(232,160,74,0.7);
+  --lamp-in2:       #4a90e8;
+  --lamp-in2-glow:  rgba(74,144,232,0.7);
+  --lamp-off-cap:   #1a1a22;
+  --lamp-filament:  rgba(255,240,180,0.92);
+
+  /* Text */
+  --text-primary:  #c8d0e8;
+  --text-secondary:#5a6080;
+  --text-mono:     #e8c84a;
+  --text-label:    #8a94b0;
+
+  /* Sidebar width */
+  --sidebar-w:     200px;
+  --header-h:      64px;
+
+  /* 7-Segment — VFD/Nixie Röhren-Stil */
+  --seg-on:        #ffb200;
+  --seg-on-glow:   rgba(255,178,0,0.95);
+  --seg-off:       rgba(35,12,0,0.22);
+}

@@ -64,6 +64,7 @@ function loadProjectData(data) {
   updateProjectDisplay();
   updateFixtureDbStatus();
   renderFixtureTab();
+  renderEthPanel();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();

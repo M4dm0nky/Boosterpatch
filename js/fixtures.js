@@ -22,6 +22,7 @@ function handleFixtureTxtImport(event) {
     markModified();
     updateFixtureDbStatus();
     renderFixtureTab();
+    renderEthPanel();
     renderAllDevices();
     renderPatchTable();
     showToast(fixtures.length + ' Fixtures importiert.', 'success');

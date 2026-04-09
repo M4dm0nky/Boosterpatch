@@ -47,6 +47,7 @@ function loadProjectData(data) {
   state.created = data.created || new Date().toISOString();
   state.projectCreated = true;
   state.devices = data.devices || [];
+  state.fixtureDatabase = data.fixtureDatabase || [];
   // Ensure ethId and routeToInput fields exist on outputs (backward compat)
   state.devices.forEach(d => d.connections.outputs.forEach(o => {
     if (o.ethId === undefined) o.ethId = null;
@@ -61,6 +62,7 @@ function loadProjectData(data) {
   }
   markSaved();
   updateProjectDisplay();
+  updateFixtureDbStatus();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();
@@ -219,7 +221,8 @@ function buildSaveData() {
     created: state.created || new Date().toISOString(),
     modified: new Date().toISOString(),
     devices: state.devices,
-    logos: { planer: logos.planer, band: logos.band, booking: logos.booking }
+    logos: { planer: logos.planer, band: logos.band, booking: logos.booking },
+    fixtureDatabase: state.fixtureDatabase
   };
 }
 
@@ -271,6 +274,7 @@ function createNewPlan() {
   state.created = new Date().toISOString();
   state.modified = false;
   state.devices = [];
+  state.fixtureDatabase = [];
 
   renderSidebarPlanList();
   renderAllDevices();

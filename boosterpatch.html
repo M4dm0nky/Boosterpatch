@@ -1552,7 +1552,117 @@ body {
 .univ-drum-reel.snap-up   { animation: univSnapUp   0.13s ease-out; }
 .univ-drum-reel.snap-down { animation: univSnapDown 0.13s ease-out; }
 
-/* === 15. Toast === */
+/* === 15. Fixture Popover === */
+#fixturePopover {
+  position: fixed;
+  z-index: 600;
+  background: #0d1117;
+  border: 1px solid #333;
+  border-top: 2px solid var(--accent);
+  min-width: 240px;
+  max-width: 360px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.fix-pop-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid #1e2535;
+  position: sticky;
+  top: 0;
+  background: #0d1117;
+  z-index: 1;
+}
+
+.fix-pop-line-icon {
+  font-size: 13px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.fix-pop-line-name {
+  font-family: var(--font-header);
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fix-pop-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.1s;
+}
+.fix-pop-close:hover { color: var(--accent-red); }
+
+.fix-pop-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #111520;
+  transition: background 0.1s;
+}
+.fix-pop-item:last-child { border-bottom: none; }
+.fix-pop-item:hover { background: rgba(255,255,255,0.03); }
+
+.fix-pop-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 32px;
+  flex-shrink: 0;
+}
+
+.fix-pop-type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  opacity: 0.85;
+}
+
+.fix-pop-empty {
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Fixture count badge on output labels */
+.fix-count-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 4px;
+  background: rgba(232,200,74,0.18);
+  border: 1px solid rgba(232,200,74,0.4);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* === 16. Toast === */
 #toastContainer {
   position: fixed;
   bottom: 20px; right: 20px;
@@ -1606,7 +1716,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.65</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.0</div>
       </div>
     </div>
   </div>
@@ -1638,10 +1748,16 @@ body {
   <button class="sb-btn" onclick="importDevices()">📥 Import</button>
   <button class="sb-btn" onclick="exportPrint()">🖨 Export</button>
   <button class="sb-btn danger" onclick="clearAll()">✕ Leeren</button>
+  <div class="sb-sep"></div>
+
+  <div class="sb-section-title">FIXTURES</div>
+  <button class="sb-btn" onclick="importFixtureTxt()">📋 Fixture-Datei laden</button>
+  <div id="fixtureDbStatus" style="font-size:10px;color:var(--text-secondary);font-family:var(--font-mono);padding:2px 8px;">Keine Daten</div>
 </nav>
 
 <!-- hidden file inputs -->
-<input type="file" id="fileInput"    accept=".json"    style="display:none" onchange="handleFileLoad(event)">
+<input type="file" id="fileInput"       accept=".json"              style="display:none" onchange="handleFileLoad(event)">
+<input type="file" id="fixtureTxtInput" accept=".txt,.tsv,.csv,.tab"  style="display:none" onchange="handleFixtureTxtImport(event)">
 
 <!-- ===== MODAL: Speichern ===== -->
 <div class="modal-overlay" id="saveModal">
@@ -1911,11 +2027,21 @@ body {
   </div>
 </div>
 
+<!-- ===== POPOVER: Fixture-Liste ===== -->
+<div id="fixturePopover" style="display:none;">
+  <div class="fix-pop-header">
+    <span class="fix-pop-line-icon">⚡</span>
+    <span id="fixPopLineLabel" class="fix-pop-line-name"></span>
+    <button class="fix-pop-close" onclick="closeFixturePopover()">✕</button>
+  </div>
+  <div id="fixPopList"></div>
+</div>
+
 <script>
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.6.65';
+const APP_VERSION = 'v0.7.0';
 
 // ============================================================
 // 1. STATE
@@ -1928,7 +2054,8 @@ const state = {
   modified: false,
   devices: [],
   logos: { planer: '', band: '', booking: '' },
-  ethDatabase: []
+  ethDatabase: [],
+  fixtureDatabase: []
 };
 
 // ============================================================
@@ -2264,8 +2391,34 @@ function buildXLRConnector(deviceId, type, conn) {
 
   const lbl = document.createElement('div');
   lbl.className = 'xlr-label';
-  lbl.textContent = conn.label || '—';
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
+
+  if (type === 'output') {
+    const fixCount = getFixturesForLine(conn.label).length;
+    const labelText = document.createElement('span');
+    labelText.textContent = conn.label || '—';
+    lbl.appendChild(labelText);
+
+    if (fixCount > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'fix-count-badge';
+      badge.textContent = fixCount;
+      badge.title = fixCount + ' Fixture(s) auf dieser Line';
+      lbl.appendChild(badge);
+    }
+
+    lbl.style.cursor = 'pointer';
+    lbl.title = conn.label
+      ? 'Klick: Fixtures auf "' + conn.label + '" anzeigen'
+      : 'Klick: Fixtures anzeigen (kein Label gesetzt)';
+    lbl.addEventListener('click', e => {
+      e.stopPropagation();
+      openFixturePopover(conn.label, lbl);
+    });
+  } else {
+    lbl.textContent = conn.label || '—';
+  }
+
   wrap.appendChild(lbl);
 
   // --- Input status lamp (orange = IN1, blue = IN2) — pulsiert nicht ---
@@ -3108,6 +3261,159 @@ function syncRoutingBtnsForInput(deviceId, inputId) {
   });
 }
 
+// ===== js/fixtures.js =====
+'use strict';
+
+// ============================================================
+// 9b. FIXTURE DATABASE — TXT Import & Popover
+// ============================================================
+
+function importFixtureTxt() {
+  document.getElementById('fixtureTxtInput').click();
+}
+
+function handleFixtureTxtImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const fixtures = parseTxtToFixtures(e.target.result);
+    if (fixtures === null) {
+      showToast('Dateiformat ungültig — Spalten "Fixture", "Typ" und "Line" nicht gefunden.', 'error');
+      return;
+    }
+    state.fixtureDatabase = fixtures;
+    markModified();
+    updateFixtureDbStatus();
+    renderAllDevices();
+    renderPatchTable();
+    showToast(fixtures.length + ' Fixtures importiert.', 'success');
+  };
+  reader.readAsText(file, 'utf-8');
+  event.target.value = '';
+}
+
+function parseTxtToFixtures(text) {
+  // Normalize line endings
+  const lines = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  if (lines.length < 2) return [];
+
+  const header = lines[0].split('\t');
+  const idxFixture = header.findIndex(h => h.trim().toLowerCase() === 'fixture');
+  const idxTyp     = header.findIndex(h => h.trim().toLowerCase() === 'typ');
+  const idxLine    = header.findIndex(h => h.trim().toLowerCase() === 'line');
+
+  if (idxFixture === -1 || idxTyp === -1 || idxLine === -1) return null;
+
+  const result = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cols = lines[i].split('\t');
+    if (cols.length < Math.max(idxFixture, idxTyp, idxLine) + 1) continue;
+
+    const fixtureId = cols[idxFixture].trim();
+    const type      = cols[idxTyp].trim();
+    const line      = cols[idxLine].trim();
+
+    // Skip empty rows and NullPunkt entries
+    if (!fixtureId || !line) continue;
+    if (type.toLowerCase() === 'nullpunkt') continue;
+
+    result.push({ fixtureId, type, line });
+  }
+  return result;
+}
+
+function getFixturesForLine(lineId) {
+  if (!lineId) return [];
+  const key = lineId.trim().toLowerCase();
+  return state.fixtureDatabase.filter(f => f.line.trim().toLowerCase() === key);
+}
+
+function updateFixtureDbStatus() {
+  const el = document.getElementById('fixtureDbStatus');
+  if (!el) return;
+  const count = state.fixtureDatabase.length;
+  if (count === 0) {
+    el.textContent = 'Keine Daten';
+    el.style.color = 'var(--text-secondary)';
+  } else {
+    el.textContent = count + ' Fixtures geladen';
+    el.style.color = 'var(--accent-green)';
+  }
+}
+
+// ============================================================
+// FIXTURE POPOVER
+// ============================================================
+let _fixCtx = null;
+
+function openFixturePopover(lineId, anchorEl) {
+  if (state.fixtureDatabase.length === 0) {
+    showToast('Noch keine Fixture-Datei importiert.', 'warning', 2000);
+    return;
+  }
+  if (!lineId) {
+    showToast('Kein Label gesetzt — Label entspricht der Linen-Bezeichnung (z.B. LK Z/4).', 'warning', 2500);
+    return;
+  }
+
+  _fixCtx = { lineId };
+  const fixtures = getFixturesForLine(lineId);
+
+  const pop      = document.getElementById('fixturePopover');
+  const lineEl   = document.getElementById('fixPopLineLabel');
+  const listEl   = document.getElementById('fixPopList');
+
+  lineEl.textContent = lineId;
+  listEl.innerHTML = '';
+
+  if (fixtures.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'fix-pop-empty';
+    empty.textContent = 'Keine Fixtures auf dieser Line.';
+    listEl.appendChild(empty);
+  } else {
+    fixtures.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'fix-pop-item';
+      item.innerHTML =
+        '<span class="fix-pop-id">' + escHtml(f.fixtureId) + '</span>' +
+        '<span class="fix-pop-type">' + escHtml(f.type) + '</span>';
+      listEl.appendChild(item);
+    });
+  }
+
+  // Position below anchor element
+  pop.style.visibility = 'hidden';
+  pop.style.display = 'block';
+
+  const rect = anchorEl.getBoundingClientRect();
+  const pw   = pop.offsetWidth;
+  const ph   = pop.offsetHeight;
+  let left   = rect.left + rect.width / 2 - pw / 2;
+  let top    = rect.bottom + 8;
+  if (left + pw > window.innerWidth  - 10) left = window.innerWidth  - pw - 10;
+  if (left < 10) left = 10;
+  if (top  + ph > window.innerHeight - 10) top  = rect.top - ph - 8;
+  pop.style.left       = left + 'px';
+  pop.style.top        = top  + 'px';
+  pop.style.visibility = '';
+
+  setTimeout(() => document.addEventListener('mousedown', _fixOutsideDown), 10);
+}
+
+function _fixOutsideDown(e) {
+  const pop = document.getElementById('fixturePopover');
+  if (!pop.contains(e.target)) closeFixturePopover();
+}
+
+function closeFixturePopover() {
+  const pop = document.getElementById('fixturePopover');
+  if (pop) pop.style.display = 'none';
+  document.removeEventListener('mousedown', _fixOutsideDown);
+  _fixCtx = null;
+}
+
 // ===== js/storage.js =====
 // ============================================================
 // 13. FILE I/O
@@ -3158,6 +3464,7 @@ function loadProjectData(data) {
   state.created = data.created || new Date().toISOString();
   state.projectCreated = true;
   state.devices = data.devices || [];
+  state.fixtureDatabase = data.fixtureDatabase || [];
   // Ensure ethId and routeToInput fields exist on outputs (backward compat)
   state.devices.forEach(d => d.connections.outputs.forEach(o => {
     if (o.ethId === undefined) o.ethId = null;
@@ -3172,6 +3479,7 @@ function loadProjectData(data) {
   }
   markSaved();
   updateProjectDisplay();
+  updateFixtureDbStatus();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();
@@ -3330,7 +3638,8 @@ function buildSaveData() {
     created: state.created || new Date().toISOString(),
     modified: new Date().toISOString(),
     devices: state.devices,
-    logos: { planer: logos.planer, band: logos.band, booking: logos.booking }
+    logos: { planer: logos.planer, band: logos.band, booking: logos.booking },
+    fixtureDatabase: state.fixtureDatabase
   };
 }
 
@@ -3382,6 +3691,7 @@ function createNewPlan() {
   state.created = new Date().toISOString();
   state.modified = false;
   state.devices = [];
+  state.fixtureDatabase = [];
 
   renderSidebarPlanList();
   renderAllDevices();

@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = 'v0.6.65';
+const APP_VERSION = 'v0.7.0';
 
 // ============================================================
 // 1. STATE
@@ -13,7 +13,8 @@ const state = {
   modified: false,
   devices: [],
   logos: { planer: '', band: '', booking: '' },
-  ethDatabase: []
+  ethDatabase: [],
+  fixtureDatabase: []
 };
 
 // ============================================================

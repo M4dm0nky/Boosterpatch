@@ -198,7 +198,117 @@
 .univ-drum-reel.snap-up   { animation: univSnapUp   0.13s ease-out; }
 .univ-drum-reel.snap-down { animation: univSnapDown 0.13s ease-out; }
 
-/* === 15. Toast === */
+/* === 15. Fixture Popover === */
+#fixturePopover {
+  position: fixed;
+  z-index: 600;
+  background: #0d1117;
+  border: 1px solid #333;
+  border-top: 2px solid var(--accent);
+  min-width: 240px;
+  max-width: 360px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.fix-pop-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid #1e2535;
+  position: sticky;
+  top: 0;
+  background: #0d1117;
+  z-index: 1;
+}
+
+.fix-pop-line-icon {
+  font-size: 13px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.fix-pop-line-name {
+  font-family: var(--font-header);
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: var(--accent);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fix-pop-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  flex-shrink: 0;
+  transition: color 0.1s;
+}
+.fix-pop-close:hover { color: var(--accent-red); }
+
+.fix-pop-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 6px 12px;
+  border-bottom: 1px solid #111520;
+  transition: background 0.1s;
+}
+.fix-pop-item:last-child { border-bottom: none; }
+.fix-pop-item:hover { background: rgba(255,255,255,0.03); }
+
+.fix-pop-id {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  min-width: 32px;
+  flex-shrink: 0;
+}
+
+.fix-pop-type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+  opacity: 0.85;
+}
+
+.fix-pop-empty {
+  padding: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+/* Fixture count badge on output labels */
+.fix-count-badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 4px;
+  background: rgba(232,200,74,0.18);
+  border: 1px solid rgba(232,200,74,0.4);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-radius: 2px;
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+/* === 16. Toast === */
 #toastContainer {
   position: fixed;
   bottom: 20px; right: 20px;

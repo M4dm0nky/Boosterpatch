@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.65</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.0</div>
       </div>
     </div>
   </div>
@@ -50,10 +50,16 @@
   <button class="sb-btn" onclick="importDevices()">📥 Import</button>
   <button class="sb-btn" onclick="exportPrint()">🖨 Export</button>
   <button class="sb-btn danger" onclick="clearAll()">✕ Leeren</button>
+  <div class="sb-sep"></div>
+
+  <div class="sb-section-title">FIXTURES</div>
+  <button class="sb-btn" onclick="importFixtureTxt()">📋 Fixture-Datei laden</button>
+  <div id="fixtureDbStatus" style="font-size:10px;color:var(--text-secondary);font-family:var(--font-mono);padding:2px 8px;">Keine Daten</div>
 </nav>
 
 <!-- hidden file inputs -->
-<input type="file" id="fileInput"    accept=".json"    style="display:none" onchange="handleFileLoad(event)">
+<input type="file" id="fileInput"       accept=".json"              style="display:none" onchange="handleFileLoad(event)">
+<input type="file" id="fixtureTxtInput" accept=".txt,.tsv,.csv,.tab"  style="display:none" onchange="handleFixtureTxtImport(event)">
 
 <!-- ===== MODAL: Speichern ===== -->
 <div class="modal-overlay" id="saveModal">
@@ -321,6 +327,16 @@
     </div>
     <button class="univ-ok-btn" onmousedown="event.preventDefault()" onclick="confirmUnivPopover()">OK</button>
   </div>
+</div>
+
+<!-- ===== POPOVER: Fixture-Liste ===== -->
+<div id="fixturePopover" style="display:none;">
+  <div class="fix-pop-header">
+    <span class="fix-pop-line-icon">⚡</span>
+    <span id="fixPopLineLabel" class="fix-pop-line-name"></span>
+    <button class="fix-pop-close" onclick="closeFixturePopover()">✕</button>
+  </div>
+  <div id="fixPopList"></div>
 </div>
 
 <!-- BUILD:JS -->

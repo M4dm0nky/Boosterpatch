@@ -247,8 +247,34 @@ function buildXLRConnector(deviceId, type, conn) {
 
   const lbl = document.createElement('div');
   lbl.className = 'xlr-label';
-  lbl.textContent = conn.label || '—';
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
+
+  if (type === 'output') {
+    const fixCount = getFixturesForLine(conn.label).length;
+    const labelText = document.createElement('span');
+    labelText.textContent = conn.label || '—';
+    lbl.appendChild(labelText);
+
+    if (fixCount > 0) {
+      const badge = document.createElement('span');
+      badge.className = 'fix-count-badge';
+      badge.textContent = fixCount;
+      badge.title = fixCount + ' Fixture(s) auf dieser Line';
+      lbl.appendChild(badge);
+    }
+
+    lbl.style.cursor = 'pointer';
+    lbl.title = conn.label
+      ? 'Klick: Fixtures auf "' + conn.label + '" anzeigen'
+      : 'Klick: Fixtures anzeigen (kein Label gesetzt)';
+    lbl.addEventListener('click', e => {
+      e.stopPropagation();
+      openFixturePopover(conn.label, lbl);
+    });
+  } else {
+    lbl.textContent = conn.label || '—';
+  }
+
   wrap.appendChild(lbl);
 
   // --- Input status lamp (orange = IN1, blue = IN2) — pulsiert nicht ---

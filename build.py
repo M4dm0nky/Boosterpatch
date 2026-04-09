@@ -30,6 +30,7 @@ JS_FILES = [
     "js/device-render.js",
     "js/device-crud.js",
     "js/patch.js",
+    "js/fixtures.js",
     "js/storage.js",
     "js/main.js",
 ]

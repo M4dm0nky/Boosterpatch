@@ -1511,6 +1511,23 @@ body {
 #univInput::-webkit-outer-spin-button,
 #univInput::-webkit-inner-spin-button { -webkit-appearance: none; }
 
+.univ-ok-btn {
+  align-self: center;
+  margin-left: 4px;
+  padding: 0 10px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-header);
+  font-size: 14px;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+}
+.univ-ok-btn:hover  { background: rgba(232,200,74,0.15); }
+.univ-ok-btn:active { transform: scale(0.95); }
+
 @keyframes univSnapUp {
   0%   { transform: translateY(12px); opacity: 0.2; }
   65%  { transform: translateY(-2px); opacity: 1;   }
@@ -1578,7 +1595,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.6</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.61</div>
       </div>
     </div>
   </div>
@@ -1879,6 +1896,7 @@ body {
               onmousedown="event.preventDefault()"
               onclick="univStep(-1)">▼</button>
     </div>
+    <button class="univ-ok-btn" onmousedown="event.preventDefault()" onclick="confirmUnivPopover()">OK</button>
   </div>
 </div>
 
@@ -1886,7 +1904,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.6.6';
+const APP_VERSION = 'v0.6.61';
 
 // ============================================================
 // 1. STATE

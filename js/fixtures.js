@@ -65,6 +65,20 @@ function getFixturesForLine(lineId) {
   return state.fixtureDatabase.filter(f => f.line.trim().toLowerCase() === key);
 }
 
+function connectLineToOutput(deviceId, connId, lineId) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const conn = device.connections.outputs.find(c => c.id === connId);
+  if (!conn) return;
+  conn.label = lineId;
+  markModified();
+  renderAllDevices();
+  renderPatchTable();
+  renderEthPanel();
+  const count = getFixturesForLine(lineId).length;
+  showToast('Line gesetzt: ' + lineId + ' (' + count + ' Fixture' + (count !== 1 ? 's' : '') + ')', 'success', 2000);
+}
+
 function updateFixtureDbStatus() {
   const el = document.getElementById('fixtureDbStatus');
   if (!el) return;

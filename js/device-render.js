@@ -179,8 +179,10 @@ function buildXLRConnector(deviceId, type, conn) {
     wrap.addEventListener('drop', e => {
       e.preventDefault();
       wrap.classList.remove('drag-over');
-      const ethId = e.dataTransfer.getData('ethId');
-      if (ethId) connectEthToOutput(deviceId, conn.id, ethId);
+      const ethId  = e.dataTransfer.getData('ethId');
+      const lineId = e.dataTransfer.getData('lineId');
+      if (ethId)  connectEthToOutput(deviceId, conn.id, ethId);
+      if (lineId) connectLineToOutput(deviceId, conn.id, lineId);
     });
     wrap.addEventListener('contextmenu', e => {
       e.preventDefault();

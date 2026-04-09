@@ -17,7 +17,7 @@ function initEthDatabase() {
 
 function renderEthPanel() {
   const panel = document.getElementById('ethPanel');
-  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label');
+  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep');
   existing.forEach(el => el.remove());
 
   const usedEthIds = new Set(
@@ -50,6 +50,62 @@ function renderEthPanel() {
     const label = document.createElement('span');
     label.textContent = eth.group + ' / ' + eth.port;
     entry.appendChild(label);
+    panel.appendChild(entry);
+  });
+
+  // --- Fixture Lines section ---
+  if (state.fixtureDatabase.length === 0) return;
+
+  // Collect unique lines that have at least 1 fixture
+  const lineMap = new Map(); // line → count
+  state.fixtureDatabase.forEach(f => {
+    if (!f.line) return;
+    lineMap.set(f.line, (lineMap.get(f.line) || 0) + 1);
+  });
+  if (lineMap.size === 0) return;
+
+  // Collect all output labels currently in use
+  const usedLabels = new Set(
+    state.devices.flatMap(d => d.connections.outputs.map(o => o.label).filter(Boolean))
+  );
+
+  const sep = document.createElement('div');
+  sep.className = 'eth-panel-sep';
+  panel.appendChild(sep);
+
+  const groupEl = document.createElement('div');
+  groupEl.className = 'line-group-label';
+  groupEl.textContent = 'LINIEN';
+  panel.appendChild(groupEl);
+
+  // Sort lines alphabetically
+  const sortedLines = [...lineMap.keys()].sort();
+  sortedLines.forEach(line => {
+    const count = lineMap.get(line);
+    const isUsed = usedLabels.has(line);
+    const entry = document.createElement('div');
+    entry.className = 'line-entry' + (isUsed ? ' connected' : '');
+    entry.draggable = true;
+    entry.dataset.lineId = line;
+    entry.title = isUsed
+      ? line + ' — bereits auf einem Output'
+      : line + ' — auf Output ziehen um zuzuweisen (' + count + ' Fixture' + (count > 1 ? 's' : '') + ')';
+
+    entry.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('lineId', line);
+      e.dataTransfer.effectAllowed = 'link';
+    });
+
+    const labelEl = document.createElement('span');
+    labelEl.className = 'line-entry-name';
+    labelEl.textContent = line;
+    entry.appendChild(labelEl);
+
+    const countEl = document.createElement('span');
+    countEl.className = 'line-entry-count';
+    countEl.textContent = count;
+    entry.appendChild(countEl);
+
     panel.appendChild(entry);
   });
 }

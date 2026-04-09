@@ -633,7 +633,7 @@ body {
   margin-right: 16px;
 }
 
-.connector-section.outputs { flex: 1; min-width: 0; }
+.connector-section.outputs { flex: 1; min-width: 0; padding-right: 10px; }
 
 .section-label {
   font-family: var(--font-mono);
@@ -847,7 +847,7 @@ body {
 /* XLR LED — ca. 2-Uhr-Position, AUSSERHALB der Metallkappe */
 .xlr-led {
   position: absolute;
-  top: 4px; right: -7px;
+  top: 50%; right: -20px; transform: translateY(-50%);
   width: 9px;
   height: 9px;
   border-radius: 50%;
@@ -1381,7 +1381,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.1</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.2</div>
       </div>
     </div>
   </div>
@@ -1668,7 +1668,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.6.1';
+const APP_VERSION = 'v0.6.2';
 
 // ============================================================
 // 1. STATE
@@ -1796,11 +1796,11 @@ function renderAllDevices() {
     return;
   }
 
-  const maxOutputs = Math.max(...state.devices.map(d => d.outputs));
-  const maxInputs  = Math.max(...state.devices.map(d => d.inputs));
+  const maxOutputs = 12;
+  const maxInputs  = 2;
   const inputsW  = maxInputs  * CONN_W + Math.max(maxInputs  - 1, 0) * CONN_GAP;
   const outputsW = maxOutputs * CONN_W + Math.max(maxOutputs - 1, 0) * CONN_GAP;
-  const minW = RACK_BASE + inputsW + outputsW + 4;
+  const minW = RACK_BASE + inputsW + outputsW + 14;
   container.style.setProperty('--device-min-w', minW + 'px');
   container.style.setProperty('--device-natural-w', minW + 'px');
   updateRackScale();

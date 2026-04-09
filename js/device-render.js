@@ -27,11 +27,11 @@ function renderAllDevices() {
     return;
   }
 
-  const maxOutputs = Math.max(...state.devices.map(d => d.outputs));
-  const maxInputs  = Math.max(...state.devices.map(d => d.inputs));
+  const maxOutputs = 12;
+  const maxInputs  = 2;
   const inputsW  = maxInputs  * CONN_W + Math.max(maxInputs  - 1, 0) * CONN_GAP;
   const outputsW = maxOutputs * CONN_W + Math.max(maxOutputs - 1, 0) * CONN_GAP;
-  const minW = RACK_BASE + inputsW + outputsW + 4;
+  const minW = RACK_BASE + inputsW + outputsW + 14;
   container.style.setProperty('--device-min-w', minW + 'px');
   container.style.setProperty('--device-natural-w', minW + 'px');
   updateRackScale();

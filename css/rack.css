@@ -154,7 +154,7 @@
   margin-right: 16px;
 }
 
-.connector-section.outputs { flex: 1; min-width: 0; }
+.connector-section.outputs { flex: 1; min-width: 0; padding-right: 10px; }
 
 .section-label {
   font-family: var(--font-mono);
@@ -368,7 +368,7 @@
 /* XLR LED — ca. 2-Uhr-Position, AUSSERHALB der Metallkappe */
 .xlr-led {
   position: absolute;
-  top: 4px; right: -7px;
+  top: 50%; right: -20px; transform: translateY(-50%);
   width: 9px;
   height: 9px;
   border-radius: 50%;

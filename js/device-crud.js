@@ -135,11 +135,21 @@ function confirmNewProject() {
   state.created = dateVal ? new Date(dateVal).toISOString() : new Date().toISOString();
   state.projectCreated = true;
   state.devices = [];
+
+  // Update plan index entry name
+  if (state.planId) {
+    const idx = getPlanIndex();
+    const entry = idx.find(p => p.id === state.planId);
+    if (entry) { entry.name = name; setPlanIndex(idx); }
+    savePlanToLS();
+  }
+
   markSaved();
   updateProjectDisplay();
   renderAllDevices();
   renderPatchTable();
   updateEmptyState();
+  renderSidebarPlanList();
   closeModal('newProjectModal');
 
   setTimeout(() => openBoosterSetupModal(), 150);

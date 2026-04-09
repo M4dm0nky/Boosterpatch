@@ -15,7 +15,19 @@ function handleFileLoad(event) {
   reader.onload = e => {
     try {
       const data = JSON.parse(e.target.result);
+      // Register as new plan entry if not already tracked
+      const idx = getPlanIndex();
+      let id = state.planId;
+      const existing = id && idx.find(p => p.id === id);
+      if (!existing) {
+        id = generateUUID();
+        idx.unshift({ id, name: data.projectName || file.name, modified: data.modified || new Date().toISOString() });
+        setPlanIndex(idx);
+      }
+      state.planId = id;
       loadProjectData(data);
+      savePlanToLS();
+      renderSidebarPlanList();
       showToast('Projekt geladen: ' + (data.projectName || file.name), 'success');
     } catch {
       showToast('Fehler beim Laden der Datei.', 'error');
@@ -30,6 +42,7 @@ function loadProjectData(data) {
     showToast('Ungültiges Projektformat.', 'error');
     return;
   }
+  // planId is managed separately — don't overwrite it from file data
   state.projectName = data.projectName || 'Unbenannt';
   state.created = data.created || new Date().toISOString();
   state.projectCreated = true;
@@ -210,8 +223,183 @@ function buildSaveData() {
   };
 }
 
+// --- Multi-plan localStorage ---
+const BP_INDEX_KEY = 'bp-plans-index';
+const BP_PLAN_PRE  = 'bp-plan-';
+const LS_KEY       = 'boosterpatch-state'; // legacy key for migration
+
+function getPlanIndex() {
+  try {
+    const raw = localStorage.getItem(BP_INDEX_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function setPlanIndex(index) {
+  try { localStorage.setItem(BP_INDEX_KEY, JSON.stringify(index)); } catch(e) {}
+}
+
+function savePlanToLS() {
+  if (!state.planId) return;
+  const data = buildSaveData();
+  try {
+    localStorage.setItem(BP_PLAN_PRE + state.planId, JSON.stringify(data));
+    const idx = getPlanIndex();
+    const entry = idx.find(p => p.id === state.planId);
+    if (entry) {
+      entry.name = state.projectName;
+      entry.modified = data.modified;
+      setPlanIndex(idx);
+    }
+  } catch(e) {}
+}
+
+function createNewPlan() {
+  if (state.modified && state.devices.length > 0) {
+    if (!confirm('Ungespeicherte Änderungen gehen verloren. Neuen Plan erstellen?')) return;
+  }
+  if (state.planId) savePlanToLS();
+
+  const id = generateUUID();
+  const idx = getPlanIndex();
+  idx.unshift({ id, name: 'Neuer Plan', modified: new Date().toISOString() });
+  setPlanIndex(idx);
+
+  state.planId = id;
+  state.projectName = 'Neuer Plan';
+  state.projectCreated = false;
+  state.created = new Date().toISOString();
+  state.modified = false;
+  state.devices = [];
+
+  renderSidebarPlanList();
+  renderAllDevices();
+  renderPatchTable();
+  updateEmptyState();
+  updateProjectDisplay();
+  markSaved();
+
+  // Open project modal to name it
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('newProjectDateInput').value = today;
+  document.getElementById('newProjectNameInput').value = '';
+  document.getElementById('npNameField').classList.remove('has-error');
+  openModal('newProjectModal');
+  setTimeout(() => document.getElementById('newProjectNameInput').focus(), 100);
+}
+
+function loadPlanById(id) {
+  if (id === state.planId) return;
+  if (state.planId) savePlanToLS();
+  try {
+    const raw = localStorage.getItem(BP_PLAN_PRE + id);
+    if (!raw) { showToast('Plan nicht gefunden.', 'error'); return; }
+    const data = JSON.parse(raw);
+    state.planId = id;
+    loadProjectData(data);
+    renderSidebarPlanList();
+    showToast('Plan geladen: ' + state.projectName, 'success', 1500);
+  } catch(e) {
+    showToast('Fehler beim Laden.', 'error');
+  }
+}
+
+function deletePlan(id) {
+  const idx = getPlanIndex();
+  const plan = idx.find(p => p.id === id);
+  if (!plan) return;
+  if (!confirm('Plan "' + plan.name + '" löschen?')) return;
+  setPlanIndex(idx.filter(p => p.id !== id));
+  try { localStorage.removeItem(BP_PLAN_PRE + id); } catch(e) {}
+
+  if (state.planId === id) {
+    const remaining = getPlanIndex();
+    if (remaining.length > 0) {
+      state.planId = null;
+      loadPlanById(remaining[0].id);
+    } else {
+      state.planId = null;
+      state.projectName = 'Kein Projekt';
+      state.projectCreated = false;
+      state.devices = [];
+      state.modified = false;
+      renderAllDevices();
+      renderPatchTable();
+      updateEmptyState();
+      updateProjectDisplay();
+    }
+  }
+  renderSidebarPlanList();
+}
+
+function startPlanRename(id) {
+  const item = document.querySelector('.sb-plan-item[data-plan-id="' + id + '"]');
+  if (!item) return;
+  const nameEl = item.querySelector('.sb-plan-name');
+  if (!nameEl) return;
+  const idx = getPlanIndex();
+  const plan = idx.find(p => p.id === id);
+  if (!plan) return;
+
+  const input = document.createElement('input');
+  input.className = 'sb-plan-rename-input';
+  input.value = plan.name;
+  nameEl.replaceWith(input);
+  input.focus();
+  input.select();
+
+  function finish() {
+    const newName = input.value.trim() || plan.name;
+    plan.name = newName;
+    setPlanIndex(idx);
+    if (state.planId === id) {
+      state.projectName = newName;
+      updateProjectDisplay();
+    }
+    renderSidebarPlanList();
+  }
+  input.addEventListener('blur', finish);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = plan.name; input.blur(); }
+  });
+}
+
+function renderSidebarPlanList() {
+  const list = document.getElementById('sidebarPlanList');
+  if (!list) return;
+  list.innerHTML = '';
+  const idx = getPlanIndex();
+  idx.forEach(plan => {
+    const item = document.createElement('div');
+    item.className = 'sb-plan-item' + (plan.id === state.planId ? ' active' : '');
+    item.dataset.planId = plan.id;
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'sb-plan-name';
+    nameEl.textContent = plan.name;
+
+    const renameBtn = document.createElement('button');
+    renameBtn.className = 'sb-plan-btn';
+    renameBtn.title = 'Umbenennen';
+    renameBtn.textContent = '✎';
+    renameBtn.addEventListener('click', e => { e.stopPropagation(); startPlanRename(plan.id); });
+
+    const delBtn = document.createElement('button');
+    delBtn.className = 'sb-plan-btn danger';
+    delBtn.title = 'Löschen';
+    delBtn.textContent = '✕';
+    delBtn.addEventListener('click', e => { e.stopPropagation(); deletePlan(plan.id); });
+
+    item.appendChild(nameEl);
+    item.appendChild(renameBtn);
+    item.appendChild(delBtn);
+    item.addEventListener('click', () => loadPlanById(plan.id));
+    list.appendChild(item);
+  });
+}
+
 // --- localStorage auto-save ---
-const LS_KEY = 'boosterpatch-state';
 let lsAutoSaveTimer = null;
 
 function scheduleAutoSave() {
@@ -220,20 +408,45 @@ function scheduleAutoSave() {
 }
 
 function autoSaveToLS() {
-  try {
-    localStorage.setItem(LS_KEY, JSON.stringify(buildSaveData()));
-    showSaveIndicator('auto');
-  } catch(e) {}
+  savePlanToLS();
+  showSaveIndicator('auto');
   scheduleAutoSave();
 }
 
-function tryLoadFromLS() {
+function tryLoadMostRecentPlan() {
+  // Migration: if old single LS_KEY exists but no index yet, import it
+  const idx = getPlanIndex();
+  if (idx.length === 0) {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data && Array.isArray(data.devices)) {
+          const id = generateUUID();
+          const entry = { id, name: data.projectName || 'Importierter Plan', modified: data.modified || new Date().toISOString() };
+          setPlanIndex([entry]);
+          localStorage.setItem(BP_PLAN_PRE + id, raw);
+          localStorage.removeItem(LS_KEY);
+          state.planId = id;
+          loadProjectData(data);
+          renderSidebarPlanList();
+          return true;
+        }
+      }
+    } catch(e) {}
+    return false;
+  }
+
+  // Load most recently modified plan (index is sorted by modified desc on save, but sort again to be safe)
+  const sorted = [...idx].sort((a, b) => new Date(b.modified) - new Date(a.modified));
+  const latest = sorted[0];
   try {
-    const raw = localStorage.getItem(LS_KEY);
+    const raw = localStorage.getItem(BP_PLAN_PRE + latest.id);
     if (!raw) return false;
     const data = JSON.parse(raw);
-    if (!data || !Array.isArray(data.devices)) return false;
+    state.planId = latest.id;
     loadProjectData(data);
+    renderSidebarPlanList();
     return true;
   } catch(e) { return false; }
 }
@@ -412,22 +625,3 @@ function downloadJSON() {
   showToast('Datei heruntergeladen.', 'success');
 }
 
-// --- Sidebar device list ---
-function renderSidebarDeviceList() {
-  const list = document.getElementById('sidebarDeviceList');
-  if (!list) return;
-  list.innerHTML = '';
-  state.devices.forEach(d => {
-    const item = document.createElement('div');
-    item.className = 'sb-device-item';
-    item.innerHTML = `<span class="sb-device-name">${d.name}</span>
-      <span class="sb-device-badge">${d.outputs}OUT</span>`;
-    item.onclick = () => scrollToDevice(d.id);
-    list.appendChild(item);
-  });
-}
-
-function scrollToDevice(id) {
-  const card = document.querySelector('[data-device-id="' + id + '"]');
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-}

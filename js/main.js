@@ -9,9 +9,11 @@ renderEthPanel();
 loadLogosLocal();
 updateProjectDisplay();
 
-// Try to restore last session from localStorage
+renderSidebarPlanList();
+
+// Try to restore most recent plan from localStorage
 (async () => {
-  const loaded = tryLoadFromLS();
+  const loaded = tryLoadMostRecentPlan();
   if (!loaded) updateEmptyState();
   updatePreview();
 

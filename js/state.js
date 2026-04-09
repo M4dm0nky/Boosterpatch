@@ -1,11 +1,12 @@
 'use strict';
 
-const APP_VERSION = 'v0.6.3';
+const APP_VERSION = 'v0.6.5';
 
 // ============================================================
 // 1. STATE
 // ============================================================
 const state = {
+  planId: null,
   projectName: 'Unbenannt',
   projectCreated: false,
   created: null,

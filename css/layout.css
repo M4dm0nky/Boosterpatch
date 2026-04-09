@@ -204,6 +204,78 @@ body {
   flex-shrink: 0;
 }
 
+/* Plan list items */
+.sb-new-badge {
+  font-size: 8px;
+  font-weight: 700;
+  background: var(--accent-green);
+  color: #000;
+  padding: 1px 4px;
+  border-radius: 2px;
+  margin-right: 2px;
+  letter-spacing: 0;
+}
+
+.sb-plan-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 8px 6px 14px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.5px;
+  border: 1px solid transparent;
+  margin: 2px 6px;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.sb-plan-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--text-primary);
+  border-color: var(--rack-border);
+}
+.sb-plan-item.active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(232,200,74,0.06);
+}
+.sb-plan-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.sb-plan-rename-input {
+  flex: 1;
+  min-width: 0;
+  background: var(--app-bg);
+  border: 1px solid var(--accent);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 1px 4px;
+  outline: none;
+}
+.sb-plan-btn {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background: transparent;
+  border: 1px solid var(--rack-border);
+  color: var(--text-secondary);
+  font-size: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.1s, border-color 0.1s;
+}
+.sb-plan-btn:hover { color: var(--accent); border-color: var(--accent); }
+.sb-plan-btn.danger:hover { color: var(--accent-red); border-color: var(--accent-red); }
+
 /* Save dialog options */
 .save-option {
   display: flex;

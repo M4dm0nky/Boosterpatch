@@ -37,7 +37,6 @@ function renderAllDevices() {
   updateRackScale();
 
   state.devices.forEach(d => container.appendChild(buildDeviceCard(d)));
-  renderSidebarDeviceList();
 }
 
 function buildDeviceCard(device) {

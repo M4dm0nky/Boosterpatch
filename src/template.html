@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.6.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.6.3</div>
       </div>
     </div>
   </div>
@@ -300,6 +300,27 @@
 
 <!-- ===== TOAST CONTAINER ===== -->
 <div id="toastContainer"></div>
+
+<!-- ===== POPOVER: Universum ===== -->
+<div id="univPopover" class="univ-popover" style="display:none;">
+  <div class="univ-pop-row">
+    <span class="univ-pop-u">U</span>
+    <div class="univ-drum-wrap">
+      <button class="univ-drum-btn"
+              onmousedown="event.preventDefault()"
+              onclick="univStep(1)">▲</button>
+      <div class="univ-drum-window">
+        <div class="univ-drum-reel" id="univReel">
+          <input type="number" id="univInput" min="1" max="999"
+                 oninput="univClampInput()" onkeydown="univInputKey(event)">
+        </div>
+      </div>
+      <button class="univ-drum-btn"
+              onmousedown="event.preventDefault()"
+              onclick="univStep(-1)">▼</button>
+    </div>
+  </div>
+</div>
 
 <!-- BUILD:JS -->
 

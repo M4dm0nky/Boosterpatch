@@ -148,8 +148,6 @@ function buildXLRConnector(deviceId, type, conn) {
   wrap.className = 'xlr-connector ' + type;
   wrap.id = 'xlr_' + deviceId + '_' + type + '_' + conn.id;
   wrap.title = (type === 'input' ? 'IN ' : 'OUT ') + conn.id + (conn.label ? ' — ' + conn.label : '');
-  wrap.onclick = () => openConnectorDetail(deviceId, type, conn.id);
-
   // Drag & Drop for output connectors
   if (type === 'output') {
     wrap.addEventListener('dragover', e => {
@@ -181,10 +179,16 @@ function buildXLRConnector(deviceId, type, conn) {
     });
   }
 
-  // 7-Segment Display above connector
+  // 7-Segment Display above connector — Klick öffnet Universe-Popover
   const dispText = getConnDisplayText(conn, type);
   const dispEl = buildSegDisplay(dispText);
   dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
+  dispEl.style.cursor = 'pointer';
+  dispEl.title = 'Universum bearbeiten';
+  dispEl.addEventListener('click', e => {
+    e.stopPropagation();
+    openUnivPopover(deviceId, type, conn.id, dispEl);
+  });
   wrap.appendChild(dispEl);
 
   // Body

@@ -71,29 +71,91 @@ function connectEthToOutput(deviceId, connId, ethId) {
 }
 
 // ============================================================
-// 11. CONNECTOR DETAIL (navigiert zu Details-Tab)
+// 11. UNIVERSE POPOVER
 // ============================================================
-function clearSelectedConnectors() {
-  document.querySelectorAll('.xlr-connector.selected').forEach(el => el.classList.remove('selected'));
+let _univCtx = null;
+
+function openUnivPopover(deviceId, type, connId, anchorEl) {
+  const device = getDevice(deviceId);
+  if (!device) return;
+  const conns = type === 'input' ? device.connections.inputs : device.connections.outputs;
+  const conn = conns.find(c => c.id === connId);
+  if (!conn) return;
+
+  _univCtx = { deviceId, type, connId };
+
+  const pop  = document.getElementById('univPopover');
+  const input = document.getElementById('univInput');
+  input.value = conn.universe || 1;
+
+  // Kurz einblenden um Größe zu messen, dann positionieren
+  pop.style.visibility = 'hidden';
+  pop.style.display = 'flex';
+
+  const rect = anchorEl.getBoundingClientRect();
+  const pw = pop.offsetWidth;
+  const ph = pop.offsetHeight;
+  let left = rect.left + rect.width / 2 - pw / 2;
+  let top  = rect.bottom + 8;
+  if (left + pw > window.innerWidth  - 10) left = window.innerWidth  - pw - 10;
+  if (left < 10) left = 10;
+  if (top  + ph > window.innerHeight - 10) top  = rect.top - ph - 8;
+  pop.style.left = left + 'px';
+  pop.style.top  = top  + 'px';
+  pop.style.visibility = '';
+
+  input.focus();
+  input.select();
+
+  setTimeout(() => document.addEventListener('mousedown', _univOutsideDown), 10);
 }
 
-function openConnectorDetail(deviceId, type, connId) {
-  clearSelectedConnectors();
-  const xlrEl = document.getElementById('xlr_' + deviceId + '_' + type + '_' + connId);
-  if (xlrEl) xlrEl.classList.add('selected');
+function _univOutsideDown(e) {
+  const pop = document.getElementById('univPopover');
+  if (!pop.contains(e.target)) confirmUnivPopover();
+}
 
-  switchTab('details');
+function closeUnivPopover() {
+  document.getElementById('univPopover').style.display = 'none';
+  document.removeEventListener('mousedown', _univOutsideDown);
+  _univCtx = null;
+}
+
+function confirmUnivPopover() {
+  if (!_univCtx) return;
+  const { deviceId, type, connId } = _univCtx;
+  const val = Math.max(1, Math.min(999, parseInt(document.getElementById('univInput').value) || 1));
+  closeUnivPopover();
+  savePtEdit(deviceId, type, connId, 'universe', String(val));
   renderPatchTable();
+}
 
-  const rowId = 'ptrow_' + deviceId + '_' + type + '_' + connId;
-  setTimeout(() => {
-    const row = document.getElementById(rowId);
-    if (row) {
-      row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      row.classList.add('pt-row-highlight');
-      setTimeout(() => row.classList.remove('pt-row-highlight'), 2200);
-    }
-  }, 80);
+function univStep(delta) {
+  const input = document.getElementById('univInput');
+  const reel  = document.getElementById('univReel');
+  let v = (parseInt(input.value) || 1) + delta;
+  if (v < 1) v = 1;
+  if (v > 999) v = 999;
+  input.value = v;
+  // Snap-Animation: kurz entfernen dann wieder setzen (reflow erzwingen)
+  reel.classList.remove('snap-up', 'snap-down');
+  void reel.offsetWidth;
+  reel.classList.add(delta > 0 ? 'snap-up' : 'snap-down');
+}
+
+function univInputKey(e) {
+  if (e.key === 'Enter')     { e.preventDefault(); confirmUnivPopover(); }
+  if (e.key === 'Escape')    closeUnivPopover();
+  if (e.key === 'ArrowUp')   { e.preventDefault(); univStep(1);  }
+  if (e.key === 'ArrowDown') { e.preventDefault(); univStep(-1); }
+}
+
+function univClampInput() {
+  const input = document.getElementById('univInput');
+  let v = parseInt(input.value);
+  if (isNaN(v)) return;
+  if (v < 1)   input.value = 1;
+  if (v > 999) input.value = 999;
 }
 
 // ============================================================

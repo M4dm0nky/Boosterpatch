@@ -184,10 +184,22 @@ function buildXLRConnector(deviceId, type, conn) {
   dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
   if (type === 'input') {
     dispEl.style.cursor = 'pointer';
-    dispEl.title = 'Universum bearbeiten';
+    dispEl.title = 'Klick: Universum bearbeiten · Rechtsklick: zurücksetzen';
     dispEl.addEventListener('click', e => {
       e.stopPropagation();
       openUnivPopover(deviceId, type, conn.id, dispEl);
+    });
+    dispEl.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (!conn.universe) return;
+      conn.universe = null;
+      conn.active = false;
+      markModified();
+      updateConnDisplay(deviceId, 'input', conn);
+      syncConnLed(deviceId, 'input', conn.id);
+      syncOutputLedsForInput(deviceId, conn.id);
+      renderPatchTable();
+      showToast('Universum zurückgesetzt.', 'info', 1500);
     });
   }
   wrap.appendChild(dispEl);
@@ -349,7 +361,7 @@ function buildSegDisplay(text) {
 
 function getConnDisplayText(conn, type) {
   if (type === 'input') {
-    if (!conn.universe) return '    ';
+    if (!conn.universe) return '----';
     return 'U' + String(conn.universe).padStart(3, ' ');
   } else {
     if (conn.ethId) {

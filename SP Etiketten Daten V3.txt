@@ -1,0 +1,239 @@
+Fixture	Typ	Mode	DMX	Line	Plugbox	Position	Funktion	Color	Bem Kordm	X Kordm	Y Kordm	Winkel
+51	Chauvet Strike Array 2		23/389	LK Z/4	FLA/1	Floor				"4,73m"	"-7,74m"	90°
+52	Chauvet Strike Array 2		23/392	LK Z/4	FLA/2	Floor				"6,60m"	"-7,53m"	60°
+53	Chauvet Strike Array 2		23/395	LK Z/4	FLA/3	Floor				"8,01m"	"-6,44m"	30°
+54	Chauvet Strike Array 2		23/398	LK Z/4	FLA/4	Floor				"8,72m"	"-4,71m"	5°
+55	Chauvet Strike Array 2		23/401	LK Z/4	FLA/5	Floor				"9,19m"	"-2,14m"	0°
+56	Chauvet Strike Array 2		24/375	LK Z/8	FLC/1	Floor				"9,61m"	"0,41m"	0°
+57	Chauvet Strike Array 2		24/378	LK Z/8	FLC/1	Floor				"9,61m"	"1,83m"	0°
+58	Chauvet Strike Array 2		24/381	LK Z/8	FLC/2	Floor				"9,91m"	"6,58m"	-11°
+59	Chauvet Strike Array 2		24/384	LK Z/8	FLC/2	Floor				"9,20m"	"8,20m"	-49°
+60	Chauvet Strike Array 2		24/387	LK Z/8	FLC/3	Floor				"7,53m"	"-0,12m"	0°
+61	Chauvet Strike Array 2		24/390	LK Z/8	FLC/3	Floor				"7,61m"	"2,10m"	0°
+62	Chauvet Strike Array 2		24/393	LK Z/8	FLC/4	Floor				"6,98m"	"5,08m"	-27°
+63	Chauvet Strike Array 2		24/396	LK Z/8	FLC/4	Floor				"6,07m"	"7,05m"	-27°
+64	Chauvet Strike Array 2		24/399	LK Z/8	FLC/5	Floor				"4,54m"	"-0,02m"	0°
+65	Chauvet Strike Array 2		24/402	LK Z/8	FLC/5	Floor				"4,51m"	"1,78m"	0°
+66	Chauvet Strike Array 2		24/405	LK Z/8	FLC/6	Floor				"4,39m"	"3,48m"	-18°
+67	Chauvet Strike Array 2		24/408	LK Z/8	FLC/6	Floor				"3,82m"	"4,90m"	-28°
+68	Chauvet Strike Array 2		24/411	LK Z/8	FLC/6	Floor				"3,25m"	"6,16m"	-28°
+351	Chauvet Color Strike M		22/1	LK Z/1	FLB/2	Floor				"10,63m"	"-7,50m"	0°
+352	Chauvet Color Strike M		22/98	LK Z/1	FLB/2	Floor				"10,63m"	"-5,63m"	0°
+353	Chauvet Color Strike M		22/195	LK Z/1	FLB/3	Floor				"10,63m"	"-3,75m"	0°
+354	Chauvet Color Strike M		22/292	LK Z/1	FLB/3	Floor				"10,63m"	"-1,88m"	0°
+355	Chauvet Color Strike M		22/389	LK Z/1	FLB/4	Floor				"10,63m"	"-0,00m"	0°
+356	Chauvet Color Strike M		23/1	LK Z/2	FLB/4	Floor				"10,63m"	"1,87m"	0°
+357	Chauvet Color Strike M		23/98	LK Z/2	FLB/5	Floor				"10,63m"	"3,75m"	0°
+358	Chauvet Color Strike M		23/195	LK Z/2	FLB/5	Floor				"10,63m"	"5,62m"	0°
+359	Chauvet Color Strike M		23/292	LK Z/2	FLB/5	Floor				"10,63m"	"7,50m"	0°
+360	Chauvet Color Strike M		25/1	LK Z/5	FLA/1	Floor				"5,73m"	"-8,29m"	90°
+361	Chauvet Color Strike M		25/98	LK Z/5	FLA/2	Floor				"7,75m"	"-7,48m"	60°
+362	Chauvet Color Strike M		25/195	LK Z/5	FLA/3	Floor				"9,00m"	"-5,83m"	30°
+363	Chauvet Color Strike M		25/292	LK Z/5	FLA/4	Floor				"9,33m"	"-3,78m"	5°
+364	Chauvet Color Strike M		26/1	LK Z/7	FLC/1	Floor				"9,60m"	"1,10m"	0°
+365	Chauvet Color Strike M		26/98	LK Z/7	FLC/2	Floor				"9,24m"	"7,34m"	-27°
+366	Chauvet Color Strike M		26/195	LK Z/7	FLC/3	Floor				"7,55m"	"0,98m"	0°
+367	Chauvet Color Strike M		26/292	LK Z/7	FLC/4	Floor				"6,56m"	"6,09m"	-27°
+368	Chauvet Color Strike M		25/389	LK Z/5	FLA/6	Floor				"5,31m"	"-5,17m"	90°
+369	Chauvet Color Strike M		26/389	LK Z/7	FLC/5	Floor				"3,06m"	"-0,04m"	0°
+370	Chauvet Color Strike M		27/1	EC 1/3	FLE/3	Floor				"1,30m"	"-4,97m"	-180°
+371	Chauvet Color Strike M		27/98	EC 1/3	FLE/3	Floor				"1,23m"	"-4,09m"	150°
+372	Chauvet Color Strike M		27/195	EC 2/3	FLF/3	Floor				"1,38m"	"4,21m"	-165°
+373	Chauvet Color Strike M		27/292	EC 2/3	FLF/3	Floor				"1,40m"	"7,60m"	-161°
+374	Chauvet Color Strike M		28/1	EC 1/4	FLE/4	Floor				"-3,84m"	"-1,99m"	-180°
+375	Chauvet Color Strike M		28/98	EC 1/4	FLE/4	Floor				"-3,84m"	"0,01m"	-180°
+376	Chauvet Color Strike M		28/195	EC 1/4	FLE/4	Floor				"-3,84m"	"2,01m"	-180°
+501	SGM P5		24/349	LK Z/6	FLD/2	Floor				"5,88m"	"-3,34m"	-180°
+502	SGM P5		24/355	LK Z/6	FLD/3	Floor				"5,88m"	"-2,90m"	-180°
+503	SGM P5		24/361	LK Z/6	FLD/4	Floor				"5,88m"	"-2,45m"	-180°
+504	SGM P5		24/367	LK Z/6	FLD/5	Floor				"5,88m"	"-2,01m"	-180°
+751	MAC Ultra Performance		24/1	LK Z/3	FLA/1	Floor				"4,73m"	"-8,26m"	90°
+752	MAC Ultra Performance		24/59	LK Z/3	FLA/2	Floor				"6,87m"	"-7,98m"	59°
+753	MAC Ultra Performance		24/117	LK Z/3	FLA/3	Floor				"8,47m"	"-6,68m"	28°
+754	MAC Ultra Performance		24/175	LK Z/3	FLA/4	Floor				"9,23m"	"-4,77m"	6°
+755	MAC Ultra Performance		24/233	LK Z/3	FLA/5	Floor				"9,44m"	"-2,66m"	0°
+781	MAC Ultra Performance		27/389	EC 1/1	FLE/2	Floor				"0,49m"	"-9,80m"	-90°
+782	MAC Ultra Performance		27/447	EC 2/2	FLF/2	Floor				"0,49m"	"9,80m"	90°
+792	MAC Ultra Performance		24/291	LK Z/6	FLD/1	Floor				"7,20m"	"-2,68m"	0°
+901	Smoke Factory Fan Fogger EC 1.3		22/486	LK Z/1	FLB/1	Floor				"9,08m"	"-8,37m"	-135°
+902	Smoke Factory Fan Fogger EC 1.3		23/404	LK Z/2	FLB/6	Floor				"11,34m"	"6,48m"	135°
+903	MDG Me2		24/414	EC 1/2	FLE/1	Floor				"1,94m"	"-9,56m"	-90°
+904	MDG Me2		27/505	EC 2/1	FLF/1	Floor				"1,54m"	"9,64m"	90°
+905	Look Solutions Viper 2.6		24/373	LK Z/6	FLD/6	Floor				"7,63m"	"-1,86m"	0°
+915	Martin AF 1 Fan Floor		24/374	LK Z/6	FLD/6	Floor				"8,18m"	"-2,19m"	0°
+1028	Chauvet Strike Array 4		1/197	LK H/6	I 1/2	Leiter SL				"0,48m"	"22,95m"	-180°
+1029	Chauvet Strike Array 4		1/207	LK H/6	I 1/5	Leiter SL				"0,48m"	"22,96m"	-180°
+1030	Chauvet Strike Array 4		1/217	LK H/6	I 2/3	Leiter SL				"0,48m"	"22,96m"	-180°
+1031	Chauvet Strike Array 4		1/227	LK H/6	I 2/6	Leiter SL				"0,48m"	"22,98m"	-180°
+3027	Chauvet Color Strike M		21/1	LK H/5	I 1/1	Leiter SL				"0,55m"	"22,96m"	-180°
+3028	Chauvet Color Strike M		21/98	LK H/5	I 1/4	Leiter SL				"0,55m"	"22,96m"	-180°
+3029	Chauvet Color Strike M		21/195	LK H/5	I 2/2	Leiter SL				"0,55m"	"22,96m"	-180°
+3030	Chauvet Color Strike M		21/292	LK H/5	I 2/5	Leiter SL				"0,55m"	"22,96m"	-180°
+7028	Robe iForte		3/291	LK H/4	I 1/3	Leiter SL				"0,55m"	"22,96m"	-180°
+7029	Robe iForte		3/345	LK H/4	I 2/1	Leiter SL				"0,55m"	"22,96m"	-180°
+7030	Robe iForte		3/399	LK H/4	I 2/4	Leiter SL				"0,55m"	"22,96m"	-180°
+1001	Chauvet Strike Array 4		1/115	LKF/5	G2/6	Leiter SR				"0,48m"	"-23,02m"	-180°
+1002	Chauvet Strike Array 4		1/125	LKF/5	G2/3	Leiter SR				"0,48m"	"-23,03m"	-180°
+1003	Chauvet Strike Array 4		1/135	LKF/5	G1/5	Leiter SR				"0,48m"	"-23,02m"	-180°
+1004	Chauvet Strike Array 4		1/145	LKF/5	G1/2	Leiter SR				"0,48m"	"-23,02m"	-180°
+3001	Chauvet Color Strike M		20/1	LKF/6	G2/5	Leiter SR				"0,55m"	"-23,02m"	-180°
+3002	Chauvet Color Strike M		20/98	LKF/6	G2/2	Leiter SR				"0,55m"	"-23,01m"	-180°
+3003	Chauvet Color Strike M		20/195	LKF/6	G1/4	Leiter SR				"0,55m"	"-23,01m"	-180°
+3004	Chauvet Color Strike M		20/292	LKF/6	G1/1	Leiter SR				"0,55m"	"-23,01m"	-180°
+7001	Robe iForte		2/291	LKF/4	G2/4	Leiter SR				"0,55m"	"-23,02m"	-180°
+7002	Robe iForte		2/345	LKF/4	G2/1	Leiter SR				"0,55m"	"-23,01m"	-180°
+7003	Robe iForte		2/399	LKF/4	G1/3	Leiter SR				"0,55m"	"-23,01m"	-180°
+1	Chauvet Strike Array 2		1/1	LK A/4	A 1/3	LX 1				"9,00m"	"-5,60m"	0°
+2	Chauvet Strike Array 2		1/4	LK A/4	A 1/6	LX 1				"9,00m"	"-4,00m"	0°
+3	Chauvet Strike Array 2		1/7	LK A/4	A 2/3	LX 1				"9,00m"	"-2,40m"	0°
+4	Chauvet Strike Array 2		1/10	LK A/4	A 2/5	LX 1				"9,00m"	"-0,80m"	0°
+5	Chauvet Strike Array 2		1/13	LK A/4	A 3/2	LX 1				"9,00m"	"0,80m"	0°
+6	Chauvet Strike Array 2		1/16	LK A/4	A 3/4	LX 1				"9,00m"	"2,40m"	0°
+7	Chauvet Strike Array 2		1/19	LK A/4	A 4/2	LX 1				"9,00m"	"4,00m"	0°
+8	Chauvet Strike Array 2		1/22	LK A/4	A 4/5	LX 1				"9,00m"	"5,60m"	0°
+301	Chauvet Color Strike M		4/1	LK A/3	A 1/4	LX 1				"9,44m"	"-4,78m"	-180°
+302	Chauvet Color Strike M		4/98	LK A/3	A 2/1	LX 1				"9,44m"	"-3,18m"	-180°
+303	Chauvet Color Strike M		4/195	LK A/3	A 2/6	LX 1				"9,44m"	"0,02m"	-180°
+304	Chauvet Color Strike M		4/292	LK A/3	A 3/5	LX 1				"9,44m"	"3,22m"	-180°
+305	Chauvet Color Strike M		4/389	LK A/3	A 4/3	LX 1				"9,44m"	"4,82m"	-180°
+701	MAC Ultra Performance		2/1	LK A/1	A 1/1	LX 1				"9,44m"	"-7,20m"	-180°
+702	MAC Ultra Performance		2/59	LK A/1	A 1/2	LX 1				"9,44m"	"-5,60m"	-180°
+703	MAC Ultra Performance		2/117	LK A/1	A 1/5	LX 1				"9,44m"	"-4,00m"	-180°
+704	MAC Ultra Performance		2/175	LK A/1	A 2/2	LX 1				"9,44m"	"-2,40m"	-180°
+705	MAC Ultra Performance		2/233	LK A/1	A 2/4	LX 1				"9,44m"	"-0,80m"	-180°
+706	MAC Ultra Performance		3/1	LK A/2	A 3/1	LX 1				"9,44m"	"0,80m"	-180°
+707	MAC Ultra Performance		3/59	LK A/2	A 3/3	LX 1				"9,44m"	"2,40m"	-180°
+708	MAC Ultra Performance		3/117	LK A/2	A 4/1	LX 1				"9,44m"	"4,00m"	-180°
+709	MAC Ultra Performance		3/175	LK A/2	A 4/4	LX 1				"9,44m"	"5,60m"	-180°
+710	MAC Ultra Performance		3/233	LK A/2	A 4/6	LX 1				"9,44m"	"7,20m"	-180°
+	NullPunkt		0/0	Mode?		LX 1				"9,45m"	"-8,40m"	0°
+9	Chauvet Strike Array 2		1/25	LKB/5	B 1/3	LX 2				"6,00m"	"-6,40m"	0°
+10	Chauvet Strike Array 2		1/28	LKB/5	B 1/6	LX 2				"6,00m"	"-4,80m"	0°
+11	Chauvet Strike Array 2		1/31	LKB/5	B 2/4	LX 2				"6,00m"	"-3,20m"	0°
+12	Chauvet Strike Array 2		1/34	LKB/5	B 2/5	LX 2				"6,00m"	"-1,60m"	0°
+13	Chauvet Strike Array 2		1/37	LKB/5	B 3/3	LX 2				"6,00m"	"-0,00m"	0°
+14	Chauvet Strike Array 2		1/40	LKB/5	B 3/6	LX 2				"6,00m"	"1,60m"	0°
+15	Chauvet Strike Array 2		1/43	LKB/5	B 4/3	LX 2				"6,00m"	"3,20m"	0°
+16	Chauvet Strike Array 2		1/46	LKB/5	B 5/2	LX 2				"6,00m"	"4,80m"	0°
+17	Chauvet Strike Array 2		1/49	LKB/5	B 5/5	LX 2				"6,00m"	"6,40m"	0°
+306	Chauvet Color Strike M		7/1	LKB/3	B 1/4	LX 2				"6,43m"	"-5,59m"	-180°
+307	Chauvet Color Strike M		7/98	LKB/3	B 2/6	LX 2				"6,43m"	"-3,99m"	-180°
+308	Chauvet Color Strike M		7/195	LKB/3	B 2/1	LX 2				"6,43m"	"-2,39m"	-180°
+309	Chauvet Color Strike M		7/292	LKB/3	B 3/1	LX 2				"6,43m"	"-0,79m"	-180°
+310	Chauvet Color Strike M		8/1	LKB/4	B 3/4	LX 2				"6,43m"	"0,81m"	-180°
+311	Chauvet Color Strike M		8/98	LKB/4	B 4/1	LX 2				"6,43m"	"2,41m"	-180°
+312	Chauvet Color Strike M		8/195	LKB/4	B 4/4	LX 2				"6,43m"	"4,01m"	-180°
+313	Chauvet Color Strike M		8/292	LKB/4	B 5/3	LX 2				"6,43m"	"5,61m"	-180°
+711	MAC Ultra Performance		5/1	LKB/1	B 1/1	LX 2				"6,44m"	"-8,00m"	-180°
+712	MAC Ultra Performance		5/59	LKB/1	B 1/2	LX 2				"6,44m"	"-6,40m"	-180°
+713	MAC Ultra Performance		5/117	LKB/1	B 1/5	LX 2				"6,44m"	"-4,80m"	-180°
+714	MAC Ultra Performance		5/175	LKB/1	B 2/3	LX 2				"6,44m"	"-3,20m"	-180°
+715	MAC Ultra Performance		5/233	LKB/1	B 2/2	LX 2				"6,44m"	"-1,60m"	-180°
+716	MAC Ultra Performance		6/1	LKB/2	B 3/2	LX 2				"6,44m"	"-0,00m"	-180°
+717	MAC Ultra Performance		6/59	LKB/2	B 3/5	LX 2				"6,44m"	"1,60m"	-180°
+718	MAC Ultra Performance		6/117	LKB/2	B 4/2	LX 2				"6,44m"	"3,20m"	-180°
+719	MAC Ultra Performance		6/175	LKB/2	B 5/1	LX 2				"6,44m"	"4,80m"	-180°
+720	MAC Ultra Performance		6/233	LKB/2	B 5/4	LX 2				"6,44m"	"6,40m"	-180°
+721	MAC Ultra Performance		6/291	LKB/2	B 5/6	LX 2				"6,44m"	"8,00m"	-180°
+	NullPunkt		0/0	Mode?		LX 2				"6,45m"	"-8,40m"	0°
+18	Chauvet Strike Array 2		1/52	LKC/5	C 1/2	LX 3				"3,01m"	"-7,20m"	0°
+19	Chauvet Strike Array 2		1/55	LKC/5	C 1/5	LX 3				"3,01m"	"-5,60m"	0°
+20	Chauvet Strike Array 2		1/58	LKC/5	C 2/3	LX 3				"3,01m"	"-4,00m"	0°
+21	Chauvet Strike Array 2		1/61	LKC/5	C 2/6	LX 3				"3,01m"	"-2,40m"	0°
+22	Chauvet Strike Array 2		1/64	LKC/5	C 3/3	LX 3				"3,01m"	"-0,80m"	0°
+23	Chauvet Strike Array 2		1/67	LKC/5	C 3/5	LX 3				"3,01m"	"0,80m"	0°
+24	Chauvet Strike Array 2		1/70	LKC/5	C 4/3	LX 3				"3,01m"	"2,40m"	0°
+25	Chauvet Strike Array 2		1/73	LKC/5	C 4/6	LX 3				"3,01m"	"4,00m"	0°
+26	Chauvet Strike Array 2		1/76	LKC/5	C 5/3	LX 3				"3,01m"	"5,60m"	0°
+27	Chauvet Strike Array 2		1/79	LKC/5	C 5/6	LX 3				"3,01m"	"7,20m"	0°
+314	Chauvet Color Strike M		11/1	LKC/3	C 1/3	LX 3				"3,46m"	"-6,40m"	-180°
+315	Chauvet Color Strike M		11/98	LKC/3	C 2/1	LX 3				"3,46m"	"-4,80m"	-180°
+316	Chauvet Color Strike M		11/195	LKC/3	C 2/4	LX 3				"3,46m"	"-3,20m"	-180°
+317	Chauvet Color Strike M		11/292	LKC/3	C 3/6	LX 3				"3,46m"	"-1,60m"	-180°
+318	Chauvet Color Strike M		11/389	LKC/3	C 3/1	LX 3				"3,46m"	"-0,00m"	-180°
+319	Chauvet Color Strike M		12/1	LKC/4	C 4/1	LX 3				"3,46m"	"1,60m"	-180°
+320	Chauvet Color Strike M		12/98	LKC/4	C 4/4	LX 3				"3,46m"	"3,20m"	-180°
+321	Chauvet Color Strike M		12/195	LKC/4	C 5/1	LX 3				"3,46m"	"4,80m"	-180°
+322	Chauvet Color Strike M		12/292	LKC/4	C 5/4	LX 3				"3,46m"	"6,40m"	-180°
+722	MAC Ultra Performance		9/1	LKC/1	C 1/1	LX 3				"3,45m"	"-7,20m"	-180°
+723	MAC Ultra Performance		9/59	LKC/1	C 1/4	LX 3				"3,45m"	"-5,60m"	-180°
+724	MAC Ultra Performance		9/117	LKC/1	C 2/2	LX 3				"3,45m"	"-4,00m"	-180°
+725	MAC Ultra Performance		9/175	LKC/1	C 2/5	LX 3				"3,45m"	"-2,40m"	-180°
+726	MAC Ultra Performance		9/233	LKC/1	C 3/2	LX 3				"3,45m"	"-0,80m"	-180°
+727	MAC Ultra Performance		10/1	LKC/2	C 3/4	LX 3				"3,45m"	"0,80m"	-180°
+728	MAC Ultra Performance		10/59	LKC/2	C 4/2	LX 3				"3,45m"	"2,40m"	-180°
+729	MAC Ultra Performance		10/117	LKC/2	C 4/5	LX 3				"3,45m"	"4,00m"	-180°
+730	MAC Ultra Performance		10/175	LKC/2	C 5/2	LX 3				"3,45m"	"5,60m"	-180°
+731	MAC Ultra Performance		10/233	LKC/2	C 5/5	LX 3				"3,45m"	"7,20m"	-180°
+	NullPunkt		0/0	Mode?		LX 3				"3,45m"	"-8,40m"	0°
+28	Chauvet Strike Array 4		1/82	LKE/4	E 1/2	LX 4				"-1,68m"	"-7,40m"	0°
+29	Chauvet Strike Array 4		1/85	LKE/4	E 1/4	LX 4				"-1,68m"	"-5,92m"	0°
+30	Chauvet Strike Array 4		1/88	LKE/4	E 2/2	LX 4				"-1,68m"	"-4,45m"	0°
+31	Chauvet Strike Array 4		1/91	LKE/4	E 2/4	LX 4				"-1,68m"	"-2,96m"	0°
+32	Chauvet Strike Array 4		1/94	LKE/4	E 3/4	LX 4				"-1,68m"	"-1,48m"	0°
+33	Chauvet Strike Array 4		1/97	LKE/4	E 3/2	LX 4				"-1,68m"	"-0,01m"	0°
+34	Chauvet Strike Array 4		1/100	LKE/4	E 3/6	LX 4				"-1,68m"	"1,48m"	0°
+35	Chauvet Strike Array 4		1/103	LKE/4	E 4/3	LX 4				"-1,68m"	"2,96m"	0°
+36	Chauvet Strike Array 4		1/106	LKE/4	E 4/5	LX 4				"-1,68m"	"4,44m"	0°
+37	Chauvet Strike Array 4		1/109	LKE/4	E 5/1	LX 4				"-1,68m"	"5,91m"	0°
+38	Chauvet Strike Array 4		1/112	LKE/4	E 5/4	LX 4				"-1,68m"	"7,39m"	0°
+323	Chauvet Color Strike M		14/1	LKE/2	E 1/3	LX 4				"-1,25m"	"-6,54m"	-180°
+324	Chauvet Color Strike M		14/98	LKE/2	E 2/1	LX 4				"-1,25m"	"-4,82m"	-180°
+325	Chauvet Color Strike M		14/195	LKE/2	E 2/5	LX 4				"-1,26m"	"-2,97m"	-180°
+326	Chauvet Color Strike M		14/292	LKE/2	E 3/3	LX 4				"-1,26m"	"-1,00m"	-180°
+327	Chauvet Color Strike M		15/1	LKE/3	E 3/5	LX 4				"-1,26m"	"1,00m"	-180°
+328	Chauvet Color Strike M		15/98	LKE/3	E 4/2	LX 4				"-1,26m"	"2,96m"	-180°
+329	Chauvet Color Strike M		15/195	LKE/3	E 5/6	LX 4				"-1,26m"	"4,81m"	-180°
+330	Chauvet Color Strike M		15/292	LKE/3	E 5/2	LX 4				"-1,26m"	"6,53m"	-180°
+732	Robe iForte		13/1	LKE/1	E 1/1	LX 4				"-1,26m"	"-7,40m"	-180°
+733	Robe iForte		13/55	LKE/1	E 1/5	LX 4				"-1,26m"	"-5,65m"	-180°
+734	Robe iForte		13/109	LKE/1	E 2/3	LX 4				"-1,25m"	"-3,96m"	-180°
+735	Robe iForte		13/163	LKE/1	E 2/6	LX 4				"-1,25m"	"-1,99m"	-180°
+736	Robe iForte		13/217	LKE/1	E 3/1	LX 4				"-1,25m"	"-0,00m"	-180°
+737	Robe iForte		13/271	LKE/1	E 4/1	LX 4				"-1,24m"	"1,97m"	-180°
+738	Robe iForte		13/325	LKE/1	E 4/4	LX 4				"-1,24m"	"3,94m"	-180°
+739	Robe iForte		13/379	LKE/1	E 5/5	LX 4				"-1,26m"	"5,67m"	-180°
+740	Robe iForte		13/433	LKE/1	E 5/3	LX 4				"-1,26m"	"7,40m"	-180°
+	NullPunkt		0/0	Mode?		LX 4				"-1,25m"	"-8,40m"	0°
+1005	Chauvet Strike Array 4		1/155	LKF/3	F 4/3	LX 5				"0,13m"	"-22,97m"	0°
+1006	Chauvet Strike Array 4		1/158	LKF/3	F 4/5	LX 5				"0,13m"	"-21,21m"	0°
+1007	Chauvet Strike Array 4		1/161	LKF/3	F 3/3	LX 5				"0,13m"	"-19,44m"	0°
+1008	Chauvet Strike Array 4		1/164	LKF/3	F 2/6	LX 5				"0,13m"	"-17,68m"	0°
+1009	Chauvet Strike Array 4		1/167	LKF/3	F 2/3	LX 5				"0,13m"	"-15,91m"	0°
+1010	Chauvet Strike Array 4		1/170	LKF/3	F 1/5	LX 5				"0,13m"	"-14,14m"	0°
+1011	Chauvet Strike Array 4		1/173	LKF/3	F 1/3	LX 5				"0,13m"	"-12,38m"	0°
+3005	Chauvet Color Strike M		17/1	LKF/2	F 4/1	LX 5				"0,55m"	"-22,18m"	-180°
+3006	Chauvet Color Strike M		17/98	LKF/2	F 3/1	LX 5				"0,55m"	"-20,43m"	-180°
+3007	Chauvet Color Strike M		17/195	LKF/2	F 3/4	LX 5				"0,55m"	"-18,67m"	-180°
+3008	Chauvet Color Strike M		17/292	LKF/2	F 2/4	LX 5				"0,55m"	"-16,92m"	-180°
+3009	Chauvet Color Strike M		17/389	LKF/2	F 2/1	LX 5				"0,55m"	"-15,16m"	-180°
+3010	Chauvet Color Strike M		16/379	LKF/1	F 1/1	LX 5				"0,55m"	"-13,41m"	-180°
+7004	Robe iForte		16/1	LKF/1	F 4/2	LX 5				"0,55m"	"-22,98m"	-180°
+7005	Robe iForte		16/55	LKF/1	F 4/4	LX 5				"0,55m"	"-21,21m"	-180°
+7006	Robe iForte		16/109	LKF/1	F 3/2	LX 5				"0,55m"	"-19,45m"	-180°
+7007	Robe iForte		16/163	LKF/1	F 2/5	LX 5				"0,55m"	"-17,68m"	-180°
+7008	Robe iForte		16/217	LKF/1	F 2/2	LX 5				"0,55m"	"-15,92m"	-180°
+7009	Robe iForte		16/271	LKF/1	F 1/4	LX 5				"0,55m"	"-14,15m"	-180°
+7010	Robe iForte		16/325	LKF/1	F 1/2	LX 5				"0,55m"	"-12,38m"	-180°
+	NullPunkt		0/0	Mode?		LX 5				"0,55m"	"-23,39m"	0°
+1021	Chauvet Strike Array 4		1/176	LK H/3	H 1/3	LX 6				"0,13m"	"12,38m"	0°
+1022	Chauvet Strike Array 4		1/179	LK H/3	H 1/5	LX 6				"0,15m"	"14,15m"	0°
+1023	Chauvet Strike Array 4		1/182	LK H/3	H 2/3	LX 6				"0,15m"	"15,91m"	0°
+1024	Chauvet Strike Array 4		1/185	LK H/3	H 2/6	LX 6				"0,15m"	"17,68m"	0°
+1025	Chauvet Strike Array 4		1/188	LK H/3	H 3/2	LX 6				"0,15m"	"19,44m"	0°
+1026	Chauvet Strike Array 4		1/191	LK H/3	H 4/5	LX 6				"0,15m"	"21,21m"	0°
+1027	Chauvet Strike Array 4		1/194	LK H/3	H 4/3	LX 6				"0,15m"	"22,97m"	0°
+3021	Chauvet Color Strike M		18/379	LK H/1	H 1/1	LX 6				"0,55m"	"13,27m"	-180°
+3022	Chauvet Color Strike M		19/1	LK H/2	H 2/1	LX 6				"0,55m"	"15,05m"	-180°
+3023	Chauvet Color Strike M		19/98	LK H/2	H 2/4	LX 6				"0,55m"	"16,83m"	-180°
+3024	Chauvet Color Strike M		19/195	LK H/2	H 3/4	LX 6				"0,55m"	"18,62m"	-180°
+3025	Chauvet Color Strike M		19/292	LK H/2	H 3/1	LX 6				"0,55m"	"20,40m"	-180°
+3026	Chauvet Color Strike M		19/389	LK H/2	H 4/1	LX 6				"0,55m"	"22,18m"	-180°
+7021	Robe iForte		18/1	LK H/1	H 1/2	LX 6				"0,55m"	"12,38m"	-180°
+7022	Robe iForte		18/55	LK H/1	H 1/4	LX 6				"0,55m"	"14,15m"	-180°
+7023	Robe iForte		18/109	LK H/1	H 2/2	LX 6				"0,55m"	"15,91m"	-180°
+7024	Robe iForte		18/163	LK H/1	H 2/5	LX 6				"0,55m"	"17,68m"	-180°
+7025	Robe iForte		18/217	LK H/1	H 3/3	LX 6				"0,55m"	"19,44m"	-180°
+7026	Robe iForte		18/271	LK H/1	H 4/4	LX 6				"0,55m"	"21,21m"	-180°
+7027	Robe iForte		18/325	LK H/1	H 4/2	LX 6				"0,55m"	"22,97m"	-180°
+	NullPunkt		0/0	Mode?		LX 6				"0,55m"	"11,39m"	0°

@@ -1055,6 +1055,28 @@ body {
   white-space: nowrap;
 }
 
+.xlr-ids-btn {
+  display: inline-block;
+  padding: 2px 8px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--rack-border);
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  user-select: none;
+}
+.xlr-ids-btn:hover {
+  background: rgba(232,200,74,0.1);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
     /* ===== css/patch-table.css ===== */
 /* === 12. Patch Table === */
 #tabDetails {
@@ -1813,7 +1835,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.7</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.8</div>
       </div>
     </div>
   </div>
@@ -2158,7 +2180,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.7.7';
+const APP_VERSION = 'v0.7.8';
 
 // ============================================================
 // 1. STATE
@@ -2518,8 +2540,8 @@ function buildXLRConnector(deviceId, type, conn) {
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
 
   if (type === 'output') {
-    lbl.textContent = conn.label || '—';
-    lbl.style.cursor = 'pointer';
+    lbl.textContent = "ID's";
+    lbl.className = 'xlr-label xlr-ids-btn';
     lbl.title = conn.label
       ? 'Klick: Fixtures auf "' + conn.label + '" anzeigen'
       : 'Klick: Fixtures anzeigen (kein Label gesetzt)';

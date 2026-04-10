@@ -253,8 +253,8 @@ function buildXLRConnector(deviceId, type, conn) {
   lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
 
   if (type === 'output') {
-    lbl.textContent = conn.label || '—';
-    lbl.style.cursor = 'pointer';
+    lbl.textContent = "ID's";
+    lbl.className = 'xlr-label xlr-ids-btn';
     lbl.title = conn.label
       ? 'Klick: Fixtures auf "' + conn.label + '" anzeigen'
       : 'Klick: Fixtures anzeigen (kein Label gesetzt)';

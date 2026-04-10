@@ -189,15 +189,16 @@ function buildXLRConnector(deviceId, type, conn) {
       const device = getDevice(deviceId);
       if (!device) return;
       const c = device.connections.outputs.find(x => x.id === conn.id);
-      if (c && c.ethId) {
+      if (c && (c.ethId || c.label)) {
         c.ethId = null;
+        c.label = '';
         c.active = false;
         markModified();
         updateConnDisplay(deviceId, 'output', c);
         syncConnLed(deviceId, 'output', c.id);
         renderPatchTable();
         renderEthPanel();
-        showToast('Verbindung getrennt.', 'info', 1500);
+        showToast('Output zurückgesetzt.', 'info', 1500);
       }
     });
   }

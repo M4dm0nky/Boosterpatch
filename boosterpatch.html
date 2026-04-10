@@ -1782,7 +1782,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.5</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.6</div>
       </div>
     </div>
   </div>
@@ -2128,7 +2128,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.7.5';
+const APP_VERSION = 'v0.7.6';
 
 // ============================================================
 // 1. STATE
@@ -2424,15 +2424,16 @@ function buildXLRConnector(deviceId, type, conn) {
       const device = getDevice(deviceId);
       if (!device) return;
       const c = device.connections.outputs.find(x => x.id === conn.id);
-      if (c && c.ethId) {
+      if (c && (c.ethId || c.label)) {
         c.ethId = null;
+        c.label = '';
         c.active = false;
         markModified();
         updateConnDisplay(deviceId, 'output', c);
         syncConnLed(deviceId, 'output', c.id);
         renderPatchTable();
         renderEthPanel();
-        showToast('Verbindung getrennt.', 'info', 1500);
+        showToast('Output zurückgesetzt.', 'info', 1500);
       }
     });
   }
@@ -2996,32 +2997,6 @@ function renderEthPanel() {
   const panel = document.getElementById('ethPanel');
   const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep');
   existing.forEach(el => el.remove());
-
-  const usedEthIds = new Set(
-    state.devices.flatMap(d => d.connections.outputs.map(o => o.ethId).filter(Boolean))
-  );
-
-  let lastGroup = '';
-  state.ethDatabase.forEach(eth => {
-    const isConnected = usedEthIds.has(eth.id);
-    if (!isConnected) return; // Nur belegte ETH-Einträge zeigen
-
-    if (eth.group !== lastGroup) {
-      lastGroup = eth.group;
-      const groupEl = document.createElement('div');
-      groupEl.className = 'eth-group-label';
-      groupEl.textContent = eth.group;
-      panel.appendChild(groupEl);
-    }
-    const entry = document.createElement('div');
-    entry.className = 'eth-entry connected';
-    entry.dataset.ethId = eth.id;
-    entry.title = 'Bereits verbunden';
-    const label = document.createElement('span');
-    label.textContent = eth.group + ' / ' + eth.port;
-    entry.appendChild(label);
-    panel.appendChild(entry);
-  });
 
   // --- Fixture Lines section ---
   if (state.fixtureDatabase.length === 0) return;
@@ -4225,7 +4200,7 @@ function downloadJSON() {
 // INIT
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
-initEthDatabase();
+
 const _rackResizeObs = new ResizeObserver(() => updateRackScale());
 _rackResizeObs.observe(document.getElementById('devicesContainer'));
 renderEthPanel();

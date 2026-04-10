@@ -2,7 +2,7 @@
 // INIT
 // ============================================================
 document.getElementById('appVersionDisplay').textContent = APP_VERSION;
-initEthDatabase();
+
 const _rackResizeObs = new ResizeObserver(() => updateRackScale());
 _rackResizeObs.observe(document.getElementById('devicesContainer'));
 renderEthPanel();

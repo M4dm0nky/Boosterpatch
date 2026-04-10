@@ -20,32 +20,6 @@ function renderEthPanel() {
   const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep');
   existing.forEach(el => el.remove());
 
-  const usedEthIds = new Set(
-    state.devices.flatMap(d => d.connections.outputs.map(o => o.ethId).filter(Boolean))
-  );
-
-  let lastGroup = '';
-  state.ethDatabase.forEach(eth => {
-    const isConnected = usedEthIds.has(eth.id);
-    if (!isConnected) return; // Nur belegte ETH-Einträge zeigen
-
-    if (eth.group !== lastGroup) {
-      lastGroup = eth.group;
-      const groupEl = document.createElement('div');
-      groupEl.className = 'eth-group-label';
-      groupEl.textContent = eth.group;
-      panel.appendChild(groupEl);
-    }
-    const entry = document.createElement('div');
-    entry.className = 'eth-entry connected';
-    entry.dataset.ethId = eth.id;
-    entry.title = 'Bereits verbunden';
-    const label = document.createElement('span');
-    label.textContent = eth.group + ' / ' + eth.port;
-    entry.appendChild(label);
-    panel.appendChild(entry);
-  });
-
   // --- Fixture Lines section ---
   if (state.fixtureDatabase.length === 0) return;
 

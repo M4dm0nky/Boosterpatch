@@ -40,10 +40,13 @@ function renderEthPanel() {
   sep.className = 'eth-panel-sep';
   panel.appendChild(sep);
 
-  const groupEl = document.createElement('div');
-  groupEl.className = 'line-group-label';
-  groupEl.textContent = 'LINIEN';
-  panel.appendChild(groupEl);
+  // Header row
+  const headerEl = document.createElement('div');
+  headerEl.className = 'line-table-header';
+  headerEl.innerHTML =
+    '<span class="line-th-name">LINIEN</span>' +
+    '<span class="line-th-count">FIXTURE<br>COUNT</span>';
+  panel.appendChild(headerEl);
 
   // Sort lines alphabetically
   const sortedLines = [...lineMap.keys()].sort();
@@ -56,27 +59,22 @@ function renderEthPanel() {
     entry.dataset.lineId = line;
     entry.title = isUsed
       ? line + ' — bereits auf einem Output'
-      : line + ' — auf Output ziehen um zuzuweisen (' + count + ' Fixture' + (count > 1 ? 's' : '') + ')';
+      : line + ' — auf Output ziehen (' + count + ' Fixture' + (count > 1 ? 's' : '') + ')';
 
     entry.addEventListener('dragstart', e => {
       e.dataTransfer.setData('lineId', line);
       e.dataTransfer.effectAllowed = 'link';
     });
 
-    const textWrap = document.createElement('div');
-    textWrap.className = 'line-entry-text';
-
     const labelEl = document.createElement('span');
     labelEl.className = 'line-entry-name';
     labelEl.textContent = line;
-    textWrap.appendChild(labelEl);
+    entry.appendChild(labelEl);
 
     const countEl = document.createElement('span');
     countEl.className = 'line-entry-count';
-    countEl.textContent = count + ' Fixture' + (count !== 1 ? 's' : '');
-    textWrap.appendChild(countEl);
-
-    entry.appendChild(textWrap);
+    countEl.textContent = count;
+    entry.appendChild(countEl);
 
     panel.appendChild(entry);
   });

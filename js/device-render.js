@@ -203,19 +203,35 @@ function buildXLRConnector(deviceId, type, conn) {
     });
   }
 
-  // 7-Segment Display above connector — Klick öffnet Universe-Popover
-  const dispText = getConnDisplayText(conn, type);
-  const dispEl = buildSegDisplay(dispText);
-  dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
+  // 7-Segment Display(s) above connector
   if (type === 'input') {
+    const dispText = getConnDisplayText(conn, type);
+    const dispEl = buildSegDisplay(dispText);
+    dispEl.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
     dispEl.style.cursor = 'pointer';
     dispEl.title = 'Klick: Universum bearbeiten · Rechtsklick: zurücksetzen';
     dispEl.addEventListener('click', e => {
       e.stopPropagation();
       openUnivPopover(deviceId, type, conn.id, dispEl);
     });
+    wrap.appendChild(dispEl);
+  } else {
+    // Two stacked displays for outputs: top = prefix, bottom = numbers
+    const parts = getConnDisplayParts(conn);
+    const stack = document.createElement('div');
+    stack.className = 'seg-display-stack';
+    stack.id = 'disp_' + deviceId + '_' + type + '_' + conn.id;
+
+    const dispTop = buildSegDisplay(parts.top);
+    dispTop.className += ' seg-display-top';
+    stack.appendChild(dispTop);
+
+    const dispBot = buildSegDisplay(parts.bottom);
+    dispBot.className += ' seg-display-bot';
+    stack.appendChild(dispBot);
+
+    wrap.appendChild(stack);
   }
-  wrap.appendChild(dispEl);
 
   // Body
   const body = document.createElement('div');
@@ -390,29 +406,29 @@ function getConnDisplayText(conn, type) {
   if (type === 'input') {
     if (!conn.universe) return '----';
     return 'U' + String(conn.universe).padStart(3, ' ');
-  } else {
-    // Line-Label hat Priorität — erste 4 Zeichen ins Display
-    if (conn.label) {
-      return conn.label.slice(0, 4).padEnd(4, ' ');
-    }
-    if (conn.ethId) {
-      const eth = state.ethDatabase.find(e => e.id === conn.ethId);
-      if (eth) {
-        const g = eth.group.replace('ETH ', '').slice(0, 2);
-        const p = String(eth.port).slice(0, 1);
-        return g.padEnd(2, ' ') + ' ' + p;
-      }
-    }
-    return '----';
   }
+  return '----';
 }
 
-function updateConnDisplay(deviceId, type, conn) {
-  const dispEl = document.getElementById('disp_' + deviceId + '_' + type + '_' + conn.id);
-  if (!dispEl) return;
-  const text = getConnDisplayText(conn, type);
-  const str = text.slice(0, 4).padEnd(4, ' ');
-  const digits = dispEl.querySelectorAll('.seg-digit');
+// Returns { top, bottom } for the two output displays
+function getConnDisplayParts(conn) {
+  if (conn.label) {
+    const spaceIdx = conn.label.indexOf(' ');
+    if (spaceIdx !== -1) {
+      return {
+        top:    conn.label.slice(0, spaceIdx).slice(0, 4),
+        bottom: conn.label.slice(spaceIdx + 1).slice(0, 4)
+      };
+    }
+    // No space — show full in top, empty bottom
+    return { top: conn.label.slice(0, 4), bottom: '----' };
+  }
+  return { top: '----', bottom: '----' };
+}
+
+function updateSegDigits(container, text) {
+  const str = (text || '----').slice(0, 4).padEnd(4, ' ');
+  const digits = container.querySelectorAll('.seg-digit');
   digits.forEach((digit, i) => {
     const ch = str[i].toUpperCase();
     const pattern = SEG_MAP[ch] || SEG_MAP[' '];
@@ -422,4 +438,18 @@ function updateConnDisplay(deviceId, type, conn) {
       else seg.classList.remove('on');
     });
   });
+}
+
+function updateConnDisplay(deviceId, type, conn) {
+  const el = document.getElementById('disp_' + deviceId + '_' + type + '_' + conn.id);
+  if (!el) return;
+  if (type === 'input') {
+    updateSegDigits(el, getConnDisplayText(conn, type));
+  } else {
+    const parts = getConnDisplayParts(conn);
+    const top = el.querySelector('.seg-display-top');
+    const bot = el.querySelector('.seg-display-bot');
+    if (top) updateSegDigits(top, parts.top);
+    if (bot) updateSegDigits(bot, parts.bottom);
+  }
 }

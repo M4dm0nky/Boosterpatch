@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = 'v0.7.82';
+const APP_VERSION = 'v0.7.83';
 
 // ============================================================
 // 1. STATE

@@ -1866,7 +1866,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.82</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.83</div>
       </div>
     </div>
   </div>
@@ -2211,7 +2211,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.7.82';
+const APP_VERSION = 'v0.7.83';
 
 // ============================================================
 // 1. STATE
@@ -3078,7 +3078,7 @@ function initEthDatabase() {
 
 function renderEthPanel() {
   const panel = document.getElementById('ethPanel');
-  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep');
+  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep, .line-table-header');
   existing.forEach(el => el.remove());
 
   // --- Fixture Lines section ---

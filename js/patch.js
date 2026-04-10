@@ -17,7 +17,7 @@ function initEthDatabase() {
 
 function renderEthPanel() {
   const panel = document.getElementById('ethPanel');
-  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep');
+  const existing = panel.querySelectorAll('.eth-entry, .eth-group-label, .line-entry, .line-group-label, .eth-panel-sep, .line-table-header');
   existing.forEach(el => el.remove());
 
   // --- Fixture Lines section ---

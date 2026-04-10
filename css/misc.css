@@ -291,6 +291,37 @@
   letter-spacing: 0.5px;
 }
 
+/* Fixture tab — line grouped view */
+.fix-tab-line {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  white-space: nowrap;
+  vertical-align: top;
+  padding-top: 8px;
+}
+
+.fix-tab-ids {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 5px 8px;
+}
+
+.fix-id-chip {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--rack-border);
+  padding: 2px 6px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+}
+
 /* Fixture count badge on output labels */
 .fix-count-badge {
   display: inline-block;

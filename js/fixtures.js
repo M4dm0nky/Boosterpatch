@@ -88,18 +88,27 @@ function renderFixtureTab() {
 
   if (state.fixtureDatabase.length === 0) {
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td colspan="3" style="text-align:center;color:var(--text-secondary);font-style:italic;padding:20px;">Keine Fixture-Daten — bitte Datei über FIXTURES → "Fixture-Datei laden" importieren.</td>';
+    tr.innerHTML = '<td colspan="2" style="text-align:center;color:var(--text-secondary);font-style:italic;padding:20px;">Keine Fixture-Daten — bitte Datei über FIXTURES → "Fixture-Datei laden" importieren.</td>';
     tbody.appendChild(tr);
   } else {
+    // Group fixtures by line, preserving order of first appearance
+    const lineMap = new Map();
     state.fixtureDatabase.forEach(f => {
+      if (!lineMap.has(f.line)) lineMap.set(f.line, []);
+      lineMap.get(f.line).push(f.fixtureId);
+    });
+
+    lineMap.forEach((ids, line) => {
       const tr = document.createElement('tr');
-      tr.innerHTML = '<td>' + escHtml(f.fixtureId) + '</td><td>' + escHtml(f.type) + '</td><td>' + escHtml(f.line) + '</td>';
+      tr.innerHTML =
+        '<td class="fix-tab-line">' + escHtml(line) + '</td>' +
+        '<td class="fix-tab-ids">' + ids.map(id => '<span class="fix-id-chip">' + escHtml(id) + '</span>').join('') + '</td>';
       tbody.appendChild(tr);
     });
   }
 
   const countEl = document.getElementById('fixtureCount');
-  if (countEl) countEl.textContent = state.fixtureDatabase.length + ' Fixtures';
+  if (countEl) countEl.textContent = state.fixtureDatabase.length + ' Fixtures / ' + (state.fixtureDatabase.length > 0 ? [...new Set(state.fixtureDatabase.map(f => f.line))].length : 0) + ' Linien';
 }
 
 function updateFixtureDbStatus() {

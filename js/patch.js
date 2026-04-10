@@ -63,15 +63,20 @@ function renderEthPanel() {
       e.dataTransfer.effectAllowed = 'link';
     });
 
+    const textWrap = document.createElement('div');
+    textWrap.className = 'line-entry-text';
+
     const labelEl = document.createElement('span');
     labelEl.className = 'line-entry-name';
     labelEl.textContent = line;
-    entry.appendChild(labelEl);
+    textWrap.appendChild(labelEl);
 
     const countEl = document.createElement('span');
     countEl.className = 'line-entry-count';
-    countEl.textContent = count;
-    entry.appendChild(countEl);
+    countEl.textContent = count + ' Fixture' + (count !== 1 ? 's' : '');
+    textWrap.appendChild(countEl);
+
+    entry.appendChild(textWrap);
 
     panel.appendChild(entry);
   });

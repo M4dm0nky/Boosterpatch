@@ -596,22 +596,28 @@ body {
   color: var(--text-secondary);
 }
 
-.line-entry-name {
+.line-entry-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
   flex: 1;
+}
+
+.line-entry-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-primary);
 }
 
 .line-entry-count {
-  flex-shrink: 0;
   font-size: 9px;
-  background: rgba(232,200,74,0.12);
-  border: 1px solid rgba(232,200,74,0.25);
-  color: var(--accent);
-  padding: 1px 4px;
-  border-radius: 2px;
-  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  font-weight: 400;
 }
 
     /* ===== css/rack.css ===== */
@@ -1835,7 +1841,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.7.8</div>
+        <div class="app-version" id="appVersionDisplay">v0.7.81</div>
       </div>
     </div>
   </div>
@@ -2180,7 +2186,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.7.8';
+const APP_VERSION = 'v0.7.81';
 
 // ============================================================
 // 1. STATE
@@ -3093,15 +3099,20 @@ function renderEthPanel() {
       e.dataTransfer.effectAllowed = 'link';
     });
 
+    const textWrap = document.createElement('div');
+    textWrap.className = 'line-entry-text';
+
     const labelEl = document.createElement('span');
     labelEl.className = 'line-entry-name';
     labelEl.textContent = line;
-    entry.appendChild(labelEl);
+    textWrap.appendChild(labelEl);
 
     const countEl = document.createElement('span');
     countEl.className = 'line-entry-count';
-    countEl.textContent = count;
-    entry.appendChild(countEl);
+    countEl.textContent = count + ' Fixture' + (count !== 1 ? 's' : '');
+    textWrap.appendChild(countEl);
+
+    entry.appendChild(textWrap);
 
     panel.appendChild(entry);
   });

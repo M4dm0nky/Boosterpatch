@@ -62,10 +62,12 @@
 .seg-b { right: 0;  top: 2px;   width: 3px; height: 8px; border-radius: 1.5px; }
 .seg-e { left: 0;   bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
 .seg-c { right: 0;  bottom: 2px; width: 3px; height: 8px; border-radius: 1.5px; }
-/* Diagonale Segmente */
-.seg-m1, .seg-m2 { width: 2px; height: 24px; left: 5px; top: -1px; border-radius: 1px; }
-.seg-m1 { transform: rotate(-28deg); }  /* "/" */
-.seg-m2 { transform: rotate( 28deg); }  /* "\" */
+/* Diagonale Halb-Segmente (Mitte → Ecke) */
+.seg-ul, .seg-ur, .seg-ll, .seg-lr { position: absolute; width: 2px; height: 12px; border-radius: 1px; }
+.seg-ul { left: 3px; top:  1px; transform: rotate(-27deg); }  /* Mitte → oben-links  */
+.seg-ur { left: 8px; top:  1px; transform: rotate( 27deg); }  /* Mitte → oben-rechts */
+.seg-ll { left: 3px; top: 10px; transform: rotate( 27deg); }  /* Mitte → unten-links */
+.seg-lr { left: 8px; top: 10px; transform: rotate(-27deg); }  /* Mitte → unten-rechts*/
 
 /* === 14. Universe Popover === */
 .univ-popover {

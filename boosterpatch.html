@@ -1214,6 +1214,82 @@ body {
 .pt-eth { font-family: var(--font-mono); font-size: 12px; color: var(--accent-green); }
 .pt-eth-empty { color: var(--rack-border); font-family: var(--font-mono); font-size: 11px; }
 
+/* === 13. Schematic Table === */
+#schemaWrap { overflow-x: auto; }
+
+#schemaTable {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#schemaTable th, #schemaTable td {
+  border: 1px solid #1e2535;
+  padding: 5px 10px;
+}
+
+.sc-th-name {
+  text-align: left;
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  min-width: 100px;
+  background: var(--app-bg);
+  position: sticky;
+  left: 0;
+}
+.sc-th-in {
+  color: #4a9ae8;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1px;
+  min-width: 46px;
+  background: var(--app-bg);
+}
+.sc-th-port {
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1px;
+  min-width: 72px;
+  background: var(--app-bg);
+}
+
+#schemaTable thead th { border-bottom: 2px solid var(--accent); }
+
+.sc-td-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--sidebar-bg);
+  position: sticky;
+  left: 0;
+}
+.sc-td-in {
+  text-align: center;
+  color: #4a9ae8;
+  font-weight: 600;
+}
+.sc-td-out {
+  text-align: center;
+  color: var(--rack-border);
+}
+.sc-td-out.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+#schemaTable tr:hover td { background: rgba(232,200,74,.04); }
+#schemaTable tr:hover .sc-td-name { background: rgba(232,200,74,.08); }
+
+.sc-empty {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 20px 0;
+  letter-spacing: 1px;
+}
+
     /* ===== css/modal.css ===== */
 /* === 13. Modal === */
 .modal-overlay {
@@ -1861,11 +1937,16 @@ body {
 /* === 16. Print === */
 @media print {
   #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
+  #tabPatch, #tabFixtures { display: none !important; }
+  #tabDetails { display: block !important; }
   body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
   #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
   .rack-ctrl-btn { display: none !important; }
   .xlr-connector { cursor: default; }
-  #patchTable { font-size: 11px; }
+  #schemaTable { font-size: 10px; border-collapse: collapse; }
+  #schemaTable th, #schemaTable td { border: 1px solid #999 !important; padding: 3px 6px; background: #fff !important; color: #000 !important; }
+  .sc-td-name { font-weight: bold; }
+  .sc-td-out:not(.active) { color: #ccc !important; }
 }
 
   </style>
@@ -1879,7 +1960,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.8.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.8.3</div>
       </div>
     </div>
   </div>
@@ -1986,7 +2067,7 @@ body {
   <div id="appTabs">
     <div id="tabBar">
       <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
-      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
+      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">SCHEMATISCH</button>
       <button class="tab-btn" id="tabBtnFixtures" onclick="switchTab('fixtures')">FIXTURES</button>
     </div>
 
@@ -2022,30 +2103,20 @@ body {
       </div>
     </div>
 
-    <!-- Tab: Details / Patch Table -->
+    <!-- Tab: Schematisch -->
     <div id="tabDetails" class="tab-content">
       <div class="section-header">
-        <div class="section-title">PATCHTABELLE</div>
-        <div class="section-badge" id="patchCount">0 Verbindungen</div>
+        <div class="section-title">SCHEMATISCH</div>
       </div>
-      <div class="patch-table-wrap">
-        <table id="patchTable">
-          <thead>
-            <tr>
-              <th>Gerät</th>
-              <th>Typ</th>
-              <th>Nr.</th>
-              <th>Status</th>
-              <th>Label</th>
-              <th>Universe</th>
-              <th>DMX Start</th>
-              <th>ETH</th>
-              <th>Notizen</th>
-            </tr>
-          </thead>
-          <tbody id="patchTableBody"></tbody>
-        </table>
-      </div>
+      <div id="schemaWrap"></div>
+    </div>
+
+    <!-- Hidden: Patch Table (für renderPatchTable() Sync) -->
+    <div style="display:none">
+      <table id="patchTable">
+        <tbody id="patchTableBody"></tbody>
+      </table>
+      <span id="patchCount"></span>
     </div>
   </div>
 
@@ -2224,7 +2295,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.8.2';
+const APP_VERSION = 'v0.8.3';
 
 // ============================================================
 // 1. STATE
@@ -2325,6 +2396,7 @@ function switchTab(tabName) {
   } else {
     document.getElementById('tabBtnDetails').classList.add('active');
     document.getElementById('tabDetails').classList.add('active');
+    renderSchematicTable();
   }
 }
 
@@ -3516,6 +3588,45 @@ function syncRoutingBtnsForInput(deviceId, inputId) {
     if (isSelected && inputActive) applyLampOn(btn);
     else removeLampOn(btn);
   });
+}
+
+// ============================================================
+// 13. SCHEMATIC TABLE
+// ============================================================
+function renderSchematicTable() {
+  const wrap = document.getElementById('schemaWrap');
+  if (!wrap) return;
+
+  if (state.devices.length === 0) {
+    wrap.innerHTML = '<div class="sc-empty">Keine Geräte vorhanden.</div>';
+    return;
+  }
+
+  const maxOuts = state.devices.reduce((m, d) => Math.max(m, d.connections.outputs.length), 0);
+  const cols = Math.min(maxOuts, 12);
+
+  let thead = '<tr><th class="sc-th-name">BOOSTER</th>'
+            + '<th class="sc-th-in">IN 1</th><th class="sc-th-in">IN 2</th>';
+  for (let p = 1; p <= cols; p++) thead += `<th class="sc-th-port">PORT ${p}</th>`;
+  thead += '</tr>';
+
+  let rows = '';
+  state.devices.forEach(dev => {
+    const in1 = dev.connections.inputs[0];
+    const in2 = dev.connections.inputs[1];
+    const u1  = in1 && in1.universe ? 'U' + in1.universe : '—';
+    const u2  = in2 && in2.universe ? 'U' + in2.universe : '—';
+    rows += `<tr><td class="sc-td-name">${escHtml(dev.name)}</td>`
+          + `<td class="sc-td-in">${u1}</td><td class="sc-td-in">${u2}</td>`;
+    for (let p = 0; p < cols; p++) {
+      const out = dev.connections.outputs[p];
+      const lbl = out && out.label ? escHtml(out.label) : '';
+      rows += `<td class="sc-td-out${lbl ? ' active' : ''}">${lbl}</td>`;
+    }
+    rows += '</tr>';
+  });
+
+  wrap.innerHTML = `<table id="schemaTable"><thead>${thead}</thead><tbody>${rows}</tbody></table>`;
 }
 
 // ===== js/fixtures.js =====

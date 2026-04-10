@@ -102,3 +102,79 @@
 .pt-dash { color: var(--rack-border); font-family: var(--font-mono); }
 .pt-eth { font-family: var(--font-mono); font-size: 12px; color: var(--accent-green); }
 .pt-eth-empty { color: var(--rack-border); font-family: var(--font-mono); font-size: 11px; }
+
+/* === 13. Schematic Table === */
+#schemaWrap { overflow-x: auto; }
+
+#schemaTable {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#schemaTable th, #schemaTable td {
+  border: 1px solid #1e2535;
+  padding: 5px 10px;
+}
+
+.sc-th-name {
+  text-align: left;
+  color: var(--text-secondary);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  min-width: 100px;
+  background: var(--app-bg);
+  position: sticky;
+  left: 0;
+}
+.sc-th-in {
+  color: #4a9ae8;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1px;
+  min-width: 46px;
+  background: var(--app-bg);
+}
+.sc-th-port {
+  color: var(--text-secondary);
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 1px;
+  min-width: 72px;
+  background: var(--app-bg);
+}
+
+#schemaTable thead th { border-bottom: 2px solid var(--accent); }
+
+.sc-td-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  background: var(--sidebar-bg);
+  position: sticky;
+  left: 0;
+}
+.sc-td-in {
+  text-align: center;
+  color: #4a9ae8;
+  font-weight: 600;
+}
+.sc-td-out {
+  text-align: center;
+  color: var(--rack-border);
+}
+.sc-td-out.active {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+#schemaTable tr:hover td { background: rgba(232,200,74,.04); }
+#schemaTable tr:hover .sc-td-name { background: rgba(232,200,74,.08); }
+
+.sc-empty {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 20px 0;
+  letter-spacing: 1px;
+}

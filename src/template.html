@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.8.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.8.3</div>
       </div>
     </div>
   </div>
@@ -125,7 +125,7 @@
   <div id="appTabs">
     <div id="tabBar">
       <button class="tab-btn active" id="tabBtnPatch" onclick="switchTab('patch')">PATCH-ANSICHT</button>
-      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">DETAILS / TABELLE</button>
+      <button class="tab-btn" id="tabBtnDetails" onclick="switchTab('details')">SCHEMATISCH</button>
       <button class="tab-btn" id="tabBtnFixtures" onclick="switchTab('fixtures')">FIXTURES</button>
     </div>
 
@@ -161,30 +161,20 @@
       </div>
     </div>
 
-    <!-- Tab: Details / Patch Table -->
+    <!-- Tab: Schematisch -->
     <div id="tabDetails" class="tab-content">
       <div class="section-header">
-        <div class="section-title">PATCHTABELLE</div>
-        <div class="section-badge" id="patchCount">0 Verbindungen</div>
+        <div class="section-title">SCHEMATISCH</div>
       </div>
-      <div class="patch-table-wrap">
-        <table id="patchTable">
-          <thead>
-            <tr>
-              <th>Gerät</th>
-              <th>Typ</th>
-              <th>Nr.</th>
-              <th>Status</th>
-              <th>Label</th>
-              <th>Universe</th>
-              <th>DMX Start</th>
-              <th>ETH</th>
-              <th>Notizen</th>
-            </tr>
-          </thead>
-          <tbody id="patchTableBody"></tbody>
-        </table>
-      </div>
+      <div id="schemaWrap"></div>
+    </div>
+
+    <!-- Hidden: Patch Table (für renderPatchTable() Sync) -->
+    <div style="display:none">
+      <table id="patchTable">
+        <tbody id="patchTableBody"></tbody>
+      </table>
+      <span id="patchCount"></span>
     </div>
   </div>
 

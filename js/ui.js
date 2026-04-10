@@ -38,5 +38,6 @@ function switchTab(tabName) {
   } else {
     document.getElementById('tabBtnDetails').classList.add('active');
     document.getElementById('tabDetails').classList.add('active');
+    renderSchematicTable();
   }
 }

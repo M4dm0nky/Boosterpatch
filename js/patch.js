@@ -394,3 +394,42 @@ function syncRoutingBtnsForInput(deviceId, inputId) {
     else removeLampOn(btn);
   });
 }
+
+// ============================================================
+// 13. SCHEMATIC TABLE
+// ============================================================
+function renderSchematicTable() {
+  const wrap = document.getElementById('schemaWrap');
+  if (!wrap) return;
+
+  if (state.devices.length === 0) {
+    wrap.innerHTML = '<div class="sc-empty">Keine Geräte vorhanden.</div>';
+    return;
+  }
+
+  const maxOuts = state.devices.reduce((m, d) => Math.max(m, d.connections.outputs.length), 0);
+  const cols = Math.min(maxOuts, 12);
+
+  let thead = '<tr><th class="sc-th-name">BOOSTER</th>'
+            + '<th class="sc-th-in">IN 1</th><th class="sc-th-in">IN 2</th>';
+  for (let p = 1; p <= cols; p++) thead += `<th class="sc-th-port">PORT ${p}</th>`;
+  thead += '</tr>';
+
+  let rows = '';
+  state.devices.forEach(dev => {
+    const in1 = dev.connections.inputs[0];
+    const in2 = dev.connections.inputs[1];
+    const u1  = in1 && in1.universe ? 'U' + in1.universe : '—';
+    const u2  = in2 && in2.universe ? 'U' + in2.universe : '—';
+    rows += `<tr><td class="sc-td-name">${escHtml(dev.name)}</td>`
+          + `<td class="sc-td-in">${u1}</td><td class="sc-td-in">${u2}</td>`;
+    for (let p = 0; p < cols; p++) {
+      const out = dev.connections.outputs[p];
+      const lbl = out && out.label ? escHtml(out.label) : '';
+      rows += `<td class="sc-td-out${lbl ? ' active' : ''}">${lbl}</td>`;
+    }
+    rows += '</tr>';
+  });
+
+  wrap.innerHTML = `<table id="schemaTable"><thead>${thead}</thead><tbody>${rows}</tbody></table>`;
+}

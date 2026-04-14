@@ -70,8 +70,12 @@ function buildDeviceCard(device) {
   const brand = document.createElement('div');
   brand.className = 'brand-label';
   if (device.skin === 'swisson' && device.skinModel) {
-    brand.textContent = 'SWISSON · ' + device.skinModel
-      + (device.connectorType ? ' · ' + device.connectorType : '');
+    // Model info shown small; large SWISSON logo injected separately below
+    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
+    brand.classList.add('skin-model-info');
+  } else if (device.skin === 'obsidian' && device.skinModel) {
+    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
+    brand.classList.add('skin-model-info');
   } else {
     brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
   }
@@ -91,8 +95,27 @@ function buildDeviceCard(device) {
 
   controls.appendChild(dupeBtn);
   controls.appendChild(delBtn);
+
   topbar.appendChild(nameEl);
   topbar.appendChild(brand);
+
+  // Skin-specific logo element (injected before controls so it sits to their left)
+  if (device.skin === 'swisson') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-swisson';
+    logo.textContent = 'SWISSON';
+    topbar.appendChild(logo);
+  } else if (device.skin === 'obsidian') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-netron';
+    const mark = document.createElement('span');
+    mark.className = 'netron-mark';
+    mark.textContent = '◆';
+    logo.appendChild(mark);
+    logo.appendChild(document.createTextNode('NETRON'));
+    topbar.appendChild(logo);
+  }
+
   topbar.appendChild(controls);
   face.appendChild(topbar);
 

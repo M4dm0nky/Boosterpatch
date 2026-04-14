@@ -1109,88 +1109,173 @@ body {
 }
 
 /* ===================================================================
-   SKIN: Swisson XSP — Dark aluminum + orange accent
-   Gleiche Designsprache wie Standard, Swisson durch Orange erkennbar
+   SKIN: Swisson XSP
+   Charakteristik: schwarzes Gehäuse, leuchtend roter Rahmen rundum,
+   weißer SWISSON-Schriftzug, rote Schraubenköpfe
+   Swisson-Rot: #C8102E (nahe Pantone 186 C)
    =================================================================== */
 
+/* Rack-Unit: roter Rahmen komplett umlaufend */
 .skin-swisson.rack-unit {
-  background: linear-gradient(180deg, #22273a 0%, #1c2135 100%);
-  border-color: #3a4060;
+  background: #0e0e10;
+  border: 3px solid #C8102E;
+  box-shadow:
+    0 0 12px rgba(200,16,46,0.28),
+    0 4px 20px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(255,255,255,0.04);
 }
 
 .skin-swisson .rack-face {
-  background: #1a1e2c;
+  background: #111114;
+  position: relative;
 }
 
+/* Ears: dunkel, innere Naht auch rot */
 .skin-swisson .rack-ear {
-  background: #1e2336;
+  background: #0e0e10;
+  border-right-color: #C8102E;
+}
+.skin-swisson .rack-ear.right {
+  border-left-color: #C8102E;
+  border-right: none;
 }
 
-/* Bronze/Kupfer-Schrauben statt dunkler Standard-Schrauben */
+/* Schrauben: dunkelrot metallic */
 .skin-swisson .rack-screw {
-  background: radial-gradient(circle at 35% 35%, #5a4a2a, #2a2010);
-  border-color: #4a3a1a;
+  background: radial-gradient(circle at 35% 35%, #601020, #280810);
+  border-color: #C8102E;
 }
 .skin-swisson .rack-screw::after {
-  background: #1a1008;
+  background: #1c0408;
 }
 
-/* Orange Akzentlinie (Swisson Markenfarbe) */
+/* Topbar: rote Trennlinie, gedimmt */
 .skin-swisson .rack-topbar {
-  border-bottom-color: var(--accent-orange);
+  border-bottom-color: rgba(200,16,46,0.45);
 }
 
-/* Brand-Label in Swisson-Orange */
-.skin-swisson .brand-label {
-  color: var(--accent-orange);
-  letter-spacing: 1.5px;
+/* Model-Info: klein, gedimmt — echte Infos aber unauffällig */
+.skin-swisson .skin-model-info {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.3);
 }
 
-/* Device-Name Hover in Orange */
-.skin-swisson .device-name-label:hover {
-  color: var(--accent-orange);
+/* Buttons: roter Hover */
+.skin-swisson .rack-ctrl-btn:hover {
+  border-color: #C8102E;
+  color: #ff4060;
+  background: rgba(200,16,46,0.12);
+}
+.skin-swisson .device-name-label:hover { color: #ff4060; }
+
+/* SWISSON — prominenter weißer Schriftzug, leichte rote Aura */
+.skin-logo-swisson {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+  text-shadow:
+    0 0 14px rgba(200,16,46,0.5),
+    0 1px 2px rgba(0,0,0,0.8);
 }
 
 /* ===================================================================
-   SKIN: Obsidian NETRON — Dark chassis + teal/cyan accent
+   SKIN: Obsidian NETRON
+   Charakteristik: reines Mattschwarz (Pulverbeschichtung/fuzzy),
+   Dot-Matrix-Textur, Teal/Cyan NETRON-Logo mit Rauten-Icon
+   NETRON-Teal: #00c8a0
    =================================================================== */
 
 .skin-obsidian.rack-unit {
-  background: linear-gradient(180deg, #1a2228 0%, #141b20 100%);
-  border-color: #28383f;
+  background: #0a0b0c;
+  border-color: #1c1e20;
+  box-shadow:
+    0 4px 20px rgba(0,0,0,0.88),
+    inset 0 1px 0 rgba(255,255,255,0.02);
 }
 
+/* Matte Pulverbeschichtungs-Textur: überlagerte Dot-Matrix */
 .skin-obsidian .rack-face {
-  background: #141c22;
+  position: relative;
+  background-color: #0d0e0f;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 0),
+    radial-gradient(circle, rgba(255,255,255,0.012) 1px, transparent 0);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 2px 2px;
 }
 
+/* Ears: gleiche Textur */
 .skin-obsidian .rack-ear {
-  background: #182028;
+  background-color: #0a0b0c;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 0),
+    radial-gradient(circle, rgba(255,255,255,0.010) 1px, transparent 0);
+  background-size: 3px 3px, 7px 7px;
+  background-position: 0 0, 2px 2px;
+  border-right-color: #1c1e20;
+}
+.skin-obsidian .rack-ear.right {
+  border-left-color: #1c1e20;
+  border-right: none;
 }
 
-/* Carbon-Schrauben (Obsidian-Stil) */
+/* Carbon-Schrauben */
 .skin-obsidian .rack-screw {
-  background: radial-gradient(circle at 35% 35%, #2a3a3a, #101818);
-  border-color: #1e2e2e;
+  background: radial-gradient(circle at 35% 35%, #1e2424, #080c0c);
+  border-color: #283030;
 }
 .skin-obsidian .rack-screw::after {
-  background: #080e0e;
+  background: #040808;
 }
 
-/* Teal Akzentlinie (Obsidian NETRON Markenfarbe) */
+/* Topbar: gedämpfte Teal-Trennlinie */
 .skin-obsidian .rack-topbar {
-  border-bottom-color: var(--accent-green);
+  border-bottom-color: rgba(0,200,160,0.32);
 }
 
-/* Brand-Label in NETRON-Teal */
-.skin-obsidian .brand-label {
-  color: var(--accent-green);
-  letter-spacing: 1.5px;
+/* Model-Info: klein, gedimmt */
+.skin-obsidian .skin-model-info {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.28);
 }
 
-/* Device-Name Hover in Teal */
-.skin-obsidian .device-name-label:hover {
-  color: var(--accent-green);
+/* Buttons: teal Hover */
+.skin-obsidian .rack-ctrl-btn:hover {
+  border-color: #00c8a0;
+  color: #00e8b8;
+  background: rgba(0,200,160,0.1);
+}
+.skin-obsidian .device-name-label:hover { color: #00e8b8; }
+
+/* NETRON Logo — Rauten-Icon + Schriftzug in NETRON-Teal */
+.skin-logo-netron {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-ui);
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #00c8a0;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+  text-shadow:
+    0 0 12px rgba(0,200,160,0.5),
+    0 1px 2px rgba(0,0,0,0.8);
+}
+
+.netron-mark {
+  font-size: 12px;
+  opacity: 0.9;
+  filter: drop-shadow(0 0 5px rgba(0,200,160,0.65));
 }
 
     /* ===== css/patch-table.css ===== */
@@ -2117,7 +2202,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.9.1</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.2</div>
       </div>
     </div>
   </div>
@@ -2470,7 +2555,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.1';
+const APP_VERSION = 'v0.9.2';
 
 // ============================================================
 // SKIN CATALOG
@@ -2682,8 +2767,12 @@ function buildDeviceCard(device) {
   const brand = document.createElement('div');
   brand.className = 'brand-label';
   if (device.skin === 'swisson' && device.skinModel) {
-    brand.textContent = 'SWISSON · ' + device.skinModel
-      + (device.connectorType ? ' · ' + device.connectorType : '');
+    // Model info shown small; large SWISSON logo injected separately below
+    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
+    brand.classList.add('skin-model-info');
+  } else if (device.skin === 'obsidian' && device.skinModel) {
+    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
+    brand.classList.add('skin-model-info');
   } else {
     brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
   }
@@ -2703,8 +2792,27 @@ function buildDeviceCard(device) {
 
   controls.appendChild(dupeBtn);
   controls.appendChild(delBtn);
+
   topbar.appendChild(nameEl);
   topbar.appendChild(brand);
+
+  // Skin-specific logo element (injected before controls so it sits to their left)
+  if (device.skin === 'swisson') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-swisson';
+    logo.textContent = 'SWISSON';
+    topbar.appendChild(logo);
+  } else if (device.skin === 'obsidian') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-netron';
+    const mark = document.createElement('span');
+    mark.className = 'netron-mark';
+    mark.textContent = '◆';
+    logo.appendChild(mark);
+    logo.appendChild(document.createTextNode('NETRON'));
+    topbar.appendChild(logo);
+  }
+
   topbar.appendChild(controls);
   face.appendChild(topbar);
 

@@ -1,6 +1,29 @@
 'use strict';
 
-const APP_VERSION = 'v0.8.3';
+const APP_VERSION = 'v0.9.0';
+
+// ============================================================
+// SKIN CATALOG
+// ============================================================
+const SKIN_CATALOG = [
+  {
+    id: 'standard',
+    label: 'Standard',
+    description: 'Generischer DMX Booster',
+    models: null
+  },
+  {
+    id: 'swisson',
+    label: 'Swisson XSP',
+    description: 'Swisson DMX Splitter/Booster',
+    models: [
+      { id: 'XSP-5R',    label: 'XSP-5R',    connector: '5-Pin XLR', inputs: 1, outputs: 5  },
+      { id: 'XSP-3R',    label: 'XSP-3R',    connector: '3-Pin XLR', inputs: 1, outputs: 5  },
+      { id: 'XSP-5R-5R', label: 'XSP-5R-5R', connector: '5-Pin XLR', inputs: 1, outputs: 10 },
+      { id: 'XSP-3R-3R', label: 'XSP-3R-3R', connector: '3-Pin XLR', inputs: 1, outputs: 10 }
+    ]
+  }
+];
 
 // ============================================================
 // 1. STATE

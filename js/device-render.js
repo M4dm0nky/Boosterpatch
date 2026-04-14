@@ -49,6 +49,11 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(buildEar());
 
+  // Apply skin CSS class
+  if (device.skin && device.skin !== 'standard') {
+    rackUnit.classList.add('skin-' + device.skin);
+  }
+
   const face = document.createElement('div');
   face.className = 'rack-face';
 
@@ -64,7 +69,12 @@ function buildDeviceCard(device) {
 
   const brand = document.createElement('div');
   brand.className = 'brand-label';
-  brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
+  if (device.skin === 'swisson' && device.skinModel) {
+    brand.textContent = 'SWISSON · ' + device.skinModel
+      + (device.connectorType ? ' · ' + device.connectorType : '');
+  } else {
+    brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
+  }
 
   const controls = document.createElement('div');
   controls.className = 'rack-controls';

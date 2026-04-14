@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.8.3</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.0</div>
       </div>
     </div>
   </div>
@@ -188,6 +188,25 @@
       <button class="modal-close" onclick="closeModal('newDeviceModal')">✕</button>
     </div>
     <div class="modal-body">
+      <div class="modal-field">
+        <label>Gerätetyp</label>
+        <div class="skin-picker" id="skinPicker">
+          <div class="skin-tile selected" data-skin="standard" onclick="selectSkin('standard')">
+            <div class="skin-tile-name">Standard</div>
+            <div class="skin-tile-desc">Generischer Booster</div>
+          </div>
+          <div class="skin-tile" data-skin="swisson" onclick="selectSkin('swisson')">
+            <div class="skin-tile-name">SWISSON</div>
+            <div class="skin-tile-desc">XSP Serie</div>
+          </div>
+        </div>
+        <select id="swissonModelSelect" style="display:none;" onchange="applySwissonModel(this.value)">
+          <option value="XSP-5R">XSP-5R — 1×5 — 5-Pin XLR</option>
+          <option value="XSP-3R">XSP-3R — 1×5 — 3-Pin XLR</option>
+          <option value="XSP-5R-5R">XSP-5R-5R — 1×10 — 5-Pin XLR</option>
+          <option value="XSP-3R-3R">XSP-3R-3R — 1×10 — 3-Pin XLR</option>
+        </select>
+      </div>
       <div class="modal-field">
         <label>Gerätename</label>
         <input type="text" id="newDeviceName" placeholder="z.B. DMX Booster FOH" maxlength="40">

@@ -459,3 +459,46 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+/* ===================================================================
+   SKIN: Swisson XSP — Dark aluminum + orange accent
+   Gleiche Designsprache wie Standard, Swisson durch Orange erkennbar
+   =================================================================== */
+
+.skin-swisson.rack-unit {
+  background: linear-gradient(180deg, #22273a 0%, #1c2135 100%);
+  border-color: #3a4060;
+}
+
+.skin-swisson .rack-face {
+  background: #1a1e2c;
+}
+
+.skin-swisson .rack-ear {
+  background: #1e2336;
+}
+
+/* Bronze/Kupfer-Schrauben statt dunkler Standard-Schrauben */
+.skin-swisson .rack-screw {
+  background: radial-gradient(circle at 35% 35%, #5a4a2a, #2a2010);
+  border-color: #4a3a1a;
+}
+.skin-swisson .rack-screw::after {
+  background: #1a1008;
+}
+
+/* Orange Akzentlinie (Swisson Markenfarbe) */
+.skin-swisson .rack-topbar {
+  border-bottom-color: var(--accent-orange);
+}
+
+/* Brand-Label in Swisson-Orange */
+.skin-swisson .brand-label {
+  color: var(--accent-orange);
+  letter-spacing: 1.5px;
+}
+
+/* Device-Name Hover in Orange */
+.skin-swisson .device-name-label:hover {
+  color: var(--accent-orange);
+}

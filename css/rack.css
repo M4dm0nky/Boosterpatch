@@ -502,3 +502,45 @@
 .skin-swisson .device-name-label:hover {
   color: var(--accent-orange);
 }
+
+/* ===================================================================
+   SKIN: Obsidian NETRON — Dark chassis + teal/cyan accent
+   =================================================================== */
+
+.skin-obsidian.rack-unit {
+  background: linear-gradient(180deg, #1a2228 0%, #141b20 100%);
+  border-color: #28383f;
+}
+
+.skin-obsidian .rack-face {
+  background: #141c22;
+}
+
+.skin-obsidian .rack-ear {
+  background: #182028;
+}
+
+/* Carbon-Schrauben (Obsidian-Stil) */
+.skin-obsidian .rack-screw {
+  background: radial-gradient(circle at 35% 35%, #2a3a3a, #101818);
+  border-color: #1e2e2e;
+}
+.skin-obsidian .rack-screw::after {
+  background: #080e0e;
+}
+
+/* Teal Akzentlinie (Obsidian NETRON Markenfarbe) */
+.skin-obsidian .rack-topbar {
+  border-bottom-color: var(--accent-green);
+}
+
+/* Brand-Label in NETRON-Teal */
+.skin-obsidian .brand-label {
+  color: var(--accent-green);
+  letter-spacing: 1.5px;
+}
+
+/* Device-Name Hover in Teal */
+.skin-obsidian .device-name-label:hover {
+  color: var(--accent-green);
+}

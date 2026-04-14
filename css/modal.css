@@ -301,8 +301,17 @@
   color: var(--accent-orange);
 }
 
-/* Swisson Model-Select Dropdown im Single-Modal */
-#swissonModelSelect {
+/* Obsidian tile: teal Akzent wenn ausgewählt */
+.skin-tile[data-skin="obsidian"].selected {
+  border-color: var(--accent-green);
+  background: rgba(74,232,160,0.07);
+}
+.skin-tile[data-skin="obsidian"].selected .skin-tile-name {
+  color: var(--accent-green);
+}
+
+/* Generisches Model-Select Dropdown im Single-Modal */
+#skinModelSelect {
   width: 100%;
   margin-top: 8px;
 }

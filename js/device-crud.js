@@ -12,19 +12,39 @@ function openNewDeviceModal() {
   setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
 }
 
+// Helper: find a model across all catalog skins
+function findCatalogModel(modelId) {
+  for (const s of SKIN_CATALOG) {
+    if (!s.models) continue;
+    const m = s.models.find(m => m.id === modelId);
+    if (m) return { skin: s, model: m };
+  }
+  return null;
+}
+
+// Helper: all model IDs across all non-standard skins
+function allCatalogModelIds() {
+  return SKIN_CATALOG.flatMap(s => (s.models || []).map(m => m.id));
+}
+
 function selectSkin(skinId) {
   // Update tile selection
   document.querySelectorAll('.skin-tile').forEach(t => {
     t.classList.toggle('selected', t.dataset.skin === skinId);
   });
 
-  const modelSelect = document.getElementById('swissonModelSelect');
+  const modelSelect  = document.getElementById('skinModelSelect');
   const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
   const outputSelect = document.getElementById('outputCount');
+  const skinEntry    = SKIN_CATALOG.find(s => s.id === skinId);
 
-  if (skinId === 'swisson') {
+  if (skinEntry && skinEntry.models) {
+    // Populate model dropdown with this skin's models
+    modelSelect.innerHTML = skinEntry.models.map(m =>
+      `<option value="${m.id}">${m.id} — ${m.inputs}×${m.outputs} — ${m.connector}</option>`
+    ).join('');
     modelSelect.style.display = 'block';
-    applySwissonModel(modelSelect.value);
+    applySkinModel(modelSelect.value);
   } else {
     modelSelect.style.display = 'none';
     // Restore editable
@@ -36,12 +56,11 @@ function selectSkin(skinId) {
   }
 }
 
-function applySwissonModel(modelId) {
-  const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-  const model = swissonEntry && swissonEntry.models.find(m => m.id === modelId);
-  if (!model) return;
+function applySkinModel(modelId) {
+  const found = findCatalogModel(modelId);
+  if (!found) return;
+  const { model } = found;
 
-  // Lock inputs/outputs to model specs
   const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
   const outputSelect = document.getElementById('outputCount');
 
@@ -52,9 +71,9 @@ function applySwissonModel(modelId) {
   outputSelect.value    = String(model.outputs);
   outputSelect.disabled = true;
 
-  // Auto-fill name if still empty or previously set by a model
+  // Auto-fill name if still empty or previously set by any model
   const nameEl = document.getElementById('newDeviceName');
-  const isDefaultOrModel = !nameEl.value || SKIN_CATALOG.find(s => s.id === 'swisson')?.models.some(m => nameEl.value === m.id);
+  const isDefaultOrModel = !nameEl.value || allCatalogModelIds().includes(nameEl.value);
   if (isDefaultOrModel) nameEl.value = modelId;
 
   updatePreview();
@@ -100,12 +119,12 @@ function confirmNewDevice() {
   const skinId = selectedTile ? selectedTile.dataset.skin : 'standard';
   let options = { skin: skinId };
 
-  if (skinId === 'swisson') {
-    const modelId = document.getElementById('swissonModelSelect').value;
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    const model = swissonEntry && swissonEntry.models.find(m => m.id === modelId);
+  const skinEntry = SKIN_CATALOG.find(s => s.id === skinId);
+  if (skinEntry && skinEntry.models) {
+    const modelId = document.getElementById('skinModelSelect').value;
+    const found   = findCatalogModel(modelId);
     options.skinModel     = modelId;
-    options.connectorType = model ? model.connector : null;
+    options.connectorType = found ? found.model.connector : null;
   }
 
   createDevice(name, inputs, outputs, options);
@@ -292,11 +311,15 @@ function bsNext() {
     <th>Outputs</th>
   </tr></thead>`;
 
-  // Build Swisson model options string once
-  const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-  const swissonOptions = swissonEntry.models.map(m =>
-    `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
-  ).join('');
+  // Build all skin model options (grouped by manufacturer)
+  const allSkinOptions = SKIN_CATALOG
+    .filter(s => s.id !== 'standard' && s.models)
+    .map(s => `<optgroup label="${s.label}">` +
+      s.models.map(m =>
+        `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
+      ).join('') +
+      `</optgroup>`)
+    .join('');
 
   const tbody = document.createElement('tbody');
   for (let i = 1; i <= count; i++) {
@@ -306,7 +329,7 @@ function bsNext() {
       <td>
         <select id="bsSkin_${i}" class="bs-skin-select" onchange="bsSkinChanged(${i})">
           <option value="standard">— Standard —</option>
-          ${swissonOptions}
+          ${allSkinOptions}
         </select>
       </td>
       <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
@@ -357,20 +380,17 @@ function bsSkinChanged(i) {
   const val      = skinSel.value;
 
   if (val === 'standard') {
-    // Restore free editing
     in1Radio.disabled = false;
     in2Radio.disabled = false;
     outSel.disabled   = false;
-    // Reset name only if it was a Swisson model name
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    if (swissonEntry.models.some(m => nameEl.value === m.id)) {
+    // Reset name if it was previously set by any model
+    if (allCatalogModelIds().includes(nameEl.value)) {
       nameEl.value = 'DMX Booster ' + i;
     }
   } else {
-    // Swisson model selected — lock to model specs
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    const model = swissonEntry.models.find(m => m.id === val);
-    if (!model) return;
+    const found = findCatalogModel(val);
+    if (!found) return;
+    const { model } = found;
 
     in1Radio.checked  = (model.inputs === 1);
     in2Radio.checked  = (model.inputs === 2);
@@ -379,9 +399,9 @@ function bsSkinChanged(i) {
     outSel.value      = String(model.outputs);
     outSel.disabled   = true;
 
-    // Auto-fill name if still default or previous model name
+    // Auto-fill name if still default or was a previous model name
     const isDefault = nameEl.value === ('DMX Booster ' + i)
-      || swissonEntry.models.some(m => nameEl.value === m.id);
+      || allCatalogModelIds().includes(nameEl.value);
     if (isDefault) nameEl.value = model.id;
   }
 }
@@ -401,17 +421,15 @@ function bsConfirm() {
     const outputs = parseInt(outEl.value) || 8;
 
     // Read skin selection
-    const skinSel  = document.getElementById('bsSkin_' + i);
-    const skinVal  = skinSel ? skinSel.value : 'standard';
-    const isSwisson = skinVal !== 'standard';
+    const skinSel = document.getElementById('bsSkin_' + i);
+    const skinVal = skinSel ? skinSel.value : 'standard';
 
     let skin = 'standard', skinModel = null, connectorType = null;
-    if (isSwisson) {
-      const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-      const model = swissonEntry && swissonEntry.models.find(m => m.id === skinVal);
-      skin          = 'swisson';
+    if (skinVal !== 'standard') {
+      const found = findCatalogModel(skinVal);
+      skin          = found ? found.skin.id : 'standard';
       skinModel     = skinVal;
-      connectorType = model ? model.connector : null;
+      connectorType = found ? found.model.connector : null;
     }
 
     const device = {

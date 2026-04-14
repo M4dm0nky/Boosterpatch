@@ -1151,6 +1151,48 @@ body {
   color: var(--accent-orange);
 }
 
+/* ===================================================================
+   SKIN: Obsidian NETRON — Dark chassis + teal/cyan accent
+   =================================================================== */
+
+.skin-obsidian.rack-unit {
+  background: linear-gradient(180deg, #1a2228 0%, #141b20 100%);
+  border-color: #28383f;
+}
+
+.skin-obsidian .rack-face {
+  background: #141c22;
+}
+
+.skin-obsidian .rack-ear {
+  background: #182028;
+}
+
+/* Carbon-Schrauben (Obsidian-Stil) */
+.skin-obsidian .rack-screw {
+  background: radial-gradient(circle at 35% 35%, #2a3a3a, #101818);
+  border-color: #1e2e2e;
+}
+.skin-obsidian .rack-screw::after {
+  background: #080e0e;
+}
+
+/* Teal Akzentlinie (Obsidian NETRON Markenfarbe) */
+.skin-obsidian .rack-topbar {
+  border-bottom-color: var(--accent-green);
+}
+
+/* Brand-Label in NETRON-Teal */
+.skin-obsidian .brand-label {
+  color: var(--accent-green);
+  letter-spacing: 1.5px;
+}
+
+/* Device-Name Hover in Teal */
+.skin-obsidian .device-name-label:hover {
+  color: var(--accent-green);
+}
+
     /* ===== css/patch-table.css ===== */
 /* === 12. Patch Table === */
 #tabDetails {
@@ -1637,8 +1679,17 @@ body {
   color: var(--accent-orange);
 }
 
-/* Swisson Model-Select Dropdown im Single-Modal */
-#swissonModelSelect {
+/* Obsidian tile: teal Akzent wenn ausgewählt */
+.skin-tile[data-skin="obsidian"].selected {
+  border-color: var(--accent-green);
+  background: rgba(74,232,160,0.07);
+}
+.skin-tile[data-skin="obsidian"].selected .skin-tile-name {
+  color: var(--accent-green);
+}
+
+/* Generisches Model-Select Dropdown im Single-Modal */
+#skinModelSelect {
   width: 100%;
   margin-top: 8px;
 }
@@ -2066,7 +2117,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.9.0</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.1</div>
       </div>
     </div>
   </div>
@@ -2247,13 +2298,12 @@ body {
             <div class="skin-tile-name">SWISSON</div>
             <div class="skin-tile-desc">XSP Serie</div>
           </div>
+          <div class="skin-tile" data-skin="obsidian" onclick="selectSkin('obsidian')">
+            <div class="skin-tile-name">OBSIDIAN</div>
+            <div class="skin-tile-desc">NETRON Serie</div>
+          </div>
         </div>
-        <select id="swissonModelSelect" style="display:none;" onchange="applySwissonModel(this.value)">
-          <option value="XSP-5R">XSP-5R — 1×5 — 5-Pin XLR</option>
-          <option value="XSP-3R">XSP-3R — 1×5 — 3-Pin XLR</option>
-          <option value="XSP-5R-5R">XSP-5R-5R — 1×10 — 5-Pin XLR</option>
-          <option value="XSP-3R-3R">XSP-3R-3R — 1×10 — 3-Pin XLR</option>
-        </select>
+        <select id="skinModelSelect" style="display:none;" onchange="applySkinModel(this.value)"></select>
       </div>
       <div class="modal-field">
         <label>Gerätename</label>
@@ -2420,7 +2470,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.0';
+const APP_VERSION = 'v0.9.1';
 
 // ============================================================
 // SKIN CATALOG
@@ -2441,6 +2491,17 @@ const SKIN_CATALOG = [
       { id: 'XSP-3R',    label: 'XSP-3R',    connector: '3-Pin XLR', inputs: 1, outputs: 5  },
       { id: 'XSP-5R-5R', label: 'XSP-5R-5R', connector: '5-Pin XLR', inputs: 1, outputs: 10 },
       { id: 'XSP-3R-3R', label: 'XSP-3R-3R', connector: '3-Pin XLR', inputs: 1, outputs: 10 }
+    ]
+  },
+  {
+    id: 'obsidian',
+    label: 'Obsidian NETRON',
+    description: 'Obsidian Control NETRON Serie',
+    models: [
+      { id: 'RDM-6XL',  label: 'RDM 6XL',  connector: '5-Pin XLR',     inputs: 1, outputs: 6  },
+      { id: 'RDM6-IP',  label: 'RDM6 IP',  connector: '5-Pin XLR IP66', inputs: 1, outputs: 6  },
+      { id: 'DMX-10-5', label: 'DMX 10-5', connector: '5-Pin XLR',      inputs: 2, outputs: 10 },
+      { id: 'DMX10-53', label: 'DMX10-53', connector: '5+3-Pin XLR',    inputs: 2, outputs: 10 }
     ]
   }
 ];
@@ -3049,19 +3110,39 @@ function openNewDeviceModal() {
   setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
 }
 
+// Helper: find a model across all catalog skins
+function findCatalogModel(modelId) {
+  for (const s of SKIN_CATALOG) {
+    if (!s.models) continue;
+    const m = s.models.find(m => m.id === modelId);
+    if (m) return { skin: s, model: m };
+  }
+  return null;
+}
+
+// Helper: all model IDs across all non-standard skins
+function allCatalogModelIds() {
+  return SKIN_CATALOG.flatMap(s => (s.models || []).map(m => m.id));
+}
+
 function selectSkin(skinId) {
   // Update tile selection
   document.querySelectorAll('.skin-tile').forEach(t => {
     t.classList.toggle('selected', t.dataset.skin === skinId);
   });
 
-  const modelSelect = document.getElementById('swissonModelSelect');
+  const modelSelect  = document.getElementById('skinModelSelect');
   const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
   const outputSelect = document.getElementById('outputCount');
+  const skinEntry    = SKIN_CATALOG.find(s => s.id === skinId);
 
-  if (skinId === 'swisson') {
+  if (skinEntry && skinEntry.models) {
+    // Populate model dropdown with this skin's models
+    modelSelect.innerHTML = skinEntry.models.map(m =>
+      `<option value="${m.id}">${m.id} — ${m.inputs}×${m.outputs} — ${m.connector}</option>`
+    ).join('');
     modelSelect.style.display = 'block';
-    applySwissonModel(modelSelect.value);
+    applySkinModel(modelSelect.value);
   } else {
     modelSelect.style.display = 'none';
     // Restore editable
@@ -3073,12 +3154,11 @@ function selectSkin(skinId) {
   }
 }
 
-function applySwissonModel(modelId) {
-  const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-  const model = swissonEntry && swissonEntry.models.find(m => m.id === modelId);
-  if (!model) return;
+function applySkinModel(modelId) {
+  const found = findCatalogModel(modelId);
+  if (!found) return;
+  const { model } = found;
 
-  // Lock inputs/outputs to model specs
   const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
   const outputSelect = document.getElementById('outputCount');
 
@@ -3089,9 +3169,9 @@ function applySwissonModel(modelId) {
   outputSelect.value    = String(model.outputs);
   outputSelect.disabled = true;
 
-  // Auto-fill name if still empty or previously set by a model
+  // Auto-fill name if still empty or previously set by any model
   const nameEl = document.getElementById('newDeviceName');
-  const isDefaultOrModel = !nameEl.value || SKIN_CATALOG.find(s => s.id === 'swisson')?.models.some(m => nameEl.value === m.id);
+  const isDefaultOrModel = !nameEl.value || allCatalogModelIds().includes(nameEl.value);
   if (isDefaultOrModel) nameEl.value = modelId;
 
   updatePreview();
@@ -3137,12 +3217,12 @@ function confirmNewDevice() {
   const skinId = selectedTile ? selectedTile.dataset.skin : 'standard';
   let options = { skin: skinId };
 
-  if (skinId === 'swisson') {
-    const modelId = document.getElementById('swissonModelSelect').value;
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    const model = swissonEntry && swissonEntry.models.find(m => m.id === modelId);
+  const skinEntry = SKIN_CATALOG.find(s => s.id === skinId);
+  if (skinEntry && skinEntry.models) {
+    const modelId = document.getElementById('skinModelSelect').value;
+    const found   = findCatalogModel(modelId);
     options.skinModel     = modelId;
-    options.connectorType = model ? model.connector : null;
+    options.connectorType = found ? found.model.connector : null;
   }
 
   createDevice(name, inputs, outputs, options);
@@ -3329,11 +3409,15 @@ function bsNext() {
     <th>Outputs</th>
   </tr></thead>`;
 
-  // Build Swisson model options string once
-  const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-  const swissonOptions = swissonEntry.models.map(m =>
-    `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
-  ).join('');
+  // Build all skin model options (grouped by manufacturer)
+  const allSkinOptions = SKIN_CATALOG
+    .filter(s => s.id !== 'standard' && s.models)
+    .map(s => `<optgroup label="${s.label}">` +
+      s.models.map(m =>
+        `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
+      ).join('') +
+      `</optgroup>`)
+    .join('');
 
   const tbody = document.createElement('tbody');
   for (let i = 1; i <= count; i++) {
@@ -3343,7 +3427,7 @@ function bsNext() {
       <td>
         <select id="bsSkin_${i}" class="bs-skin-select" onchange="bsSkinChanged(${i})">
           <option value="standard">— Standard —</option>
-          ${swissonOptions}
+          ${allSkinOptions}
         </select>
       </td>
       <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
@@ -3394,20 +3478,17 @@ function bsSkinChanged(i) {
   const val      = skinSel.value;
 
   if (val === 'standard') {
-    // Restore free editing
     in1Radio.disabled = false;
     in2Radio.disabled = false;
     outSel.disabled   = false;
-    // Reset name only if it was a Swisson model name
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    if (swissonEntry.models.some(m => nameEl.value === m.id)) {
+    // Reset name if it was previously set by any model
+    if (allCatalogModelIds().includes(nameEl.value)) {
       nameEl.value = 'DMX Booster ' + i;
     }
   } else {
-    // Swisson model selected — lock to model specs
-    const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-    const model = swissonEntry.models.find(m => m.id === val);
-    if (!model) return;
+    const found = findCatalogModel(val);
+    if (!found) return;
+    const { model } = found;
 
     in1Radio.checked  = (model.inputs === 1);
     in2Radio.checked  = (model.inputs === 2);
@@ -3416,9 +3497,9 @@ function bsSkinChanged(i) {
     outSel.value      = String(model.outputs);
     outSel.disabled   = true;
 
-    // Auto-fill name if still default or previous model name
+    // Auto-fill name if still default or was a previous model name
     const isDefault = nameEl.value === ('DMX Booster ' + i)
-      || swissonEntry.models.some(m => nameEl.value === m.id);
+      || allCatalogModelIds().includes(nameEl.value);
     if (isDefault) nameEl.value = model.id;
   }
 }
@@ -3438,17 +3519,15 @@ function bsConfirm() {
     const outputs = parseInt(outEl.value) || 8;
 
     // Read skin selection
-    const skinSel  = document.getElementById('bsSkin_' + i);
-    const skinVal  = skinSel ? skinSel.value : 'standard';
-    const isSwisson = skinVal !== 'standard';
+    const skinSel = document.getElementById('bsSkin_' + i);
+    const skinVal = skinSel ? skinSel.value : 'standard';
 
     let skin = 'standard', skinModel = null, connectorType = null;
-    if (isSwisson) {
-      const swissonEntry = SKIN_CATALOG.find(s => s.id === 'swisson');
-      const model = swissonEntry && swissonEntry.models.find(m => m.id === skinVal);
-      skin          = 'swisson';
+    if (skinVal !== 'standard') {
+      const found = findCatalogModel(skinVal);
+      skin          = found ? found.skin.id : 'standard';
       skinModel     = skinVal;
-      connectorType = model ? model.connector : null;
+      connectorType = found ? found.model.connector : null;
     }
 
     const device = {

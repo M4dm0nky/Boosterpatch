@@ -18,7 +18,7 @@
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.9.0</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.1</div>
       </div>
     </div>
   </div>
@@ -199,13 +199,12 @@
             <div class="skin-tile-name">SWISSON</div>
             <div class="skin-tile-desc">XSP Serie</div>
           </div>
+          <div class="skin-tile" data-skin="obsidian" onclick="selectSkin('obsidian')">
+            <div class="skin-tile-name">OBSIDIAN</div>
+            <div class="skin-tile-desc">NETRON Serie</div>
+          </div>
         </div>
-        <select id="swissonModelSelect" style="display:none;" onchange="applySwissonModel(this.value)">
-          <option value="XSP-5R">XSP-5R — 1×5 — 5-Pin XLR</option>
-          <option value="XSP-3R">XSP-3R — 1×5 — 3-Pin XLR</option>
-          <option value="XSP-5R-5R">XSP-5R-5R — 1×10 — 5-Pin XLR</option>
-          <option value="XSP-3R-3R">XSP-3R-3R — 1×10 — 3-Pin XLR</option>
-        </select>
+        <select id="skinModelSelect" style="display:none;" onchange="applySkinModel(this.value)"></select>
       </div>
       <div class="modal-field">
         <label>Gerätename</label>

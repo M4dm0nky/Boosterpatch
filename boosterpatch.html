@@ -1110,78 +1110,105 @@ body {
 
 /* ===================================================================
    SKIN: Swisson XSP
-   Charakteristik: schwarzes Gehäuse, leuchtend roter Rahmen rundum,
-   weißer SWISSON-Schriftzug, rote Schraubenköpfe
-   Swisson-Rot: #C8102E (nahe Pantone 186 C)
+   ORIGINAL: Schwarze Rack-Ohren/Rahmen, ROTE Frontplatte (komplett),
+   weißer SWISSON-Schriftzug oben links, silberne XLR auf rotem Grund.
+   Swisson-Rot: ~#C82C10 (warmes Orange-Rot wie im Original)
    =================================================================== */
 
-/* Rack-Unit: roter Rahmen komplett umlaufend */
+/* Rack-Unit: schwarzes Gehäuse, dunkle Border */
 .skin-swisson.rack-unit {
-  background: #0e0e10;
-  border: 3px solid #C8102E;
+  background: #111114;
+  border-color: #222226;
   box-shadow:
-    0 0 12px rgba(200,16,46,0.28),
-    0 4px 20px rgba(0,0,0,0.7),
-    inset 0 1px 0 rgba(255,255,255,0.04);
+    0 4px 20px rgba(0,0,0,0.75),
+    inset 0 1px 0 rgba(255,255,255,0.03);
 }
 
+/* DIE GESAMTE FRONTPLATTE IST ROT */
 .skin-swisson .rack-face {
-  background: #111114;
+  background: #C82C10;
   position: relative;
 }
 
-/* Ears: dunkel, innere Naht auch rot */
+/* Rack-Ohren: schwarz, Trennlinie zum roten Panel */
 .skin-swisson .rack-ear {
-  background: #0e0e10;
-  border-right-color: #C8102E;
+  background: #111114;
+  border-right-color: #3a0e06;
 }
 .skin-swisson .rack-ear.right {
-  border-left-color: #C8102E;
+  border-left-color: #3a0e06;
   border-right: none;
 }
 
-/* Schrauben: dunkelrot metallic */
+/* Schrauben: dunkles Metall auf schwarzem Ohr */
 .skin-swisson .rack-screw {
-  background: radial-gradient(circle at 35% 35%, #601020, #280810);
-  border-color: #C8102E;
+  background: radial-gradient(circle at 35% 35%, #3a3a40, #1a1a1e);
+  border-color: #4a4a50;
 }
 .skin-swisson .rack-screw::after {
-  background: #1c0408;
+  background: #0e0e12;
 }
 
-/* Topbar: rote Trennlinie, gedimmt */
+/* Topbar auf rotem Grund: subtile dunkle Trennlinie */
 .skin-swisson .rack-topbar {
-  border-bottom-color: rgba(200,16,46,0.45);
+  border-bottom-color: rgba(0,0,0,0.25);
 }
 
-/* Model-Info: klein, gedimmt — echte Infos aber unauffällig */
+/* Alle Texte auf rotem Grund: weiß */
+.skin-swisson .device-name-label {
+  color: #ffffff;
+}
+.skin-swisson .device-name-label:hover { color: #ffe0d8; }
+.skin-swisson .section-label { color: rgba(255,255,255,0.75); }
+.skin-swisson .rack-hint    { color: rgba(255,255,255,0.25); }
+.skin-swisson .xlr-num      { color: rgba(255,255,255,0.6); }
+.skin-swisson .xlr-label    { color: rgba(255,255,255,0.55); }
+.skin-swisson .xlr-ids-btn  {
+  background: rgba(0,0,0,0.2);
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.6);
+}
+.skin-swisson .xlr-ids-btn:hover {
+  background: rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.5);
+  color: #ffffff;
+}
+
+/* Model-Info: klein, weißlich auf Rot */
 .skin-swisson .skin-model-info {
   font-size: 9px;
   letter-spacing: 1px;
-  color: rgba(255,255,255,0.3);
+  color: rgba(255,255,255,0.5);
 }
 
-/* Buttons: roter Hover */
+/* Buttons: dunkel auf rotem Panel */
+.skin-swisson .rack-ctrl-btn {
+  background: rgba(0,0,0,0.25);
+  border-color: rgba(255,255,255,0.2);
+  color: rgba(255,255,255,0.75);
+}
 .skin-swisson .rack-ctrl-btn:hover {
-  border-color: #C8102E;
-  color: #ff4060;
-  background: rgba(200,16,46,0.12);
+  background: rgba(0,0,0,0.4);
+  border-color: rgba(255,255,255,0.5);
+  color: #ffffff;
 }
-.skin-swisson .device-name-label:hover { color: #ff4060; }
+.skin-swisson .rack-ctrl-btn.delete:hover {
+  background: rgba(0,0,0,0.4);
+  border-color: rgba(255,200,180,0.6);
+  color: #ffccbb;
+}
 
-/* SWISSON — prominenter weißer Schriftzug, leichte rote Aura */
+/* SWISSON — weißer Schriftzug oben links auf rotem Panel */
 .skin-logo-swisson {
   font-family: var(--font-ui);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 900;
-  letter-spacing: 5px;
+  letter-spacing: 4px;
   color: #ffffff;
   text-transform: uppercase;
   flex-shrink: 0;
   user-select: none;
-  text-shadow:
-    0 0 14px rgba(200,16,46,0.5),
-    0 1px 2px rgba(0,0,0,0.8);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
 }
 
 /* ===================================================================
@@ -1276,6 +1303,80 @@ body {
   font-size: 12px;
   opacity: 0.9;
   filter: drop-shadow(0 0 5px rgba(0,200,160,0.65));
+}
+
+/* ===================================================================
+   SKIN: Major DMX Booster
+   Charakteristik: schwarzer Hochglanzlack, kein Texturmuster,
+   silberweiße "MAJOR" Schrift, clean-minimalist Industriedesign
+   =================================================================== */
+
+.skin-major.rack-unit {
+  background: #0a0a0c;
+  border-color: #2a2a2e;
+  box-shadow:
+    0 4px 18px rgba(0,0,0,0.82),
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -1px 0 rgba(0,0,0,0.4);
+}
+
+/* Hochglanzlack: leichter Spiegeleffekt an der oberen Kante */
+.skin-major .rack-face {
+  position: relative;
+  background: linear-gradient(180deg, #131316 0%, #0d0d10 15%, #0a0a0c 100%);
+}
+
+.skin-major .rack-ear {
+  background: #0c0c0e;
+  border-right-color: #2a2a2e;
+}
+.skin-major .rack-ear.right {
+  border-left-color: #2a2a2e;
+  border-right: none;
+}
+
+/* Schrauben: Silber-Metallic */
+.skin-major .rack-screw {
+  background: radial-gradient(circle at 35% 35%, #8a8a90, #3a3a40);
+  border-color: #6a6a70;
+}
+.skin-major .rack-screw::after {
+  background: #202025;
+}
+
+/* Topbar: silberne Trennlinie */
+.skin-major .rack-topbar {
+  border-bottom-color: rgba(200,200,204,0.25);
+}
+
+/* Model-Info: gedimmt */
+.skin-major .skin-model-info {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: rgba(255,255,255,0.28);
+}
+
+/* Hover: silber */
+.skin-major .rack-ctrl-btn:hover {
+  border-color: #c8c8cc;
+  color: #e0e0e4;
+  background: rgba(200,200,204,0.08);
+}
+.skin-major .device-name-label:hover { color: #e0e0e4; }
+
+/* MAJOR — silberweiß, clean, professionell */
+.skin-logo-major {
+  font-family: var(--font-ui);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 5px;
+  color: #c8c8cc;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  user-select: none;
+  text-shadow:
+    0 0 10px rgba(200,200,210,0.35),
+    0 1px 3px rgba(0,0,0,0.9);
 }
 
     /* ===== css/patch-table.css ===== */
@@ -1771,6 +1872,15 @@ body {
 }
 .skin-tile[data-skin="obsidian"].selected .skin-tile-name {
   color: var(--accent-green);
+}
+
+/* Major tile: silber wenn ausgewählt */
+.skin-tile[data-skin="major"].selected {
+  border-color: #c8c8cc;
+  background: rgba(200,200,204,0.07);
+}
+.skin-tile[data-skin="major"].selected .skin-tile-name {
+  color: #c8c8cc;
 }
 
 /* Generisches Model-Select Dropdown im Single-Modal */
@@ -2387,6 +2497,10 @@ body {
             <div class="skin-tile-name">OBSIDIAN</div>
             <div class="skin-tile-desc">NETRON Serie</div>
           </div>
+          <div class="skin-tile" data-skin="major" onclick="selectSkin('major')">
+            <div class="skin-tile-name">MAJOR</div>
+            <div class="skin-tile-desc">DMX Booster</div>
+          </div>
         </div>
         <select id="skinModelSelect" style="display:none;" onchange="applySkinModel(this.value)"></select>
       </div>
@@ -2572,10 +2686,10 @@ const SKIN_CATALOG = [
     label: 'Swisson XSP',
     description: 'Swisson DMX Splitter/Booster',
     models: [
-      { id: 'XSP-5R',    label: 'XSP-5R',    connector: '5-Pin XLR', inputs: 1, outputs: 5  },
-      { id: 'XSP-3R',    label: 'XSP-3R',    connector: '3-Pin XLR', inputs: 1, outputs: 5  },
-      { id: 'XSP-5R-5R', label: 'XSP-5R-5R', connector: '5-Pin XLR', inputs: 1, outputs: 10 },
-      { id: 'XSP-3R-3R', label: 'XSP-3R-3R', connector: '3-Pin XLR', inputs: 1, outputs: 10 }
+      { id: 'XSP-5R',    label: 'XSP-5R',    connector: '5-Pin XLR', inputs: 2, outputs: 5  },
+      { id: 'XSP-3R',    label: 'XSP-3R',    connector: '3-Pin XLR', inputs: 2, outputs: 5  },
+      { id: 'XSP-5R-5R', label: 'XSP-5R-5R', connector: '5-Pin XLR', inputs: 2, outputs: 10 },
+      { id: 'XSP-3R-3R', label: 'XSP-3R-3R', connector: '3-Pin XLR', inputs: 2, outputs: 10 }
     ]
   },
   {
@@ -2587,6 +2701,14 @@ const SKIN_CATALOG = [
       { id: 'RDM6-IP',  label: 'RDM6 IP',  connector: '5-Pin XLR IP66', inputs: 1, outputs: 6  },
       { id: 'DMX-10-5', label: 'DMX 10-5', connector: '5-Pin XLR',      inputs: 2, outputs: 10 },
       { id: 'DMX10-53', label: 'DMX10-53', connector: '5+3-Pin XLR',    inputs: 2, outputs: 10 }
+    ]
+  },
+  {
+    id: 'major',
+    label: 'Major',
+    description: 'Major DMX Booster',
+    models: [
+      { id: 'DMX-Booster-12', label: 'DMX Booster', connector: '5-Pin XLR', inputs: 1, outputs: 12 }
     ]
   }
 ];
@@ -2810,6 +2932,11 @@ function buildDeviceCard(device) {
     mark.textContent = '◆';
     logo.appendChild(mark);
     logo.appendChild(document.createTextNode('NETRON'));
+    topbar.appendChild(logo);
+  } else if (device.skin === 'major') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-major';
+    logo.textContent = 'MAJOR';
     topbar.appendChild(logo);
   }
 
@@ -3272,10 +3399,10 @@ function applySkinModel(modelId) {
 
   inputRadios.forEach(r => {
     r.checked  = (parseInt(r.value) === model.inputs);
-    r.disabled = true;
+    r.disabled = false;
   });
   outputSelect.value    = String(model.outputs);
-  outputSelect.disabled = true;
+  outputSelect.disabled = false;
 
   // Auto-fill name if still empty or previously set by any model
   const nameEl = document.getElementById('newDeviceName');
@@ -3600,10 +3727,10 @@ function bsSkinChanged(i) {
 
     in1Radio.checked  = (model.inputs === 1);
     in2Radio.checked  = (model.inputs === 2);
-    in1Radio.disabled = true;
-    in2Radio.disabled = true;
+    in1Radio.disabled = false;
+    in2Radio.disabled = false;
     outSel.value      = String(model.outputs);
-    outSel.disabled   = true;
+    outSel.disabled   = false;
 
     // Auto-fill name if still default or was a previous model name
     const isDefault = nameEl.value === ('DMX Booster ' + i)

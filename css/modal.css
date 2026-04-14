@@ -310,6 +310,15 @@
   color: var(--accent-green);
 }
 
+/* Major tile: silber wenn ausgewählt */
+.skin-tile[data-skin="major"].selected {
+  border-color: #c8c8cc;
+  background: rgba(200,200,204,0.07);
+}
+.skin-tile[data-skin="major"].selected .skin-tile-name {
+  color: #c8c8cc;
+}
+
 /* Generisches Model-Select Dropdown im Single-Modal */
 #skinModelSelect {
   width: 100%;

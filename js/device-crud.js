@@ -66,10 +66,10 @@ function applySkinModel(modelId) {
 
   inputRadios.forEach(r => {
     r.checked  = (parseInt(r.value) === model.inputs);
-    r.disabled = true;
+    r.disabled = false;
   });
   outputSelect.value    = String(model.outputs);
-  outputSelect.disabled = true;
+  outputSelect.disabled = false;
 
   // Auto-fill name if still empty or previously set by any model
   const nameEl = document.getElementById('newDeviceName');
@@ -394,10 +394,10 @@ function bsSkinChanged(i) {
 
     in1Radio.checked  = (model.inputs === 1);
     in2Radio.checked  = (model.inputs === 2);
-    in1Radio.disabled = true;
-    in2Radio.disabled = true;
+    in1Radio.disabled = false;
+    in2Radio.disabled = false;
     outSel.value      = String(model.outputs);
-    outSel.disabled   = true;
+    outSel.disabled   = false;
 
     // Auto-fill name if still default or was a previous model name
     const isDefault = nameEl.value === ('DMX Booster ' + i)

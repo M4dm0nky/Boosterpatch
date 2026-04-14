@@ -114,6 +114,11 @@ function buildDeviceCard(device) {
     logo.appendChild(mark);
     logo.appendChild(document.createTextNode('NETRON'));
     topbar.appendChild(logo);
+  } else if (device.skin === 'major') {
+    const logo = document.createElement('div');
+    logo.className = 'skin-logo skin-logo-major';
+    logo.textContent = 'MAJOR';
+    topbar.appendChild(logo);
   }
 
   topbar.appendChild(controls);

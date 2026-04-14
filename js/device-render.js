@@ -167,6 +167,16 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(face);
   rackUnit.appendChild(buildEar(true));
+
+  // Swisson: blaue Power-LED im rechten Rack-Ear
+  if (device.skin === 'swisson') {
+    const rightEar = rackUnit.querySelector('.rack-ear.right');
+    const powerLed = document.createElement('div');
+    powerLed.className = 'swisson-power-led';
+    powerLed.title = 'Power';
+    rightEar.appendChild(powerLed);
+  }
+
   card.appendChild(rackUnit);
 
   return card;

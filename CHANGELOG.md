@@ -1,5 +1,16 @@
 # Changelog
 
+## v0.9.2.2 — 2026-04-15
+
+**Swisson XSP Skin — Visual Overhaul (Referenz-Hardware)**
+
+- Bordeaux/Crimson Connector-Panel: `.rack-connectors` erhält den charakteristischen dunkelroten Hintergrund des echten XSP-Geräts
+- Chrome XLR-Körper: Output-Buchsen silber-chrome, Input-Buchsen blau-getönt — heben sich vom roten Panel ab
+- Blaue Power-LED im rechten Rack-Ear (entspricht der echten Hardware)
+- Labels (`section-label`, `xlr-num`) in warmem Off-White für bessere Lesbarkeit auf rotem Hintergrund
+
+---
+
 ## v0.6.0 — 2026-04-09
 
 **Refactoring — Build-System mit Multi-File Quellstruktur**

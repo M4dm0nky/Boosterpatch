@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = 'v0.9.2.4';
+const APP_VERSION = 'v0.9.2.5';
 
 // ============================================================
 // SKIN CATALOG

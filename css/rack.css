@@ -502,30 +502,15 @@
   display: none;
 }
 
-/* Connector faceplate: für Swisson KEIN roter Hintergrund — nur der .swisson-red-stripe-div */
+/* Connector faceplate: roter Hintergrund hinter allen Elementen */
 .skin-swisson .rack-connectors {
-  background: transparent !important;
-  background-image: none !important;
-  border-top: none !important;
-  border-bottom: none !important;
-  margin: 0 -12px;
-  padding: 0 12px;
-  align-items: flex-start;
-  position: relative;
-}
-
-/* Der schmale rote Balken — sitzt absolut hinter dem Inhalt */
-.swisson-red-stripe {
-  position: absolute;
-  left: 0; right: 0;
-  top: 68px;   /* überspringt die Seg-Display-Stacks (71px layout - 6px margin + 3px gap ≈ 68px) */
-  height: 52px; /* XLR-Körper 42px + je 5px oben/unten */
   background: #5c0a08;
-  background-image: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(0,0,0,0.28) 100%);
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.18) 100%);
   border-top: 2px solid #8a1810;
   border-bottom: 2px solid #3a0604;
-  z-index: 0;
-  pointer-events: none;
+  margin: 0 -12px;
+  padding: 6px 12px;
+  align-items: flex-start;
 }
 
 /* Connector-Abstand für Swisson enger */
@@ -540,32 +525,25 @@
   margin-bottom: -6px;
 }
 
-/* Output-Wrapper: stacking-context über dem Stripe */
+/* Output-Wrapper */
 .swisson-output-wrapper {
   flex: 1;
-  position: relative;
-  z-index: 1;
 }
 
 /* ===== Swisson Input-Panel (ersetzt die 2 XLR-Körper) ===== */
-/* Transparent — der rote Stripe-Div liefert den Hintergrund */
 .swisson-input-panel {
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
-  background: transparent;
-  border: none;
-  border-radius: 0;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 3px;
   padding: 4px 8px;
   flex-shrink: 0;
   min-width: 88px;
-  margin-right: 8px;
-  margin-top: 68px;
-  height: 52px;
-  align-self: flex-start;
-  position: relative;
-  z-index: 1;
+  margin-right: 12px;
+  align-self: center;
   box-sizing: border-box;
 }
 

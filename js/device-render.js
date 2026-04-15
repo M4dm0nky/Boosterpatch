@@ -130,11 +130,6 @@ function buildDeviceCard(device) {
 
   // Inputs section — Swisson: kompaktes Display-Panel statt XLR-Körper
   if (device.skin === 'swisson') {
-    // Roter Stripe-Balken (absolut positioniert, hinter dem Inhalt)
-    const stripe = document.createElement('div');
-    stripe.className = 'swisson-red-stripe';
-    connArea.appendChild(stripe);
-
     connArea.appendChild(buildSwissonInputPanel(device));
 
     // Outputs: kein Section-Label, direkt in Wrapper

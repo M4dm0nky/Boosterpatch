@@ -524,6 +524,7 @@
   align-items: stretch;
   width: 100%;
   background: #0d0d11;
+  min-height: 120px;
 }
 
 /* ── Linkes Display-Modul ─────────────────────────────────── */

@@ -130,18 +130,7 @@ function buildDeviceCard(device) {
 
   // Inputs section — Swisson: kompaktes Display-Panel statt XLR-Körper
   if (device.skin === 'swisson') {
-    connArea.appendChild(buildSwissonInputPanel(device));
-
-    // Outputs: kein Section-Label, direkt in Wrapper
-    const outputWrapper = document.createElement('div');
-    outputWrapper.className = 'swisson-output-wrapper';
-    const outputRow = document.createElement('div');
-    outputRow.className = 'connectors-row';
-    device.connections.outputs.forEach(conn => {
-      outputRow.appendChild(buildXLRConnector(device.id, 'output', conn));
-    });
-    outputWrapper.appendChild(outputRow);
-    connArea.appendChild(outputWrapper);
+    connArea.appendChild(buildSwissonHardwareSkin(device));
   } else {
     const inputSec = document.createElement('div');
     inputSec.className = 'connector-section inputs';
@@ -208,6 +197,66 @@ function buildScrew() {
   const s = document.createElement('div');
   s.className = 'rack-screw';
   return s;
+}
+
+// ============================================================
+// SWISSON HARDWARE SKIN — visueller Hardware-Layer
+// ============================================================
+function buildSwissonHardwareSkin(device) {
+  const skin = document.createElement('div');
+  skin.className = 'swisson-hw-skin';
+
+  // Linkes Display-Modul
+  const left = document.createElement('div');
+  left.className = 'swisson-hw-left';
+
+  const encoder = document.createElement('div');
+  encoder.className = 'swisson-hw-encoder';
+  encoder.title = 'Encoder';
+  left.appendChild(encoder);
+
+  const abWrap = document.createElement('div');
+  abWrap.className = 'swisson-hw-ab';
+
+  const brand = document.createElement('div');
+  brand.className = 'swisson-hw-brand';
+  brand.textContent = 'SWISSON';
+  abWrap.appendChild(brand);
+
+  [{ letter: 'A', dotClass: 'a-dot' }, { letter: 'B', dotClass: 'b-dot' }].forEach(({ letter, dotClass }) => {
+    const row = document.createElement('div');
+    row.className = 'swisson-hw-ab-row';
+
+    const dot = document.createElement('div');
+    dot.className = 'swisson-hw-ab-dot ' + dotClass;
+
+    const lbl = document.createElement('span');
+    lbl.className = 'swisson-hw-ab-letter';
+    lbl.textContent = letter;
+
+    const val = document.createElement('span');
+    val.className = 'swisson-hw-ab-val';
+    val.textContent = '--';
+
+    row.appendChild(dot);
+    row.appendChild(lbl);
+    row.appendChild(val);
+    abWrap.appendChild(row);
+  });
+
+  left.appendChild(abWrap);
+  skin.appendChild(left);
+
+  // Rechte Seite: schwarze Fläche + roter Panel-Balken
+  const right = document.createElement('div');
+  right.className = 'swisson-hw-right';
+
+  const panel = document.createElement('div');
+  panel.className = 'swisson-hw-panel';
+  right.appendChild(panel);
+  skin.appendChild(right);
+
+  return skin;
 }
 
 // ============================================================

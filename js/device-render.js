@@ -130,7 +130,23 @@ function buildDeviceCard(device) {
 
   // Inputs section — Swisson: kompaktes Display-Panel statt XLR-Körper
   if (device.skin === 'swisson') {
+    // Roter Stripe-Balken (absolut positioniert, hinter dem Inhalt)
+    const stripe = document.createElement('div');
+    stripe.className = 'swisson-red-stripe';
+    connArea.appendChild(stripe);
+
     connArea.appendChild(buildSwissonInputPanel(device));
+
+    // Outputs: kein Section-Label, direkt in Wrapper
+    const outputWrapper = document.createElement('div');
+    outputWrapper.className = 'swisson-output-wrapper';
+    const outputRow = document.createElement('div');
+    outputRow.className = 'connectors-row';
+    device.connections.outputs.forEach(conn => {
+      outputRow.appendChild(buildXLRConnector(device.id, 'output', conn));
+    });
+    outputWrapper.appendChild(outputRow);
+    connArea.appendChild(outputWrapper);
   } else {
     const inputSec = document.createElement('div');
     inputSec.className = 'connector-section inputs';
@@ -145,22 +161,21 @@ function buildDeviceCard(device) {
     });
     inputSec.appendChild(inputRow);
     connArea.appendChild(inputSec);
-  }
 
-  // Outputs section
-  const outputSec = document.createElement('div');
-  outputSec.className = 'connector-section outputs';
-  const outputLabel = document.createElement('div');
-  outputLabel.className = 'section-label';
-  outputLabel.textContent = 'OUTPUT';
-  outputSec.appendChild(outputLabel);
-  const outputRow = document.createElement('div');
-  outputRow.className = 'connectors-row';
-  device.connections.outputs.forEach(conn => {
-    outputRow.appendChild(buildXLRConnector(device.id, 'output', conn));
-  });
-  outputSec.appendChild(outputRow);
-  connArea.appendChild(outputSec);
+    const outputSec = document.createElement('div');
+    outputSec.className = 'connector-section outputs';
+    const outputLabel = document.createElement('div');
+    outputLabel.className = 'section-label';
+    outputLabel.textContent = 'OUTPUT';
+    outputSec.appendChild(outputLabel);
+    const outputRow = document.createElement('div');
+    outputRow.className = 'connectors-row';
+    device.connections.outputs.forEach(conn => {
+      outputRow.appendChild(buildXLRConnector(device.id, 'output', conn));
+    });
+    outputSec.appendChild(outputRow);
+    connArea.appendChild(outputSec);
+  }
 
   face.appendChild(connArea);
 

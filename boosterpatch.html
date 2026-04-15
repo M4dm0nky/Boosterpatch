@@ -1145,17 +1145,9 @@ body {
   color: var(--text-secondary);
 }
 
-/* SWISSON — weißer Schriftzug, rechts im Topbar */
+/* SWISSON — weißer Schriftzug, rechts im Topbar — ausgeblendet (Logo sitzt jetzt im Input-Panel) */
 .skin-logo-swisson {
-  font-family: var(--font-ui);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  color: #ffffff;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  user-select: none;
-  text-shadow: 0 1px 4px rgba(200,44,16,0.6);
+  display: none;
 }
 
 /* Connector faceplate: bordeaux panel wie echtes Gerät */
@@ -1165,7 +1157,87 @@ body {
   border-top: 1px solid #7a120e;
   border-bottom: 1px solid #3a0604;
   margin: 0 -12px;
-  padding: 8px 12px;
+  padding: 6px 12px;
+  align-items: center;
+}
+
+/* Connector-Abstand für Swisson enger */
+.skin-swisson .connectors-row {
+  gap: 6px;
+}
+
+/* Seg-Display-Stack für Swisson-Outputs verkleinern */
+.skin-swisson .xlr-connector.output .seg-display-stack {
+  transform: scale(0.78);
+  transform-origin: bottom center;
+  margin-bottom: -6px;
+}
+
+/* ===== Swisson Input-Panel (ersetzt die 2 XLR-Körper) ===== */
+.swisson-input-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: #0c0c10;
+  border: 1px solid #2a1510;
+  border-radius: 3px;
+  padding: 6px 8px;
+  flex-shrink: 0;
+  min-width: 82px;
+  margin-right: 10px;
+  align-self: center;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.swisson-logo-bar {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(200,44,16,0.8);
+  margin-bottom: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.swisson-input-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 1px 2px;
+  transition: background 0.12s;
+}
+.swisson-input-row:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.swisson-in-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255, 200, 190, 0.85);
+  flex-shrink: 0;
+  width: 10px;
+  text-align: center;
+}
+
+.swisson-input-panel .seg-display {
+  cursor: pointer;
+}
+
+.swisson-input-row .xlr-label {
+  font-size: 8px;
+  color: var(--text-secondary);
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
 }
 
 /* Output XLR bodies: chrome/silber vor rotem Hintergrund */
@@ -2323,7 +2395,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.9.2.2</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.2.3</div>
       </div>
     </div>
   </div>
@@ -2680,7 +2752,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.2.2';
+const APP_VERSION = 'v0.9.2.3';
 
 // ============================================================
 // SKIN CATALOG
@@ -2958,20 +3030,24 @@ function buildDeviceCard(device) {
   const connArea = document.createElement('div');
   connArea.className = 'rack-connectors';
 
-  // Inputs section
-  const inputSec = document.createElement('div');
-  inputSec.className = 'connector-section inputs';
-  const inputLabel = document.createElement('div');
-  inputLabel.className = 'section-label';
-  inputLabel.textContent = 'INPUT';
-  inputSec.appendChild(inputLabel);
-  const inputRow = document.createElement('div');
-  inputRow.className = 'connectors-row';
-  device.connections.inputs.forEach(conn => {
-    inputRow.appendChild(buildXLRConnector(device.id, 'input', conn));
-  });
-  inputSec.appendChild(inputRow);
-  connArea.appendChild(inputSec);
+  // Inputs section — Swisson: kompaktes Display-Panel statt XLR-Körper
+  if (device.skin === 'swisson') {
+    connArea.appendChild(buildSwissonInputPanel(device));
+  } else {
+    const inputSec = document.createElement('div');
+    inputSec.className = 'connector-section inputs';
+    const inputLabel = document.createElement('div');
+    inputLabel.className = 'section-label';
+    inputLabel.textContent = 'INPUT';
+    inputSec.appendChild(inputLabel);
+    const inputRow = document.createElement('div');
+    inputRow.className = 'connectors-row';
+    device.connections.inputs.forEach(conn => {
+      inputRow.appendChild(buildXLRConnector(device.id, 'input', conn));
+    });
+    inputSec.appendChild(inputRow);
+    connArea.appendChild(inputSec);
+  }
 
   // Outputs section
   const outputSec = document.createElement('div');
@@ -3024,6 +3100,77 @@ function buildScrew() {
   const s = document.createElement('div');
   s.className = 'rack-screw';
   return s;
+}
+
+// ============================================================
+// SWISSON INPUT PANEL — kompaktes Display-Panel (statt 2 XLR-Körper)
+// ============================================================
+function buildSwissonInputPanel(device) {
+  const panel = document.createElement('div');
+  panel.className = 'swisson-input-panel';
+
+  const logoBar = document.createElement('div');
+  logoBar.className = 'swisson-logo-bar';
+  logoBar.textContent = 'SWISSON';
+  panel.appendChild(logoBar);
+
+  const inputLetters = ['A', 'B'];
+
+  device.connections.inputs.forEach((conn, idx) => {
+    const row = document.createElement('div');
+    row.className = 'swisson-input-row';
+    row.id = 'xlr_' + device.id + '_input_' + conn.id;
+    row.title = 'IN ' + conn.id + (conn.label ? ' — ' + conn.label : '') + '\nKlick: Universum bearbeiten · Rechtsklick: zurücksetzen';
+
+    // Rechtsklick → Universum zurücksetzen
+    row.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (!conn.universe) return;
+      conn.universe = null;
+      conn.active = false;
+      markModified();
+      updateConnDisplay(device.id, 'input', conn);
+      syncConnLed(device.id, 'input', conn.id);
+      syncOutputLedsForInput(device.id, conn.id);
+      renderPatchTable();
+      showToast('Universum zurückgesetzt.', 'info', 1500);
+    });
+
+    // Status-Lampe (orange IN1, blau IN2)
+    const lamp = document.createElement('div');
+    lamp.className = 'retro-lamp input-status-lamp ' + (conn.id === 1 ? 'lamp-in1' : 'lamp-in2');
+    lamp.id = 'input_lamp_' + device.id + '_' + conn.id;
+    if (conn.active) applyLampOn(lamp);
+    row.appendChild(lamp);
+
+    // Buchstaben-Label (A / B)
+    const letter = document.createElement('span');
+    letter.className = 'swisson-in-label';
+    letter.textContent = inputLetters[idx] || String(conn.id);
+    row.appendChild(letter);
+
+    // Segment-Display (Universum)
+    const dispText = getConnDisplayText(conn, 'input');
+    const dispEl = buildSegDisplay(dispText);
+    dispEl.id = 'disp_' + device.id + '_input_' + conn.id;
+    dispEl.title = 'Klick: Universum bearbeiten';
+    dispEl.addEventListener('click', e => {
+      e.stopPropagation();
+      openUnivPopover(device.id, 'input', conn.id, dispEl);
+    });
+    row.appendChild(dispEl);
+
+    // Label-Text
+    const lbl = document.createElement('div');
+    lbl.className = 'xlr-label';
+    lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
+    lbl.textContent = conn.label || '—';
+    row.appendChild(lbl);
+
+    panel.appendChild(row);
+  });
+
+  return panel;
 }
 
 function buildXLRConnector(deviceId, type, conn) {

@@ -497,17 +497,9 @@
   color: var(--text-secondary);
 }
 
-/* SWISSON — weißer Schriftzug, rechts im Topbar */
+/* SWISSON — weißer Schriftzug, rechts im Topbar — ausgeblendet (Logo sitzt jetzt im Input-Panel) */
 .skin-logo-swisson {
-  font-family: var(--font-ui);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  color: #ffffff;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  user-select: none;
-  text-shadow: 0 1px 4px rgba(200,44,16,0.6);
+  display: none;
 }
 
 /* Connector faceplate: bordeaux panel wie echtes Gerät */
@@ -517,7 +509,87 @@
   border-top: 1px solid #7a120e;
   border-bottom: 1px solid #3a0604;
   margin: 0 -12px;
-  padding: 8px 12px;
+  padding: 6px 12px;
+  align-items: center;
+}
+
+/* Connector-Abstand für Swisson enger */
+.skin-swisson .connectors-row {
+  gap: 6px;
+}
+
+/* Seg-Display-Stack für Swisson-Outputs verkleinern */
+.skin-swisson .xlr-connector.output .seg-display-stack {
+  transform: scale(0.78);
+  transform-origin: bottom center;
+  margin-bottom: -6px;
+}
+
+/* ===== Swisson Input-Panel (ersetzt die 2 XLR-Körper) ===== */
+.swisson-input-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: #0c0c10;
+  border: 1px solid #2a1510;
+  border-radius: 3px;
+  padding: 6px 8px;
+  flex-shrink: 0;
+  min-width: 82px;
+  margin-right: 10px;
+  align-self: center;
+  box-shadow: inset 0 1px 4px rgba(0,0,0,0.7), 0 1px 0 rgba(255,255,255,0.03);
+}
+
+.swisson-logo-bar {
+  font-family: var(--font-ui);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(200,44,16,0.8);
+  margin-bottom: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.swisson-input-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 1px 2px;
+  transition: background 0.12s;
+}
+.swisson-input-row:hover {
+  background: rgba(255,255,255,0.04);
+}
+
+.swisson-in-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: rgba(255, 200, 190, 0.85);
+  flex-shrink: 0;
+  width: 10px;
+  text-align: center;
+}
+
+.swisson-input-panel .seg-display {
+  cursor: pointer;
+}
+
+.swisson-input-row .xlr-label {
+  font-size: 8px;
+  color: var(--text-secondary);
+  max-width: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex-shrink: 1;
 }
 
 /* Output XLR bodies: chrome/silber vor rotem Hintergrund */

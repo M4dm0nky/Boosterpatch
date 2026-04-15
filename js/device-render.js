@@ -128,20 +128,24 @@ function buildDeviceCard(device) {
   const connArea = document.createElement('div');
   connArea.className = 'rack-connectors';
 
-  // Inputs section
-  const inputSec = document.createElement('div');
-  inputSec.className = 'connector-section inputs';
-  const inputLabel = document.createElement('div');
-  inputLabel.className = 'section-label';
-  inputLabel.textContent = 'INPUT';
-  inputSec.appendChild(inputLabel);
-  const inputRow = document.createElement('div');
-  inputRow.className = 'connectors-row';
-  device.connections.inputs.forEach(conn => {
-    inputRow.appendChild(buildXLRConnector(device.id, 'input', conn));
-  });
-  inputSec.appendChild(inputRow);
-  connArea.appendChild(inputSec);
+  // Inputs section — Swisson: kompaktes Display-Panel statt XLR-Körper
+  if (device.skin === 'swisson') {
+    connArea.appendChild(buildSwissonInputPanel(device));
+  } else {
+    const inputSec = document.createElement('div');
+    inputSec.className = 'connector-section inputs';
+    const inputLabel = document.createElement('div');
+    inputLabel.className = 'section-label';
+    inputLabel.textContent = 'INPUT';
+    inputSec.appendChild(inputLabel);
+    const inputRow = document.createElement('div');
+    inputRow.className = 'connectors-row';
+    device.connections.inputs.forEach(conn => {
+      inputRow.appendChild(buildXLRConnector(device.id, 'input', conn));
+    });
+    inputSec.appendChild(inputRow);
+    connArea.appendChild(inputSec);
+  }
 
   // Outputs section
   const outputSec = document.createElement('div');
@@ -194,6 +198,77 @@ function buildScrew() {
   const s = document.createElement('div');
   s.className = 'rack-screw';
   return s;
+}
+
+// ============================================================
+// SWISSON INPUT PANEL — kompaktes Display-Panel (statt 2 XLR-Körper)
+// ============================================================
+function buildSwissonInputPanel(device) {
+  const panel = document.createElement('div');
+  panel.className = 'swisson-input-panel';
+
+  const logoBar = document.createElement('div');
+  logoBar.className = 'swisson-logo-bar';
+  logoBar.textContent = 'SWISSON';
+  panel.appendChild(logoBar);
+
+  const inputLetters = ['A', 'B'];
+
+  device.connections.inputs.forEach((conn, idx) => {
+    const row = document.createElement('div');
+    row.className = 'swisson-input-row';
+    row.id = 'xlr_' + device.id + '_input_' + conn.id;
+    row.title = 'IN ' + conn.id + (conn.label ? ' — ' + conn.label : '') + '\nKlick: Universum bearbeiten · Rechtsklick: zurücksetzen';
+
+    // Rechtsklick → Universum zurücksetzen (identisch zu Standard-Input)
+    row.addEventListener('contextmenu', e => {
+      e.preventDefault();
+      if (!conn.universe) return;
+      conn.universe = null;
+      conn.active = false;
+      markModified();
+      updateConnDisplay(device.id, 'input', conn);
+      syncConnLed(device.id, 'input', conn.id);
+      syncOutputLedsForInput(device.id, conn.id);
+      renderPatchTable();
+      showToast('Universum zurückgesetzt.', 'info', 1500);
+    });
+
+    // Status-Lampe (orange IN1, blau IN2)
+    const lamp = document.createElement('div');
+    lamp.className = 'retro-lamp input-status-lamp ' + (conn.id === 1 ? 'lamp-in1' : 'lamp-in2');
+    lamp.id = 'input_lamp_' + device.id + '_' + conn.id;
+    if (conn.active) applyLampOn(lamp);
+    row.appendChild(lamp);
+
+    // Buchstaben-Label (A / B)
+    const letter = document.createElement('span');
+    letter.className = 'swisson-in-label';
+    letter.textContent = inputLetters[idx] || String(conn.id);
+    row.appendChild(letter);
+
+    // Segment-Display (Universum)
+    const dispText = getConnDisplayText(conn, 'input');
+    const dispEl = buildSegDisplay(dispText);
+    dispEl.id = 'disp_' + device.id + '_input_' + conn.id;
+    dispEl.title = 'Klick: Universum bearbeiten';
+    dispEl.addEventListener('click', e => {
+      e.stopPropagation();
+      openUnivPopover(device.id, 'input', conn.id, dispEl);
+    });
+    row.appendChild(dispEl);
+
+    // Label-Text (optional)
+    const lbl = document.createElement('div');
+    lbl.className = 'xlr-label';
+    lbl.style.color = conn.label ? 'var(--text-mono)' : 'var(--text-secondary)';
+    lbl.textContent = conn.label || '—';
+    row.appendChild(lbl);
+
+    panel.appendChild(row);
+  });
+
+  return panel;
 }
 
 function buildXLRConnector(deviceId, type, conn) {

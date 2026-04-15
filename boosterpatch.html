@@ -1212,14 +1212,17 @@ body {
 .swisson-hw-ab-dot.b-dot { background: #1a5adc; box-shadow: 0 0 5px rgba(26,90,220,0.75); }
 .swisson-hw-ab-letter { font-family: var(--font-mono); font-size: 10px; font-weight: 700; color: rgba(220,180,60,0.9); }
 .swisson-hw-ab-val { font-family: var(--font-mono); font-size: 9px; color: rgba(220,180,60,0.4); letter-spacing: 1px; }
-.swisson-hw-right { flex: 1; background: #0d0d11; display: flex; flex-direction: column; align-items: stretch; justify-content: center; }
+.swisson-hw-right { flex: 1; background: #0d0d11; position: relative; }
 .swisson-hw-panel {
-  flex-shrink: 0; height: 54px;
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%; transform: translateY(-50%);
+  height: 54px;
   background: #8a1408;
   background-image: linear-gradient(180deg, #a81c0c 0%, #8a1408 50%, #5c0a04 100%);
   border-top: 2px solid #c02010;
   border-bottom: 2px solid #3a0602;
-  box-shadow: inset 0 1px 0 rgba(255,80,40,0.15), inset 0 -1px 0 rgba(0,0,0,0.5), 0 0 12px rgba(0,0,0,0.8);
+  box-shadow: inset 0 1px 0 rgba(255,80,40,0.15), inset 0 -1px 0 rgba(0,0,0,0.5);
 }
 
 /* Output XLR bodies: chrome/silber vor rotem Hintergrund */

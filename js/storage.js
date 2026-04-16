@@ -218,22 +218,22 @@ table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 col.col-name { width: 15%; }
 col.col-in   { width: 6.5%; }
 
-thead tr { background: #1a1f2e; }
+thead tr { background: #fff; }
 th {
-  color: #ffffff;
+  color: #000;
   padding: 6px 6px;
   font-size: 9pt;
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: .03em;
   text-align: center;
-  border: 1px solid #2a2f3e;
+  border: 1px solid #999;
+  border-bottom: 2px solid #000;
   white-space: nowrap;
   overflow: hidden;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .th-name { text-align: left; padding-left: 9px; }
-.th-in   { background: #252a3e; }
+.th-in   { background: #f0f0f0; }
 
 .brow.odd { background: #f5f7fc; }
 

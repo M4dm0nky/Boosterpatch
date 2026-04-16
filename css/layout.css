@@ -174,36 +174,6 @@ body {
 
 .sb-sep { height: 1px; background: var(--rack-border); margin: 8px 10px; }
 
-.sb-device-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px 5px 20px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  transition: background 0.12s, color 0.12s;
-  border-left: 2px solid transparent;
-}
-.sb-device-item:hover {
-  background: var(--sidebar-hover);
-  color: var(--text-primary);
-  border-left-color: var(--rack-border);
-}
-.sb-device-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.sb-device-badge {
-  font-size: 9px;
-  color: var(--text-secondary);
-  flex-shrink: 0;
-}
-
 /* Plan list items */
 .sb-new-badge {
   font-size: 8px;

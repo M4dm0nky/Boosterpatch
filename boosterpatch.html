@@ -257,36 +257,6 @@ body {
 
 .sb-sep { height: 1px; background: var(--rack-border); margin: 8px 10px; }
 
-.sb-device-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 14px 5px 20px;
-  cursor: pointer;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.5px;
-  transition: background 0.12s, color 0.12s;
-  border-left: 2px solid transparent;
-}
-.sb-device-item:hover {
-  background: var(--sidebar-hover);
-  color: var(--text-primary);
-  border-left-color: var(--rack-border);
-}
-.sb-device-name {
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.sb-device-badge {
-  font-size: 9px;
-  color: var(--text-secondary);
-  flex-shrink: 0;
-}
-
 /* Plan list items */
 .sb-new-badge {
   font-size: 8px;
@@ -2246,23 +2216,6 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* Fixture count badge on output labels */
-.fix-count-badge {
-  display: inline-block;
-  margin-left: 4px;
-  padding: 1px 4px;
-  background: rgba(232,200,74,0.18);
-  border: 1px solid rgba(232,200,74,0.4);
-  color: var(--accent);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  border-radius: 2px;
-  vertical-align: middle;
-  line-height: 1.4;
-}
-
 /* === 16. Toast === */
 #toastContainer {
   position: fixed;
@@ -2322,7 +2275,7 @@ body {
     <div id="areaBand" style="display:flex;align-items:center;gap:12px;">
       <div>
         <h1 class="app-title">BOOSTER<span>PATCH</span></h1>
-        <div class="app-version" id="appVersionDisplay">v0.9.3</div>
+        <div class="app-version" id="appVersionDisplay">v0.9.4</div>
       </div>
     </div>
   </div>
@@ -2679,7 +2632,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.3';
+const APP_VERSION = 'v0.9.4';
 
 // ============================================================
 // SKIN CATALOG
@@ -2733,7 +2686,6 @@ const state = {
   created: null,
   modified: false,
   devices: [],
-  logos: { planer: '', band: '', booking: '' },
   ethDatabase: [],
   fixtureDatabase: []
 };
@@ -4973,14 +4925,6 @@ async function loadFileHandleFromIDB() {
   } catch(e) { return null; }
 }
 
-async function clearFileHandleFromIDB() {
-  try {
-    const db = await openIDB();
-    const tx = db.transaction(IDB_STORE, 'readwrite');
-    tx.objectStore(IDB_STORE).delete(IDB_KEY);
-  } catch(e) {}
-}
-
 // --- Current FileHandle ---
 let currentFileHandle = null;
 let currentFileName = '';
@@ -4998,7 +4942,7 @@ async function writeToFileHandle(handle) {
 }
 
 // --- File auto-save interval (2 min) ---
-setInterval(async () => {
+let _autoSaveInterval = setInterval(async () => {
   if (!currentFileHandle) return;
   try {
     const perm = await currentFileHandle.queryPermission({ mode: 'readwrite' });

@@ -516,14 +516,6 @@ async function loadFileHandleFromIDB() {
   } catch(e) { return null; }
 }
 
-async function clearFileHandleFromIDB() {
-  try {
-    const db = await openIDB();
-    const tx = db.transaction(IDB_STORE, 'readwrite');
-    tx.objectStore(IDB_STORE).delete(IDB_KEY);
-  } catch(e) {}
-}
-
 // --- Current FileHandle ---
 let currentFileHandle = null;
 let currentFileName = '';
@@ -541,7 +533,7 @@ async function writeToFileHandle(handle) {
 }
 
 // --- File auto-save interval (2 min) ---
-setInterval(async () => {
+let _autoSaveInterval = setInterval(async () => {
   if (!currentFileHandle) return;
   try {
     const perm = await currentFileHandle.queryPermission({ mode: 'readwrite' });

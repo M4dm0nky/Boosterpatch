@@ -1,6 +1,6 @@
 'use strict';
 
-const APP_VERSION = 'v0.9.3';
+const APP_VERSION = 'v0.9.4';
 
 // ============================================================
 // SKIN CATALOG
@@ -54,7 +54,6 @@ const state = {
   created: null,
   modified: false,
   devices: [],
-  logos: { planer: '', band: '', booking: '' },
   ethDatabase: [],
   fixtureDatabase: []
 };

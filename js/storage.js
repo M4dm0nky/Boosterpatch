@@ -112,6 +112,11 @@ function exportPrint() {
   const dateStr  = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const projName = escHtml(state.projectName || 'Unbenannt');
 
+  // ── Logos ────────────────────────────────────────────────────
+  const lbPlaner  = logos.planer  ? `<img src="${logos.planer}"  style="height:52px;max-width:150px;object-fit:contain;object-position:left center;">` : '';
+  const lbBand    = logos.band    ? `<img src="${logos.band}"    style="height:48px;max-width:130px;object-fit:contain;margin-right:10px;">` : '';
+  const lbBooking = logos.booking ? `<img src="${logos.booking}" style="height:52px;max-width:150px;object-fit:contain;object-position:right center;">` : '';
+
   // ── Table header ────────────────────────────────────────────
   let thead = `<tr>
     <th class="th-name">BOOSTER</th>
@@ -138,7 +143,7 @@ function exportPrint() {
       const out = dev.connections.outputs[p];
       const lbl = out && out.label ? escHtml(out.label) : '';
       if (!out) {
-        rows += `<td class="td-out na"></td>`;
+        rows += `<td class="td-out na">&nbsp;</td>`;
       } else if (lbl) {
         rows += `<td class="td-out act">${lbl}</td>`;
       } else {
@@ -148,8 +153,8 @@ function exportPrint() {
     rows += '</tr>';
   });
 
-  // ── OUT header labels ────────────────────────────────────────
-  const outCols = Array.from({length: cols}, (_, i) => `<col class="col-out">`).join('');
+  // ── colgroup ─────────────────────────────────────────────────
+  const outCols = Array.from({length: cols}, () => `<col class="col-out">`).join('');
   const inCols  = hasIn2 ? '<col class="col-in"><col class="col-in">' : '<col class="col-in">';
 
   const html = `<!DOCTYPE html>
@@ -161,60 +166,64 @@ function exportPrint() {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 8pt;
+  font-size: 9pt;
   color: #111;
-  padding: 0;
   background: #fff;
 }
 
-/* ── Header ── */
+/* ── Header — 3-Spalten wie Personalplan ── */
 .ph {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
   border-bottom: 3px solid #1a1f2e;
-  padding-bottom: 9px;
-  margin-bottom: 13px;
+  padding-bottom: 10px;
+  margin-bottom: 14px;
 }
-.ph-left-title {
-  font-size: 21pt;
+.ph-left  { display: flex; align-items: center; justify-content: flex-start; }
+.ph-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+}
+.ph-right { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
+
+.ph-title {
+  font-size: 24pt;
   font-weight: 900;
-  letter-spacing: 4px;
+  letter-spacing: 5px;
   color: #1a1f2e;
   text-transform: uppercase;
   line-height: 1;
 }
-.ph-left-sub {
+.ph-sub {
   font-size: 7pt;
   color: #666;
   letter-spacing: .12em;
   text-transform: uppercase;
   margin-top: 4px;
 }
-.ph-right {
+.ph-meta {
   text-align: right;
   font-size: 7.5pt;
   color: #555;
-  line-height: 1.6;
-}
-.ph-right strong {
-  font-size: 9.5pt;
-  color: #1a1f2e;
-  display: block;
-  margin-bottom: 1px;
+  line-height: 1.7;
 }
 
 /* ── Table ── */
 table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-colgroup .col-name  { width: 15%; }
-colgroup .col-in    { width: 6%;  }
-colgroup .col-out   { }
+col.col-name { width: 15%; }
+col.col-in   { width: 6.5%; }
 
 thead tr { background: #1a1f2e; }
 th {
   color: #fff;
-  padding: 5px 5px;
-  font-size: 6.5pt;
+  padding: 6px 6px;
+  font-size: 8pt;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: .07em;
   text-align: center;
@@ -222,29 +231,31 @@ th {
   white-space: nowrap;
   overflow: hidden;
 }
-.th-name { text-align: left; padding-left: 8px; }
+.th-name { text-align: left; padding-left: 9px; }
 .th-in   { background: #252a3e; }
 
-.brow { border-bottom: 1px solid #dde; }
 .brow.odd { background: #f5f7fc; }
 
-.td-name {
-  padding: 4px 8px;
-  font-weight: 700;
-  font-size: 7.5pt;
-  color: #1a1f2e;
-  border-right: 2px solid #1a1f2e;
-  background: #f0f4ff;
+td {
+  border: 1px solid #ccd;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.td-name {
+  padding: 5px 9px;
+  font-weight: 700;
+  font-size: 8.5pt;
+  color: #1a1f2e;
+  border-right: 2px solid #1a1f2e;
+  background: #f0f4ff;
+}
 .td-in {
-  padding: 3px 4px;
+  padding: 4px 5px;
   text-align: center;
   color: #aaa;
-  font-size: 7pt;
-  border-right: 1px solid #d8dce8;
+  font-size: 8pt;
   background: #fafafa;
 }
 .td-in.val {
@@ -253,48 +264,45 @@ th {
   background: #eaf2ff;
 }
 .td-out {
-  padding: 3px 4px;
+  padding: 4px 5px;
   text-align: center;
-  font-size: 6.5pt;
-  color: #ccc;
-  border-right: 1px solid #eee;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 7.5pt;
+  color: #bbb;
 }
 .td-out.act {
   color: #1a4a1a;
   font-weight: 700;
   background: #eaf4ea;
-  border-right: 1px solid #c4dcc4;
+  border-color: #c4dcc4;
 }
 .td-out.na {
-  background: #f9f9f9;
+  background: #f7f7f7;
+  color: transparent;
 }
 
 /* ── Legend ── */
 .legend {
   display: flex;
-  gap: 16px;
-  margin-top: 10px;
-  padding-top: 7px;
+  gap: 18px;
+  margin-top: 11px;
+  padding-top: 8px;
   border-top: 1px solid #dde;
-  font-size: 6.5pt;
+  font-size: 7pt;
   color: #777;
   flex-wrap: wrap;
 }
 .leg-item { display: flex; align-items: center; gap: 5px; }
-.leg-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.leg-dot  { width: 11px; height: 11px; border-radius: 2px; flex-shrink: 0; }
 
 /* ── Footer ── */
 .footer {
   display: flex;
   justify-content: space-between;
-  margin-top: 7px;
-  font-size: 6pt;
+  margin-top: 8px;
+  font-size: 6.5pt;
   color: #bbb;
   border-top: 1px solid #eee;
-  padding-top: 5px;
+  padding-top: 6px;
 }
 
 @media print {
@@ -304,13 +312,17 @@ th {
 </head>
 <body>
 <div class="ph">
-  <div>
-    <div class="ph-left-title">Boosterpatch</div>
-    <div class="ph-left-sub">DMX Patch · ${projName}</div>
+  <div class="ph-left">${lbPlaner}</div>
+  <div class="ph-center">
+    ${lbBand}
+    <div>
+      <div class="ph-title">Boosterpatch</div>
+      <div class="ph-sub">DMX Patch &nbsp;·&nbsp; ${projName}</div>
+    </div>
   </div>
   <div class="ph-right">
-    <strong>${projName}</strong>
-    Gedruckt: ${dateStr} &nbsp;·&nbsp; ${APP_VERSION}
+    <div class="ph-meta">Gedruckt: ${dateStr}<br>${APP_VERSION}</div>
+    ${lbBooking}
   </div>
 </div>
 
@@ -325,9 +337,10 @@ th {
 </table>
 
 <div class="legend">
-  <span class="leg-item"><span class="leg-dot" style="background:#eaf4ea;border:1px solid #c4dcc4;"></span> Output belegt</span>
-  <span class="leg-item"><span class="leg-dot" style="background:#eaf2ff;border:1px solid #b8d4f0;"></span> Input mit Universum</span>
-  <span class="leg-item"><span style="color:#ccc;font-size:8pt;">—</span> &nbsp;Output leer</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#eaf4ea;border:1px solid #c4dcc4;"></span>Output belegt</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#eaf2ff;border:1px solid #b8d4f0;"></span>Input mit Universum</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#f0f4ff;border:1px solid #c8d4f0;"></span>Boostername</span>
+  <span class="leg-item" style="color:#bbb;">— &nbsp;Output leer</span>
 </div>
 
 <div class="footer">

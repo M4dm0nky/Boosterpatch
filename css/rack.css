@@ -497,142 +497,26 @@
   color: var(--text-secondary);
 }
 
-/* SWISSON — weißer Schriftzug, rechts im Topbar — ausgeblendet (Logo sitzt jetzt im Input-Panel) */
+/* SWISSON — weißer Schriftzug, rechts im Topbar */
 .skin-logo-swisson {
-  display: none;
-}
-
-/* ===================================================================
-   SWISSON — Hardware-Skin Layer
-   Schwarze Fläche · linkes Display-Modul · schmaler roter Panel-Balken
-   =================================================================== */
-
-/* rack-connectors: transparent, Skin-Div liefert das Visuelle */
-.skin-swisson .rack-connectors {
-  background: transparent !important;
-  background-image: none !important;
-  border: none !important;
-  margin: 0 -12px;
-  padding: 0;
-  display: block;
-}
-
-/* ── Hardware-Skin Wrapper ─────────────────────────────────── */
-.swisson-hw-skin {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  width: 100%;
-  background: #0d0d11;
-  min-height: 120px;
-}
-
-/* ── Linkes Display-Modul ─────────────────────────────────── */
-.swisson-hw-left {
-  width: 120px;
-  flex-shrink: 0;
-  background: #0d0d11;
-  border-right: 1px solid #1e0e0a;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 8px 10px;
-  gap: 8px;
-}
-
-.swisson-hw-encoder {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: radial-gradient(circle at 35% 30%, #2e2e38, #141418 60%, #0c0c10);
-  border: 2px solid #222230;
-  box-shadow:
-    0 3px 8px rgba(0,0,0,0.9),
-    0 0 0 3px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.04);
-  position: relative;
-}
-.swisson-hw-encoder::after {
-  content: '';
-  position: absolute;
-  top: 5px; left: 50%;
-  transform: translateX(-50%);
-  width: 2px; height: 9px;
-  background: rgba(200,200,200,0.65);
-  border-radius: 1px;
-}
-
-.swisson-hw-ab {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.swisson-hw-brand {
   font-family: var(--font-ui);
-  font-size: 7px;
+  font-size: 18px;
   font-weight: 900;
-  letter-spacing: 2px;
-  color: rgba(255,255,255,0.45);
+  letter-spacing: 4px;
+  color: #ffffff;
   text-transform: uppercase;
-  margin-bottom: 2px;
-}
-
-.swisson-hw-ab-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.swisson-hw-ab-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
   flex-shrink: 0;
-}
-.swisson-hw-ab-dot.a-dot {
-  background: #cc7700;
-  box-shadow: 0 0 5px rgba(220,130,0,0.75);
-}
-.swisson-hw-ab-dot.b-dot {
-  background: #1a5adc;
-  box-shadow: 0 0 5px rgba(26,90,220,0.75);
+  user-select: none;
+  text-shadow: 0 1px 4px rgba(200,44,16,0.6);
 }
 
-.swisson-hw-ab-letter {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  color: rgba(220,180,60,0.9);
-}
-
-.swisson-hw-ab-val {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  color: rgba(220,180,60,0.4);
-  letter-spacing: 1px;
-}
-
-/* ── Rechte Seite: schwarze Fläche + roter Panel-Balken ───── */
-.swisson-hw-right {
-  flex: 1;
-  background: #111114;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.swisson-hw-panel {
-  height: 54px;
-  flex-shrink: 0;
-  background: #9a1a0a;
-  background-image: linear-gradient(180deg, #b82412 0%, #9a1a0a 50%, #7a1208 100%);
-  border-top: 2px solid #e83018;
-  border-bottom: 2px solid #500a04;
-  box-shadow:
-    inset 0 1px 0 rgba(255,100,60,0.2),
-    0 2px 6px rgba(0,0,0,0.6);
+.skin-swisson .rack-connectors {
+  background: #5c0a08;
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.18) 100%);
+  border-top: 1px solid #7a120e;
+  border-bottom: 1px solid #3a0604;
+  margin: 0 -12px;
+  padding: 8px 12px;
 }
 
 /* Output XLR bodies: chrome/silber vor rotem Hintergrund */

@@ -1078,286 +1078,6 @@ body {
   color: var(--accent);
 }
 
-/* ===================================================================
-   SKIN: Swisson XSP
-   Design: Dunkle Fläche, roter Rahmen (Border) um das gesamte Rack-Unit.
-   Swisson-Rot: #C82C10
-   =================================================================== */
-
-.skin-swisson.rack-unit {
-  background: #111114;
-  border: 3px solid #C82C10;
-  box-shadow:
-    0 0 0 1px rgba(200,44,16,0.25),
-    0 4px 20px rgba(0,0,0,0.75);
-}
-
-.skin-swisson .rack-face {
-  background: #111114;
-}
-
-.skin-swisson .rack-ear {
-  background: #0e0e12;
-  border-right-color: #1a1a1e;
-}
-.skin-swisson .rack-ear.right {
-  border-left-color: #1a1a1e;
-  border-right: none;
-}
-
-.skin-swisson .rack-topbar {
-  border-bottom-color: rgba(200,44,16,0.2);
-}
-
-.skin-swisson .skin-model-info {
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: var(--text-secondary);
-}
-
-/* SWISSON — weißer Schriftzug, rechts im Topbar */
-.skin-logo-swisson {
-  font-family: var(--font-ui);
-  font-size: 18px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  color: #ffffff;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  user-select: none;
-  text-shadow: 0 1px 4px rgba(200,44,16,0.6);
-}
-
-.skin-swisson .rack-connectors {
-  background: #5c0a08;
-  background-image: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, rgba(0,0,0,0.18) 100%);
-  border-top: 1px solid #7a120e;
-  border-bottom: 1px solid #3a0604;
-  margin: 0 -12px;
-  padding: 8px 12px;
-}
-
-/* Output XLR bodies: chrome/silber vor rotem Hintergrund */
-.skin-swisson .xlr-connector.output .xlr-body {
-  background: radial-gradient(circle at 35% 28%, #E8E8E8, #AAAAAA 50%, #666666);
-  border: 2px solid #D0D0D0;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.6),
-              inset 0 1px 3px rgba(255,255,255,0.55),
-              inset 0 -1px 2px rgba(0,0,0,0.3);
-}
-
-/* Input XLR bodies: blau-getönte chrome */
-.skin-swisson .xlr-connector.input .xlr-body {
-  background: radial-gradient(circle at 35% 28%, #D8E4EE, #9AAABB 50%, #556677);
-  border: 2px solid #C0CCD8;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.6),
-              inset 0 1px 3px rgba(255,255,255,0.5),
-              inset 0 -1px 2px rgba(0,0,0,0.3);
-}
-
-/* Labels auf rotem Panel lesbarer machen */
-.skin-swisson .section-label,
-.skin-swisson .xlr-num {
-  color: rgba(255, 200, 190, 0.70);
-}
-
-/* Blauer Power-LED im rechten Ear */
-.skin-swisson .rack-ear.right {
-  position: relative;
-}
-.swisson-power-led {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  position: absolute;
-  bottom: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle at 38% 32%,
-    #c8e8ff 0%, #5cb8ff 28%, #1a6bcc 60%, #0a2a60 100%);
-  border: 1.5px solid #2050aa;
-  box-shadow:
-    0 0 6px rgba(80,160,255,0.85),
-    0 0 14px rgba(40,100,255,0.45),
-    inset 0 1px 2px rgba(200,230,255,0.35);
-}
-.swisson-power-led::before {
-  content: '';
-  position: absolute;
-  top: 1px; left: 1px;
-  width: 4px; height: 3px;
-  border-radius: 50%;
-  background: radial-gradient(ellipse,
-    rgba(255,255,255,0.65) 0%, rgba(255,255,255,0) 100%);
-}
-
-/* ===================================================================
-   SKIN: Obsidian NETRON
-   Charakteristik: reines Mattschwarz (Pulverbeschichtung/fuzzy),
-   Dot-Matrix-Textur, Teal/Cyan NETRON-Logo mit Rauten-Icon
-   NETRON-Teal: #00c8a0
-   =================================================================== */
-
-.skin-obsidian.rack-unit {
-  background: #0a0b0c;
-  border-color: #1c1e20;
-  box-shadow:
-    0 4px 20px rgba(0,0,0,0.88),
-    inset 0 1px 0 rgba(255,255,255,0.02);
-}
-
-/* Matte Pulverbeschichtungs-Textur: überlagerte Dot-Matrix */
-.skin-obsidian .rack-face {
-  position: relative;
-  background-color: #0d0e0f;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.022) 1px, transparent 0),
-    radial-gradient(circle, rgba(255,255,255,0.012) 1px, transparent 0);
-  background-size: 3px 3px, 7px 7px;
-  background-position: 0 0, 2px 2px;
-}
-
-/* Ears: gleiche Textur */
-.skin-obsidian .rack-ear {
-  background-color: #0a0b0c;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.018) 1px, transparent 0),
-    radial-gradient(circle, rgba(255,255,255,0.010) 1px, transparent 0);
-  background-size: 3px 3px, 7px 7px;
-  background-position: 0 0, 2px 2px;
-  border-right-color: #1c1e20;
-}
-.skin-obsidian .rack-ear.right {
-  border-left-color: #1c1e20;
-  border-right: none;
-}
-
-/* Carbon-Schrauben */
-.skin-obsidian .rack-screw {
-  background: radial-gradient(circle at 35% 35%, #1e2424, #080c0c);
-  border-color: #283030;
-}
-.skin-obsidian .rack-screw::after {
-  background: #040808;
-}
-
-/* Topbar: gedämpfte Teal-Trennlinie */
-.skin-obsidian .rack-topbar {
-  border-bottom-color: rgba(0,200,160,0.32);
-}
-
-/* Model-Info: klein, gedimmt */
-.skin-obsidian .skin-model-info {
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.28);
-}
-
-/* Buttons: teal Hover */
-.skin-obsidian .rack-ctrl-btn:hover {
-  border-color: #00c8a0;
-  color: #00e8b8;
-  background: rgba(0,200,160,0.1);
-}
-.skin-obsidian .device-name-label:hover { color: #00e8b8; }
-
-/* NETRON Logo — Rauten-Icon + Schriftzug in NETRON-Teal */
-.skin-logo-netron {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-ui);
-  font-size: 17px;
-  font-weight: 900;
-  letter-spacing: 4px;
-  color: #00c8a0;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  user-select: none;
-  text-shadow:
-    0 0 12px rgba(0,200,160,0.5),
-    0 1px 2px rgba(0,0,0,0.8);
-}
-
-.netron-mark {
-  font-size: 12px;
-  opacity: 0.9;
-  filter: drop-shadow(0 0 5px rgba(0,200,160,0.65));
-}
-
-/* ===================================================================
-   SKIN: Major DMX Booster
-   Charakteristik: schwarzer Hochglanzlack, kein Texturmuster,
-   silberweiße "MAJOR" Schrift, clean-minimalist Industriedesign
-   =================================================================== */
-
-.skin-major.rack-unit {
-  background: #0a0a0c;
-  border-color: #2a2a2e;
-  box-shadow:
-    0 4px 18px rgba(0,0,0,0.82),
-    inset 0 1px 0 rgba(255,255,255,0.06),
-    inset 0 -1px 0 rgba(0,0,0,0.4);
-}
-
-/* Hochglanzlack: leichter Spiegeleffekt an der oberen Kante */
-.skin-major .rack-face {
-  position: relative;
-  background: linear-gradient(180deg, #131316 0%, #0d0d10 15%, #0a0a0c 100%);
-}
-
-.skin-major .rack-ear {
-  background: #0c0c0e;
-  border-right-color: #2a2a2e;
-}
-.skin-major .rack-ear.right {
-  border-left-color: #2a2a2e;
-  border-right: none;
-}
-
-/* Schrauben: Silber-Metallic */
-.skin-major .rack-screw {
-  background: radial-gradient(circle at 35% 35%, #8a8a90, #3a3a40);
-  border-color: #6a6a70;
-}
-.skin-major .rack-screw::after {
-  background: #202025;
-}
-
-/* Topbar: silberne Trennlinie */
-.skin-major .rack-topbar {
-  border-bottom-color: rgba(200,200,204,0.25);
-}
-
-/* Model-Info: gedimmt */
-.skin-major .skin-model-info {
-  font-size: 9px;
-  letter-spacing: 1px;
-  color: rgba(255,255,255,0.28);
-}
-
-/* Hover: silber */
-.skin-major .rack-ctrl-btn:hover {
-  border-color: #c8c8cc;
-  color: #e0e0e4;
-  background: rgba(200,200,204,0.08);
-}
-.skin-major .device-name-label:hover { color: #e0e0e4; }
-
-/* MAJOR — silberweiß, clean, professionell */
-.skin-logo-major {
-  font-family: var(--font-ui);
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 5px;
-  color: #c8c8cc;
-  text-transform: uppercase;
-  flex-shrink: 0;
-  user-select: none;
-  text-shadow:
-    0 0 10px rgba(200,200,210,0.35),
-    0 1px 3px rgba(0,0,0,0.9);
-}
 
     /* ===== css/patch-table.css ===== */
 /* === 12. Patch Table === */
@@ -1797,86 +1517,6 @@ body {
   color: var(--accent);
 }
 
-/* ===================================================================
-   Skin-Picker — Visual Tile Auswahl im newDeviceModal
-   =================================================================== */
-.skin-picker {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.skin-tile {
-  flex: 1;
-  padding: 10px 12px;
-  background: var(--rack-ear);
-  border: 1px solid var(--rack-border);
-  border-radius: 3px;
-  cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
-  font-family: var(--font-mono);
-  user-select: none;
-}
-.skin-tile:hover { border-color: var(--accent); }
-.skin-tile.selected {
-  border-color: var(--accent);
-  background: var(--sidebar-active);
-}
-
-.skin-tile-name {
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  color: var(--text-primary);
-}
-.skin-tile-desc {
-  font-size: 10px;
-  color: var(--text-secondary);
-  margin-top: 2px;
-}
-.skin-tile.selected .skin-tile-name { color: var(--accent); }
-
-/* Swisson tile: orange Akzent wenn ausgewählt */
-.skin-tile[data-skin="swisson"].selected {
-  border-color: var(--accent-orange);
-  background: rgba(232,160,74,0.08);
-}
-.skin-tile[data-skin="swisson"].selected .skin-tile-name {
-  color: var(--accent-orange);
-}
-
-/* Obsidian tile: teal Akzent wenn ausgewählt */
-.skin-tile[data-skin="obsidian"].selected {
-  border-color: var(--accent-green);
-  background: rgba(74,232,160,0.07);
-}
-.skin-tile[data-skin="obsidian"].selected .skin-tile-name {
-  color: var(--accent-green);
-}
-
-/* Major tile: silber wenn ausgewählt */
-.skin-tile[data-skin="major"].selected {
-  border-color: #c8c8cc;
-  background: rgba(200,200,204,0.07);
-}
-.skin-tile[data-skin="major"].selected .skin-tile-name {
-  color: #c8c8cc;
-}
-
-/* Generisches Model-Select Dropdown im Single-Modal */
-#skinModelSelect {
-  width: 100%;
-  margin-top: 8px;
-}
-
-/* Booster-Setup: Gerät-Spalte */
-.bs-skin-select {
-  min-width: 180px;
-  font-size: 11px;
-}
-.bs-skin-select option[value="standard"] {
-  color: var(--text-secondary);
-}
 
     /* ===== css/misc.css ===== */
 /* === 11. 7-Segment Display — VFD/Nixie Röhren-Stil === */
@@ -2446,28 +2086,6 @@ body {
     </div>
     <div class="modal-body">
       <div class="modal-field">
-        <label>Gerätetyp</label>
-        <div class="skin-picker" id="skinPicker">
-          <div class="skin-tile selected" data-skin="standard" onclick="selectSkin('standard')">
-            <div class="skin-tile-name">Standard</div>
-            <div class="skin-tile-desc">Generischer Booster</div>
-          </div>
-          <div class="skin-tile" data-skin="swisson" onclick="selectSkin('swisson')">
-            <div class="skin-tile-name">SWISSON</div>
-            <div class="skin-tile-desc">XSP Serie</div>
-          </div>
-          <div class="skin-tile" data-skin="obsidian" onclick="selectSkin('obsidian')">
-            <div class="skin-tile-name">OBSIDIAN</div>
-            <div class="skin-tile-desc">NETRON Serie</div>
-          </div>
-          <div class="skin-tile" data-skin="major" onclick="selectSkin('major')">
-            <div class="skin-tile-name">MAJOR</div>
-            <div class="skin-tile-desc">DMX Booster</div>
-          </div>
-        </div>
-        <select id="skinModelSelect" style="display:none;" onchange="applySkinModel(this.value)"></select>
-      </div>
-      <div class="modal-field">
         <label>Gerätename</label>
         <input type="text" id="newDeviceName" placeholder="z.B. DMX Booster FOH" maxlength="40">
       </div>
@@ -2632,49 +2250,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.4';
-
-// ============================================================
-// SKIN CATALOG
-// ============================================================
-const SKIN_CATALOG = [
-  {
-    id: 'standard',
-    label: 'Standard',
-    description: 'Generischer DMX Booster',
-    models: null
-  },
-  {
-    id: 'swisson',
-    label: 'Swisson XSP',
-    description: 'Swisson DMX Splitter/Booster',
-    models: [
-      { id: 'XSP-5R',    label: 'XSP-5R',    connector: '5-Pin XLR', inputs: 2, outputs: 5  },
-      { id: 'XSP-3R',    label: 'XSP-3R',    connector: '3-Pin XLR', inputs: 2, outputs: 5  },
-      { id: 'XSP-5R-5R', label: 'XSP-5R-5R', connector: '5-Pin XLR', inputs: 2, outputs: 10 },
-      { id: 'XSP-3R-3R', label: 'XSP-3R-3R', connector: '3-Pin XLR', inputs: 2, outputs: 10 }
-    ]
-  },
-  {
-    id: 'obsidian',
-    label: 'Obsidian NETRON',
-    description: 'Obsidian Control NETRON Serie',
-    models: [
-      { id: 'RDM-6XL',  label: 'RDM 6XL',  connector: '5-Pin XLR',     inputs: 1, outputs: 6  },
-      { id: 'RDM6-IP',  label: 'RDM6 IP',  connector: '5-Pin XLR IP66', inputs: 1, outputs: 6  },
-      { id: 'DMX-10-5', label: 'DMX 10-5', connector: '5-Pin XLR',      inputs: 2, outputs: 10 },
-      { id: 'DMX10-53', label: 'DMX10-53', connector: '5+3-Pin XLR',    inputs: 2, outputs: 10 }
-    ]
-  },
-  {
-    id: 'major',
-    label: 'Major',
-    description: 'Major DMX Booster',
-    models: [
-      { id: 'DMX-Booster-12', label: 'DMX Booster', connector: '5-Pin XLR', inputs: 1, outputs: 12 }
-    ]
-  }
-];
+const APP_VERSION = 'v0.9.4.1';
 
 // ============================================================
 // 1. STATE
@@ -2830,11 +2406,6 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(buildEar());
 
-  // Apply skin CSS class
-  if (device.skin && device.skin !== 'standard') {
-    rackUnit.classList.add('skin-' + device.skin);
-  }
-
   const face = document.createElement('div');
   face.className = 'rack-face';
 
@@ -2850,16 +2421,7 @@ function buildDeviceCard(device) {
 
   const brand = document.createElement('div');
   brand.className = 'brand-label';
-  if (device.skin === 'swisson' && device.skinModel) {
-    // Model info shown small; large SWISSON logo injected separately below
-    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
-    brand.classList.add('skin-model-info');
-  } else if (device.skin === 'obsidian' && device.skinModel) {
-    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
-    brand.classList.add('skin-model-info');
-  } else {
-    brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
-  }
+  brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
 
   const controls = document.createElement('div');
   controls.className = 'rack-controls';
@@ -2879,29 +2441,6 @@ function buildDeviceCard(device) {
 
   topbar.appendChild(nameEl);
   topbar.appendChild(brand);
-
-  // Skin-specific logo element (injected before controls so it sits to their left)
-  if (device.skin === 'swisson') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-swisson';
-    logo.textContent = 'SWISSON';
-    topbar.appendChild(logo);
-  } else if (device.skin === 'obsidian') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-netron';
-    const mark = document.createElement('span');
-    mark.className = 'netron-mark';
-    mark.textContent = '◆';
-    logo.appendChild(mark);
-    logo.appendChild(document.createTextNode('NETRON'));
-    topbar.appendChild(logo);
-  } else if (device.skin === 'major') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-major';
-    logo.textContent = 'MAJOR';
-    topbar.appendChild(logo);
-  }
-
   topbar.appendChild(controls);
   face.appendChild(topbar);
 
@@ -2947,15 +2486,6 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(face);
   rackUnit.appendChild(buildEar(true));
-
-  // Swisson: blaue Power-LED im rechten Rack-Ear
-  if (device.skin === 'swisson') {
-    const rightEar = rackUnit.querySelector('.rack-ear.right');
-    const powerLed = document.createElement('div');
-    powerLed.className = 'swisson-power-led';
-    powerLed.title = 'Power';
-    rightEar.appendChild(powerLed);
-  }
 
   card.appendChild(rackUnit);
 
@@ -3310,79 +2840,11 @@ function openNewDeviceModal() {
   document.getElementById('newDeviceName').value = '';
   document.getElementById('input1').checked = true;
   document.getElementById('outputCount').value = '8';
-  // Reset skin picker to Standard
-  selectSkin('standard');
   updatePreview();
   openModal('newDeviceModal');
   setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
 }
 
-// Helper: find a model across all catalog skins
-function findCatalogModel(modelId) {
-  for (const s of SKIN_CATALOG) {
-    if (!s.models) continue;
-    const m = s.models.find(m => m.id === modelId);
-    if (m) return { skin: s, model: m };
-  }
-  return null;
-}
-
-// Helper: all model IDs across all non-standard skins
-function allCatalogModelIds() {
-  return SKIN_CATALOG.flatMap(s => (s.models || []).map(m => m.id));
-}
-
-function selectSkin(skinId) {
-  // Update tile selection
-  document.querySelectorAll('.skin-tile').forEach(t => {
-    t.classList.toggle('selected', t.dataset.skin === skinId);
-  });
-
-  const modelSelect  = document.getElementById('skinModelSelect');
-  const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
-  const outputSelect = document.getElementById('outputCount');
-  const skinEntry    = SKIN_CATALOG.find(s => s.id === skinId);
-
-  if (skinEntry && skinEntry.models) {
-    // Populate model dropdown with this skin's models
-    modelSelect.innerHTML = skinEntry.models.map(m =>
-      `<option value="${m.id}">${m.id} — ${m.inputs}×${m.outputs} — ${m.connector}</option>`
-    ).join('');
-    modelSelect.style.display = 'block';
-    applySkinModel(modelSelect.value);
-  } else {
-    modelSelect.style.display = 'none';
-    // Restore editable
-    inputRadios.forEach(r => r.disabled = false);
-    outputSelect.disabled = false;
-    document.getElementById('input1').checked = true;
-    outputSelect.value = '8';
-    updatePreview();
-  }
-}
-
-function applySkinModel(modelId) {
-  const found = findCatalogModel(modelId);
-  if (!found) return;
-  const { model } = found;
-
-  const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
-  const outputSelect = document.getElementById('outputCount');
-
-  inputRadios.forEach(r => {
-    r.checked  = (parseInt(r.value) === model.inputs);
-    r.disabled = false;
-  });
-  outputSelect.value    = String(model.outputs);
-  outputSelect.disabled = false;
-
-  // Auto-fill name if still empty or previously set by any model
-  const nameEl = document.getElementById('newDeviceName');
-  const isDefaultOrModel = !nameEl.value || allCatalogModelIds().includes(nameEl.value);
-  if (isDefaultOrModel) nameEl.value = modelId;
-
-  updatePreview();
-}
 
 function updatePreview() {
   const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
@@ -3419,20 +2881,7 @@ function confirmNewDevice() {
   const inputs  = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
   const outputs = parseInt(document.getElementById('outputCount').value);
 
-  // Read skin selection
-  const selectedTile = document.querySelector('.skin-tile.selected');
-  const skinId = selectedTile ? selectedTile.dataset.skin : 'standard';
-  let options = { skin: skinId };
-
-  const skinEntry = SKIN_CATALOG.find(s => s.id === skinId);
-  if (skinEntry && skinEntry.models) {
-    const modelId = document.getElementById('skinModelSelect').value;
-    const found   = findCatalogModel(modelId);
-    options.skinModel     = modelId;
-    options.connectorType = found ? found.model.connector : null;
-  }
-
-  createDevice(name, inputs, outputs, options);
+  createDevice(name, inputs, outputs);
   closeModal('newDeviceModal');
   showToast('Gerät "' + name + '" angelegt.', 'success');
 }
@@ -3444,15 +2893,12 @@ document.getElementById('newDeviceName').addEventListener('keydown', e => {
 // ============================================================
 // 6. DEVICE CRUD
 // ============================================================
-function createDevice(name, inputCount, outputCount, options = {}) {
+function createDevice(name, inputCount, outputCount) {
   const device = {
     id: generateUUID(),
     name,
     inputs: inputCount,
     outputs: outputCount,
-    skin:          options.skin          || 'standard',
-    skinModel:     options.skinModel     || null,
-    connectorType: options.connectorType || null,
     connections: {
       inputs:  Array.from({length: inputCount},  (_, i) => ({
         id: i+1, universe: null, label: '', notes: '', active: false
@@ -3610,33 +3056,16 @@ function bsNext() {
   table.className = 'bs-setup-table';
   table.innerHTML = `<thead><tr>
     <th>#</th>
-    <th>Gerät</th>
     <th>Name</th>
     <th>Inputs</th>
     <th>Outputs</th>
   </tr></thead>`;
-
-  // Build all skin model options (grouped by manufacturer)
-  const allSkinOptions = SKIN_CATALOG
-    .filter(s => s.id !== 'standard' && s.models)
-    .map(s => `<optgroup label="${s.label}">` +
-      s.models.map(m =>
-        `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
-      ).join('') +
-      `</optgroup>`)
-    .join('');
 
   const tbody = document.createElement('tbody');
   for (let i = 1; i <= count; i++) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="bs-num-cell">${i}</td>
-      <td>
-        <select id="bsSkin_${i}" class="bs-skin-select" onchange="bsSkinChanged(${i})">
-          <option value="standard">— Standard —</option>
-          ${allSkinOptions}
-        </select>
-      </td>
       <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
       <td>
         <div class="bs-radio-small">
@@ -3676,40 +3105,6 @@ function bsBack() {
   document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
 }
 
-function bsSkinChanged(i) {
-  const skinSel  = document.getElementById('bsSkin_' + i);
-  const nameEl   = document.getElementById('bsName_' + i);
-  const outSel   = document.getElementById('bsOut_' + i);
-  const in1Radio = document.getElementById('bsIn1_' + i);
-  const in2Radio = document.getElementById('bsIn2_' + i);
-  const val      = skinSel.value;
-
-  if (val === 'standard') {
-    in1Radio.disabled = false;
-    in2Radio.disabled = false;
-    outSel.disabled   = false;
-    // Reset name if it was previously set by any model
-    if (allCatalogModelIds().includes(nameEl.value)) {
-      nameEl.value = 'DMX Booster ' + i;
-    }
-  } else {
-    const found = findCatalogModel(val);
-    if (!found) return;
-    const { model } = found;
-
-    in1Radio.checked  = (model.inputs === 1);
-    in2Radio.checked  = (model.inputs === 2);
-    in1Radio.disabled = false;
-    in2Radio.disabled = false;
-    outSel.value      = String(model.outputs);
-    outSel.disabled   = false;
-
-    // Auto-fill name if still default or was a previous model name
-    const isDefault = nameEl.value === ('DMX Booster ' + i)
-      || allCatalogModelIds().includes(nameEl.value);
-    if (isDefault) nameEl.value = model.id;
-  }
-}
 
 function bsConfirm() {
   const count = parseInt(document.getElementById('bsCount').value) || 1;
@@ -3725,26 +3120,11 @@ function bsConfirm() {
     const inputs  = parseInt(inEl.value) || 1;
     const outputs = parseInt(outEl.value) || 8;
 
-    // Read skin selection
-    const skinSel = document.getElementById('bsSkin_' + i);
-    const skinVal = skinSel ? skinSel.value : 'standard';
-
-    let skin = 'standard', skinModel = null, connectorType = null;
-    if (skinVal !== 'standard') {
-      const found = findCatalogModel(skinVal);
-      skin          = found ? found.skin.id : 'standard';
-      skinModel     = skinVal;
-      connectorType = found ? found.model.connector : null;
-    }
-
     const device = {
       id: generateUUID(),
       name,
       inputs,
       outputs,
-      skin,
-      skinModel,
-      connectorType,
       connections: {
         inputs:  Array.from({length: inputs},  (_, j) => ({
           id: j+1, universe: null, label: '', notes: '', active: false

@@ -5,79 +5,11 @@ function openNewDeviceModal() {
   document.getElementById('newDeviceName').value = '';
   document.getElementById('input1').checked = true;
   document.getElementById('outputCount').value = '8';
-  // Reset skin picker to Standard
-  selectSkin('standard');
   updatePreview();
   openModal('newDeviceModal');
   setTimeout(() => document.getElementById('newDeviceName').focus(), 100);
 }
 
-// Helper: find a model across all catalog skins
-function findCatalogModel(modelId) {
-  for (const s of SKIN_CATALOG) {
-    if (!s.models) continue;
-    const m = s.models.find(m => m.id === modelId);
-    if (m) return { skin: s, model: m };
-  }
-  return null;
-}
-
-// Helper: all model IDs across all non-standard skins
-function allCatalogModelIds() {
-  return SKIN_CATALOG.flatMap(s => (s.models || []).map(m => m.id));
-}
-
-function selectSkin(skinId) {
-  // Update tile selection
-  document.querySelectorAll('.skin-tile').forEach(t => {
-    t.classList.toggle('selected', t.dataset.skin === skinId);
-  });
-
-  const modelSelect  = document.getElementById('skinModelSelect');
-  const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
-  const outputSelect = document.getElementById('outputCount');
-  const skinEntry    = SKIN_CATALOG.find(s => s.id === skinId);
-
-  if (skinEntry && skinEntry.models) {
-    // Populate model dropdown with this skin's models
-    modelSelect.innerHTML = skinEntry.models.map(m =>
-      `<option value="${m.id}">${m.id} — ${m.inputs}×${m.outputs} — ${m.connector}</option>`
-    ).join('');
-    modelSelect.style.display = 'block';
-    applySkinModel(modelSelect.value);
-  } else {
-    modelSelect.style.display = 'none';
-    // Restore editable
-    inputRadios.forEach(r => r.disabled = false);
-    outputSelect.disabled = false;
-    document.getElementById('input1').checked = true;
-    outputSelect.value = '8';
-    updatePreview();
-  }
-}
-
-function applySkinModel(modelId) {
-  const found = findCatalogModel(modelId);
-  if (!found) return;
-  const { model } = found;
-
-  const inputRadios  = document.querySelectorAll('input[name="inputCount"]');
-  const outputSelect = document.getElementById('outputCount');
-
-  inputRadios.forEach(r => {
-    r.checked  = (parseInt(r.value) === model.inputs);
-    r.disabled = false;
-  });
-  outputSelect.value    = String(model.outputs);
-  outputSelect.disabled = false;
-
-  // Auto-fill name if still empty or previously set by any model
-  const nameEl = document.getElementById('newDeviceName');
-  const isDefaultOrModel = !nameEl.value || allCatalogModelIds().includes(nameEl.value);
-  if (isDefaultOrModel) nameEl.value = modelId;
-
-  updatePreview();
-}
 
 function updatePreview() {
   const inputs = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
@@ -114,20 +46,7 @@ function confirmNewDevice() {
   const inputs  = parseInt(document.querySelector('input[name="inputCount"]:checked').value);
   const outputs = parseInt(document.getElementById('outputCount').value);
 
-  // Read skin selection
-  const selectedTile = document.querySelector('.skin-tile.selected');
-  const skinId = selectedTile ? selectedTile.dataset.skin : 'standard';
-  let options = { skin: skinId };
-
-  const skinEntry = SKIN_CATALOG.find(s => s.id === skinId);
-  if (skinEntry && skinEntry.models) {
-    const modelId = document.getElementById('skinModelSelect').value;
-    const found   = findCatalogModel(modelId);
-    options.skinModel     = modelId;
-    options.connectorType = found ? found.model.connector : null;
-  }
-
-  createDevice(name, inputs, outputs, options);
+  createDevice(name, inputs, outputs);
   closeModal('newDeviceModal');
   showToast('Gerät "' + name + '" angelegt.', 'success');
 }
@@ -139,15 +58,12 @@ document.getElementById('newDeviceName').addEventListener('keydown', e => {
 // ============================================================
 // 6. DEVICE CRUD
 // ============================================================
-function createDevice(name, inputCount, outputCount, options = {}) {
+function createDevice(name, inputCount, outputCount) {
   const device = {
     id: generateUUID(),
     name,
     inputs: inputCount,
     outputs: outputCount,
-    skin:          options.skin          || 'standard',
-    skinModel:     options.skinModel     || null,
-    connectorType: options.connectorType || null,
     connections: {
       inputs:  Array.from({length: inputCount},  (_, i) => ({
         id: i+1, universe: null, label: '', notes: '', active: false
@@ -305,33 +221,16 @@ function bsNext() {
   table.className = 'bs-setup-table';
   table.innerHTML = `<thead><tr>
     <th>#</th>
-    <th>Gerät</th>
     <th>Name</th>
     <th>Inputs</th>
     <th>Outputs</th>
   </tr></thead>`;
-
-  // Build all skin model options (grouped by manufacturer)
-  const allSkinOptions = SKIN_CATALOG
-    .filter(s => s.id !== 'standard' && s.models)
-    .map(s => `<optgroup label="${s.label}">` +
-      s.models.map(m =>
-        `<option value="${m.id}">${m.id} (${m.inputs}×${m.outputs}, ${m.connector})</option>`
-      ).join('') +
-      `</optgroup>`)
-    .join('');
 
   const tbody = document.createElement('tbody');
   for (let i = 1; i <= count; i++) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td class="bs-num-cell">${i}</td>
-      <td>
-        <select id="bsSkin_${i}" class="bs-skin-select" onchange="bsSkinChanged(${i})">
-          <option value="standard">— Standard —</option>
-          ${allSkinOptions}
-        </select>
-      </td>
       <td><input type="text" id="bsName_${i}" value="DMX Booster ${i}" maxlength="40"></td>
       <td>
         <div class="bs-radio-small">
@@ -371,40 +270,6 @@ function bsBack() {
   document.getElementById('bsModalTitle').textContent = 'BOOSTER ANLEGEN';
 }
 
-function bsSkinChanged(i) {
-  const skinSel  = document.getElementById('bsSkin_' + i);
-  const nameEl   = document.getElementById('bsName_' + i);
-  const outSel   = document.getElementById('bsOut_' + i);
-  const in1Radio = document.getElementById('bsIn1_' + i);
-  const in2Radio = document.getElementById('bsIn2_' + i);
-  const val      = skinSel.value;
-
-  if (val === 'standard') {
-    in1Radio.disabled = false;
-    in2Radio.disabled = false;
-    outSel.disabled   = false;
-    // Reset name if it was previously set by any model
-    if (allCatalogModelIds().includes(nameEl.value)) {
-      nameEl.value = 'DMX Booster ' + i;
-    }
-  } else {
-    const found = findCatalogModel(val);
-    if (!found) return;
-    const { model } = found;
-
-    in1Radio.checked  = (model.inputs === 1);
-    in2Radio.checked  = (model.inputs === 2);
-    in1Radio.disabled = false;
-    in2Radio.disabled = false;
-    outSel.value      = String(model.outputs);
-    outSel.disabled   = false;
-
-    // Auto-fill name if still default or was a previous model name
-    const isDefault = nameEl.value === ('DMX Booster ' + i)
-      || allCatalogModelIds().includes(nameEl.value);
-    if (isDefault) nameEl.value = model.id;
-  }
-}
 
 function bsConfirm() {
   const count = parseInt(document.getElementById('bsCount').value) || 1;
@@ -420,26 +285,11 @@ function bsConfirm() {
     const inputs  = parseInt(inEl.value) || 1;
     const outputs = parseInt(outEl.value) || 8;
 
-    // Read skin selection
-    const skinSel = document.getElementById('bsSkin_' + i);
-    const skinVal = skinSel ? skinSel.value : 'standard';
-
-    let skin = 'standard', skinModel = null, connectorType = null;
-    if (skinVal !== 'standard') {
-      const found = findCatalogModel(skinVal);
-      skin          = found ? found.skin.id : 'standard';
-      skinModel     = skinVal;
-      connectorType = found ? found.model.connector : null;
-    }
-
     const device = {
       id: generateUUID(),
       name,
       inputs,
       outputs,
-      skin,
-      skinModel,
-      connectorType,
       connections: {
         inputs:  Array.from({length: inputs},  (_, j) => ({
           id: j+1, universe: null, label: '', notes: '', active: false

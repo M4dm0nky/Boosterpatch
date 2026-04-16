@@ -49,11 +49,6 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(buildEar());
 
-  // Apply skin CSS class
-  if (device.skin && device.skin !== 'standard') {
-    rackUnit.classList.add('skin-' + device.skin);
-  }
-
   const face = document.createElement('div');
   face.className = 'rack-face';
 
@@ -69,16 +64,7 @@ function buildDeviceCard(device) {
 
   const brand = document.createElement('div');
   brand.className = 'brand-label';
-  if (device.skin === 'swisson' && device.skinModel) {
-    // Model info shown small; large SWISSON logo injected separately below
-    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
-    brand.classList.add('skin-model-info');
-  } else if (device.skin === 'obsidian' && device.skinModel) {
-    brand.textContent = device.skinModel + (device.connectorType ? ' · ' + device.connectorType : '');
-    brand.classList.add('skin-model-info');
-  } else {
-    brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
-  }
+  brand.textContent = 'DMX BOOSTER · ' + device.inputs + 'IN/' + device.outputs + 'OUT';
 
   const controls = document.createElement('div');
   controls.className = 'rack-controls';
@@ -98,29 +84,6 @@ function buildDeviceCard(device) {
 
   topbar.appendChild(nameEl);
   topbar.appendChild(brand);
-
-  // Skin-specific logo element (injected before controls so it sits to their left)
-  if (device.skin === 'swisson') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-swisson';
-    logo.textContent = 'SWISSON';
-    topbar.appendChild(logo);
-  } else if (device.skin === 'obsidian') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-netron';
-    const mark = document.createElement('span');
-    mark.className = 'netron-mark';
-    mark.textContent = '◆';
-    logo.appendChild(mark);
-    logo.appendChild(document.createTextNode('NETRON'));
-    topbar.appendChild(logo);
-  } else if (device.skin === 'major') {
-    const logo = document.createElement('div');
-    logo.className = 'skin-logo skin-logo-major';
-    logo.textContent = 'MAJOR';
-    topbar.appendChild(logo);
-  }
-
   topbar.appendChild(controls);
   face.appendChild(topbar);
 
@@ -166,15 +129,6 @@ function buildDeviceCard(device) {
 
   rackUnit.appendChild(face);
   rackUnit.appendChild(buildEar(true));
-
-  // Swisson: blaue Power-LED im rechten Rack-Ear
-  if (device.skin === 'swisson') {
-    const rightEar = rackUnit.querySelector('.rack-ear.right');
-    const powerLed = document.createElement('div');
-    powerLed.className = 'swisson-power-led';
-    powerLed.title = 'Power';
-    rightEar.appendChild(powerLed);
-  }
 
   card.appendChild(rackUnit);
 

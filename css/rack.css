@@ -617,23 +617,22 @@
 /* ── Rechte Seite: schwarze Fläche + roter Panel-Balken ───── */
 .swisson-hw-right {
   flex: 1;
-  background: #0d0d11;
-  position: relative;
+  background: #111114;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .swisson-hw-panel {
-  position: absolute;
-  left: 0; right: 0;
-  top: 50%;
-  transform: translateY(-50%);
   height: 54px;
-  background: #8a1408;
-  background-image: linear-gradient(180deg, #a81c0c 0%, #8a1408 50%, #5c0a04 100%);
-  border-top: 2px solid #c02010;
-  border-bottom: 2px solid #3a0602;
+  flex-shrink: 0;
+  background: #9a1a0a;
+  background-image: linear-gradient(180deg, #b82412 0%, #9a1a0a 50%, #7a1208 100%);
+  border-top: 2px solid #e83018;
+  border-bottom: 2px solid #500a04;
   box-shadow:
-    inset 0 1px 0 rgba(255,80,40,0.15),
-    inset 0 -1px 0 rgba(0,0,0,0.5);
+    inset 0 1px 0 rgba(255,100,60,0.2),
+    0 2px 6px rgba(0,0,0,0.6);
 }
 
 /* Output XLR bodies: chrome/silber vor rotem Hintergrund */

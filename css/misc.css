@@ -368,17 +368,3 @@
 @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
 @keyframes fadeIn   { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
-/* === 16. Print === */
-@media print {
-  #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
-  #tabPatch, #tabFixtures { display: none !important; }
-  #tabDetails { display: block !important; }
-  body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
-  #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
-  .rack-ctrl-btn { display: none !important; }
-  .xlr-connector { cursor: default; }
-  #schemaTable { font-size: 10px; border-collapse: collapse; }
-  #schemaTable th, #schemaTable td { border: 1px solid #999 !important; padding: 3px 6px; background: #fff !important; color: #000 !important; }
-  .sc-td-name { font-weight: bold; }
-  .sc-td-out:not(.active) { color: #ccc !important; }
-}

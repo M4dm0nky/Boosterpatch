@@ -1889,20 +1889,6 @@ body {
 @keyframes toastOut { from { opacity: 1; } to { opacity: 0; transform: translateX(20px); } }
 @keyframes fadeIn   { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
 
-/* === 16. Print === */
-@media print {
-  #sidebar, #app-header, #tabBar, #ethPanel { display: none !important; }
-  #tabPatch, #tabFixtures { display: none !important; }
-  #tabDetails { display: block !important; }
-  body { grid-template-rows: 1fr; grid-template-columns: 1fr; }
-  #main { grid-column: 1; grid-row: 1; overflow: visible; padding: 10mm; }
-  .rack-ctrl-btn { display: none !important; }
-  .xlr-connector { cursor: default; }
-  #schemaTable { font-size: 10px; border-collapse: collapse; }
-  #schemaTable th, #schemaTable td { border: 1px solid #999 !important; padding: 3px 6px; background: #fff !important; color: #000 !important; }
-  .sc-td-name { font-weight: bold; }
-  .sc-td-out:not(.active) { color: #ccc !important; }
-}
 
   </style>
 </head>
@@ -1945,7 +1931,7 @@ body {
   <button class="sb-btn" onclick="saveProjectAs()">↓ Speichern als …</button>
   <button class="sb-btn" onclick="openLogosModal()">🖼 Logos</button>
   <button class="sb-btn" onclick="importDevices()">📥 Import</button>
-  <button class="sb-btn" onclick="exportPrint()">🖨 Export</button>
+  <button class="sb-btn" onclick="exportPrint()">🖨 Drucken</button>
   <button class="sb-btn danger" onclick="clearAll()">✕ Leeren</button>
   <div class="sb-sep"></div>
 
@@ -2250,7 +2236,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.4.4';
+const APP_VERSION = 'v0.9.4.5';
 
 // ============================================================
 // 1. STATE
@@ -3901,7 +3887,248 @@ function handleImport(event) {
 }
 
 function exportPrint() {
-  window.print();
+  if (state.devices.length === 0) {
+    showToast('Keine Geräte vorhanden.', 'warning');
+    return;
+  }
+
+  const maxOuts  = state.devices.reduce((m, d) => Math.max(m, d.connections.outputs.length), 0);
+  const cols     = Math.min(maxOuts, 12);
+  const hasIn2   = state.devices.some(d => d.inputs > 1);
+  const dateStr  = new Date().toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const projName = escHtml(state.projectName || 'Unbenannt');
+
+  // ── Table header ────────────────────────────────────────────
+  let thead = `<tr>
+    <th class="th-name">BOOSTER</th>
+    <th class="th-in">IN 1</th>
+    ${hasIn2 ? '<th class="th-in">IN 2</th>' : ''}
+    ${Array.from({length: cols}, (_, i) => `<th class="th-out">${i + 1}</th>`).join('')}
+  </tr>`;
+
+  // ── Table rows ───────────────────────────────────────────────
+  let rows = '';
+  state.devices.forEach((dev, idx) => {
+    const in1 = dev.connections.inputs[0];
+    const in2 = dev.connections.inputs[1];
+    const u1  = in1 && in1.universe ? 'U' + String(in1.universe).padStart(3, '0') : '—';
+    const u2  = in2 && in2.universe ? 'U' + String(in2.universe).padStart(3, '0') : '—';
+    const stripe = idx % 2 === 0 ? '' : ' odd';
+
+    rows += `<tr class="brow${stripe}">
+      <td class="td-name">${escHtml(dev.name)}</td>
+      <td class="td-in${in1 && in1.universe ? ' val' : ''}">${u1}</td>
+      ${hasIn2 ? `<td class="td-in${in2 && in2.universe ? ' val' : ''}">${u2}</td>` : ''}`;
+
+    for (let p = 0; p < cols; p++) {
+      const out = dev.connections.outputs[p];
+      const lbl = out && out.label ? escHtml(out.label) : '';
+      if (!out) {
+        rows += `<td class="td-out na"></td>`;
+      } else if (lbl) {
+        rows += `<td class="td-out act">${lbl}</td>`;
+      } else {
+        rows += `<td class="td-out">—</td>`;
+      }
+    }
+    rows += '</tr>';
+  });
+
+  // ── OUT header labels ────────────────────────────────────────
+  const outCols = Array.from({length: cols}, (_, i) => `<col class="col-out">`).join('');
+  const inCols  = hasIn2 ? '<col class="col-in"><col class="col-in">' : '<col class="col-in">';
+
+  const html = `<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>BOOSTERPATCH — ${projName}</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 8pt;
+  color: #111;
+  padding: 0;
+  background: #fff;
+}
+
+/* ── Header ── */
+.ph {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 3px solid #1a1f2e;
+  padding-bottom: 9px;
+  margin-bottom: 13px;
+}
+.ph-left-title {
+  font-size: 21pt;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: #1a1f2e;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.ph-left-sub {
+  font-size: 7pt;
+  color: #666;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.ph-right {
+  text-align: right;
+  font-size: 7.5pt;
+  color: #555;
+  line-height: 1.6;
+}
+.ph-right strong {
+  font-size: 9.5pt;
+  color: #1a1f2e;
+  display: block;
+  margin-bottom: 1px;
+}
+
+/* ── Table ── */
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+colgroup .col-name  { width: 15%; }
+colgroup .col-in    { width: 6%;  }
+colgroup .col-out   { }
+
+thead tr { background: #1a1f2e; }
+th {
+  color: #fff;
+  padding: 5px 5px;
+  font-size: 6.5pt;
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  text-align: center;
+  border: 1px solid #2a2f3e;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.th-name { text-align: left; padding-left: 8px; }
+.th-in   { background: #252a3e; }
+
+.brow { border-bottom: 1px solid #dde; }
+.brow.odd { background: #f5f7fc; }
+
+.td-name {
+  padding: 4px 8px;
+  font-weight: 700;
+  font-size: 7.5pt;
+  color: #1a1f2e;
+  border-right: 2px solid #1a1f2e;
+  background: #f0f4ff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-in {
+  padding: 3px 4px;
+  text-align: center;
+  color: #aaa;
+  font-size: 7pt;
+  border-right: 1px solid #d8dce8;
+  background: #fafafa;
+}
+.td-in.val {
+  color: #1a5a8a;
+  font-weight: 700;
+  background: #eaf2ff;
+}
+.td-out {
+  padding: 3px 4px;
+  text-align: center;
+  font-size: 6.5pt;
+  color: #ccc;
+  border-right: 1px solid #eee;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.td-out.act {
+  color: #1a4a1a;
+  font-weight: 700;
+  background: #eaf4ea;
+  border-right: 1px solid #c4dcc4;
+}
+.td-out.na {
+  background: #f9f9f9;
+}
+
+/* ── Legend ── */
+.legend {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  padding-top: 7px;
+  border-top: 1px solid #dde;
+  font-size: 6.5pt;
+  color: #777;
+  flex-wrap: wrap;
+}
+.leg-item { display: flex; align-items: center; gap: 5px; }
+.leg-dot  { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+/* ── Footer ── */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 7px;
+  font-size: 6pt;
+  color: #bbb;
+  border-top: 1px solid #eee;
+  padding-top: 5px;
+}
+
+@media print {
+  @page { size: A4 landscape; margin: 10mm; }
+}
+</style>
+</head>
+<body>
+<div class="ph">
+  <div>
+    <div class="ph-left-title">Boosterpatch</div>
+    <div class="ph-left-sub">DMX Patch · ${projName}</div>
+  </div>
+  <div class="ph-right">
+    <strong>${projName}</strong>
+    Gedruckt: ${dateStr} &nbsp;·&nbsp; ${APP_VERSION}
+  </div>
+</div>
+
+<table>
+  <colgroup>
+    <col class="col-name">
+    ${inCols}
+    ${outCols}
+  </colgroup>
+  <thead>${thead}</thead>
+  <tbody>${rows}</tbody>
+</table>
+
+<div class="legend">
+  <span class="leg-item"><span class="leg-dot" style="background:#eaf4ea;border:1px solid #c4dcc4;"></span> Output belegt</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#eaf2ff;border:1px solid #b8d4f0;"></span> Input mit Universum</span>
+  <span class="leg-item"><span style="color:#ccc;font-size:8pt;">—</span> &nbsp;Output leer</span>
+</div>
+
+<div class="footer">
+  <span>BOOSTERPATCH ${APP_VERSION} &nbsp;·&nbsp; ${projName}</span>
+  <span>${dateStr}</span>
+</div>
+
+<script>window.onload = () => setTimeout(() => window.print(), 350);<\/script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (!win) { showToast('Popup blockiert — bitte Popups erlauben.', 'warning', 4000); return; }
+  win.document.write(html);
+  win.document.close();
 }
 
 // ============================================================

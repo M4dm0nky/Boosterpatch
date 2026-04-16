@@ -2250,7 +2250,7 @@ body {
 // ===== js/state.js =====
 'use strict';
 
-const APP_VERSION = 'v0.9.4.3';
+const APP_VERSION = 'v0.9.4.4';
 
 // ============================================================
 // 1. STATE
@@ -2652,9 +2652,10 @@ function buildXLRConnector(deviceId, type, conn) {
     wrap.appendChild(lamp);
   }
 
-  // --- Output routing selector buttons (IN1 / IN2) ---
+  // --- Output routing selector buttons (IN1 / IN2) — nur bei 2 Inputs ---
   if (type === 'output') {
     const device = getDevice(deviceId);
+    if (!device || device.inputs < 2) return wrap;
     const routeBtns = document.createElement('div');
     routeBtns.className = 'output-route-btns';
     routeBtns.id = 'routebtns_' + deviceId + '_' + conn.id;

@@ -441,7 +441,17 @@ function getConnDisplayParts(conn) {
         bottom: conn.label.slice(spaceIdx + 1).slice(0, 4)
       };
     }
-    // No space — show full in top, empty bottom
+    // No space — split at slash: char before slash + slash + rest → bottom
+    const slashIdx = conn.label.indexOf('/');
+    if (slashIdx > 0) {
+      const splitAt = slashIdx - 1;
+      const top = conn.label.slice(0, splitAt).slice(0, 4);
+      return {
+        top:    top || '----',
+        bottom: conn.label.slice(splitAt).slice(0, 4)
+      };
+    }
+    // No space, no slash — show full in top, empty bottom
     return { top: conn.label.slice(0, 4), bottom: '----' };
   }
   return { top: '----', bottom: '----' };

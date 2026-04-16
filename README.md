@@ -2,7 +2,7 @@
 
 > Patch-Management für DMX Booster — für Touring-Produktionen im Bühnenlicht.
 
-**Aktuelle Version: v0.9.4**
+**Aktuelle Version: v0.9.4.8**
 
 ---
 
@@ -23,17 +23,11 @@ Kein Server. Keine Installation. Kein Login. Einfach die HTML-Datei öffnen — 
 - **Visueller Booster-Patch (nebeneinander)**  
   Jeder Booster wird als stilisiertes 1U Rack-Gerät gezeichnet — mit XLR-Connectors, Retro-Lampen und editierbaren Labels. Geräte werden horizontal nebeneinander dargestellt.
 
-- **Skin-System — Hersteller-Optik**  
-  Geräte können einen visuellen Skin erhalten, der das Erscheinungsbild an echte Hardware anlehnt:
-  - **Swisson XSP** — dunkel mit rotem Border, bordeaux Connector-Panel, blaue Power-LED
-  - **Obsidian NETRON** — Mattschwarz mit Dot-Matrix-Textur, teal NETRON-Logo
-  - **Major** — eigene Farbgebung
-
 - **7-Segment-Displays (VFD/Nixie-Optik)**  
   Über jedem Connector leuchtet ein Display im Röhren-Stil (warmes Amber auf Schwarz, 11 Segmente inkl. Diagonalen). Inputs zeigen das DMX-Universum, Outputs die zugewiesene ETH-Quelle / Line-Bezeichnung.
 
 - **CORES-Panel — ETH & Linien**  
-  Linkes Panel mit ETH-Quellen und importierten Fixture-Linien. Per Drag & Drop auf Output-Connector ziehen. Rechtsklick = Verbindung trennen.
+  Linkes Panel mit ETH-Quellen und importierten Fixture-Linien. Per Drag & Drop auf Output-Connector ziehen. Rechtsklick = Verbindung trennen. Scroll-Position bleibt beim Droppen erhalten.
 
 - **Fixture-Datenbank (TSV-Import)**  
   Fixture-Liste als TSV einlesen → Linien erscheinen im CORES-Panel und sind auf Outputs ziehbar. „ID's"-Button unter jedem Output zeigt alle Fixtures der zugewiesenen Line.
@@ -42,11 +36,11 @@ Kein Server. Keine Installation. Kein Login. Einfach die HTML-Datei öffnen — 
   Mehrere Projekte gleichzeitig in localStorage, per Sidebar wechselbar. Aktiver Plan wird beim Start automatisch geladen.
 
 - **Geführter Projekt-Workflow**  
-  Klick auf „Neues Projekt" → Name + Datum → Booster-Setup (Anzahl, Typ) → fertig.
+  Klick auf „Neues Projekt" → Name + Datum → Booster-Setup (Anzahl, Inputs, Outputs) → fertig.
 
 - **Tab-System: 3 Ansichten**  
   - `PATCH-ANSICHT` — grafische Booster mit CORES-Panel  
-  - `SCHEMATISCH` — kompakte Übersichtstabelle (BOOSTER | IN 1 | IN 2 | PORT 1 … N), druckoptimiert  
+  - `SCHEMATISCH` — kompakte Übersichtstabelle (BOOSTER | IN 1 | IN 2 | PORT 1 … N)  
   - `FIXTURES` — Fixture-Datenbank nach Linien
 
 - **Speichern — 3 Wege**  
@@ -55,11 +49,11 @@ Kein Server. Keine Installation. Kein Login. Einfach die HTML-Datei öffnen — 
   - Herunterladen (Fallback)  
   - Auto-Save alle 2 Min in offene Datei + localStorage
 
-- **Drucken / Export**  
-  SCHEMATISCH-Tab: A4-optimiertes Drucklayout, schwarz auf weiß.
+- **Drucken**  
+  Öffnet ein sauberes Druckdokument in einem neuen Fenster: Projektname, Logos, Datum und vollständige Patch-Tabelle. A4 Landscape, schwarz auf weiß — druckt auf jedem Drucker ohne Spezialeinstellungen.
 
 - **Logo-Slots**  
-  Drei Logo-Plätze im Header für Produktionsfirma, Band/Produktion und Booking-Agentur.
+  Drei Logo-Plätze für Produktionsfirma, Band/Produktion und Booking-Agentur — erscheinen im Header des Druckdokuments.
 
 ---
 
@@ -67,20 +61,20 @@ Kein Server. Keine Installation. Kein Login. Einfach die HTML-Datei öffnen — 
 
 | Aktion | Wo |
 |--------|-----|
-| Neues Projekt | Startscreen → **Neues Projekt** oder Sidebar → **Projekt** |
+| Neues Projekt | Startscreen → **Neues Projekt** oder Sidebar |
 | Booster anlegen (Batch) | Automatisch nach Projekt-Erstellung |
-| Einzelnes Gerät hinzufügen | Sidebar → **Neu** |
+| Einzelnes Gerät hinzufügen | Sidebar → **⊕ Neuer Booster** |
 | Gerät umbenennen | Doppelklick auf Gerätenamen im Rack |
 | Universum eintragen | Klick auf Input-Display → Popover |
 | Universum zurücksetzen | Rechtsklick auf Input-Connector |
 | ETH/Line zuweisen | Eintrag aus CORES-Panel auf Output ziehen |
 | ETH-Verbindung trennen | Rechtsklick auf Output-Connector |
 | Fixtures der Line sehen | „ID's"-Button unter Output-Connector |
-| Projekt speichern | Sidebar → **Speichern** |
-| Projekt laden | Sidebar → **Öffnen** |
+| Projekt speichern | Sidebar → **💾 Speichern** |
+| Projekt laden | Sidebar → **📂 Öffnen** |
 | Fixture-Datei importieren | Sidebar → FIXTURES → **Fixture-Datei laden** |
-| Drucken | SCHEMATISCH-Tab → Strg/⌘+P |
-| Logos einfügen | Sidebar → **Logos** |
+| Drucken | Sidebar → **🖨 Drucken** |
+| Logos einfügen | Sidebar → **🖼 Logos** |
 
 ---
 
@@ -95,18 +89,18 @@ Boosterpatch/
 ├── css/
 │   ├── variables.css     ← CSS Custom Properties / Tokens
 │   ├── layout.css        ← Grid, Header, Sidebar, Tabs, CORES-Panel
-│   ├── rack.css          ← Device Card, XLR Connector, Retro Lamps, Skins
+│   ├── rack.css          ← Device Card, XLR Connector, Retro Lamps
 │   ├── patch-table.css   ← Patch-Tabelle + SCHEMATISCH-Tabelle
 │   ├── modal.css         ← Modals, Booster-Setup
-│   └── misc.css          ← 7-Segment (11-Seg), Toast, Popovers, Print
+│   └── misc.css          ← 7-Segment (11-Seg), Toast, Popovers
 └── js/
     ├── state.js          ← State-Objekt, APP_VERSION, Utilities
     ├── ui.js             ← Modal, Tab-Switching (3 Tabs)
     ├── device-render.js  ← buildDeviceCard, XLR, SEG_MAP, buildSegDisplay
-    ├── device-crud.js    ← createDevice, deleteDevice, Booster-Setup
+    ├── device-crud.js    ← createDevice, deleteDevice, Booster-Setup-Wizard
     ├── patch.js          ← renderSchematicTable, CORES-Panel, Universe-Popover, LED-Sync
     ├── fixtures.js       ← Fixture-Import, Line-Zuweisung, Fixture-Popover
-    ├── storage.js        ← FileSystem API, localStorage, IndexedDB, Logos, Multi-Plan
+    ├── storage.js        ← FileSystem API, localStorage, Logos, Multi-Plan, Drucken
     └── main.js           ← Initialisierung
 ```
 
@@ -121,27 +115,25 @@ Boosterpatch/
 
 ```json
 {
-  "appVersion": "v0.9.4",
+  "appVersion": "v0.9.4.8",
   "projectName": "My Show 2026",
   "created": "2026-04-08T00:00:00.000Z",
-  "modified": "2026-04-16T12:00:00.000Z",
+  "modified": "2026-04-17T12:00:00.000Z",
   "devices": [
     {
       "id": "uuid",
       "name": "DMX Booster FOH",
-      "inputs": 1,
+      "inputs": 2,
       "outputs": 8,
-      "skin": "swisson",
-      "skinModel": "XSP-5R",
-      "connectorType": "5-Pin XLR",
       "connections": {
         "inputs": [
-          { "id": 1, "universe": 1, "label": "FOH Console", "notes": "", "active": true }
+          { "id": 1, "universe": 1, "label": "", "notes": "", "active": true },
+          { "id": 2, "universe": 2, "label": "", "notes": "", "active": false }
         ],
         "outputs": [
           {
             "id": 1, "universe": 1, "startChannel": 1,
-            "label": "LK 1/4", "notes": "", "active": true,
+            "label": "LK C/1", "notes": "", "active": true,
             "ethId": "eth_a_1", "routeToInput": 1
           }
         ]
@@ -164,8 +156,7 @@ Boosterpatch/
 
 ### Mittelfristig
 - **Signal-Flow-Diagramm** — Linie von ETH-Quelle durch Booster zu den Geräten
-- **PDF-Export** — strukturiertes Patch-Dokument für den technischen Rider
-- **Swisson Hardware-Skin** — Neuansatz mit überarbeiteter Rack-Architektur (siehe `skin Feature.md`)
+- **PDF-Download** — Patch-Dokument direkt als Datei speichern (ohne Browser-Druckdialog)
 
 ### Langfristig
 - **ArtNet / sACN Mapping** — Netzwerk-DMX Universes direkt einbinden

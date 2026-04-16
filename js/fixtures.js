@@ -74,7 +74,7 @@ function connectLineToOutput(deviceId, connId, lineId) {
   if (!conn) return;
   conn.label = lineId;
   markModified();
-  renderAllDevices();
+  updateConnDisplay(deviceId, 'output', conn);
   renderPatchTable();
   renderEthPanel();
   const count = getFixturesForLine(lineId).length;

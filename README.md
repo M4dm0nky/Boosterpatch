@@ -84,6 +84,8 @@ Kein Server. Keine Installation. Kein Login. Einfach die HTML-Datei öffnen — 
 Boosterpatch/
 ├── boosterpatch.html     ← Fertiges Single-File (NICHT direkt bearbeiten!)
 ├── build.py              ← python3 build.py → baut boosterpatch.html neu
+├── CLAUDE.md             ← Projekt-Dokumentation für Claude Code (AI-Assistent)
+├── skin Feature.md       ← Archiv: Dokumentation des abgebrochenen Skin-Features
 ├── src/
 │   └── template.html     ← HTML-Skeleton
 ├── css/

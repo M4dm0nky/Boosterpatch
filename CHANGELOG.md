@@ -85,7 +85,7 @@
 - `createDevice()` ohne `skin`/`skinModel`/`connectorType`
 - `.skin-swisson`, `.skin-obsidian`, `.skin-major` CSS-Blöcke aus `rack.css` entfernt
 - `.skin-picker`, `.skin-tile`, `.bs-skin-select` aus `modal.css` entfernt
-- `skin Feature.md` gelöscht
+- `skin Feature.md` als Archiv-Dokumentation erhalten (Wissenserhalt für späteren Neuanlauf)
 
 ---
 

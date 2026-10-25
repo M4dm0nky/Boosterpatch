@@ -278,3 +278,6 @@ Wenn der User "Consult the council:", "Frag andere KIs", "Was denken ChatGPT und
 Der Skill befragt ChatGPT und Gemini, analysiert deren Antworten und synthetisiert einen Plan mit Quellenangaben.
 
 Voraussetzung: `.env`-Datei im Projektverzeichnis mit API-Keys (siehe `~/.claude/skills/llm-council/.env.template`).
+
+## Gestartete Prozesse IMMER wieder beenden
+Alles, was ich oder Subagenten starten (Hintergrundbefehle, Server, Mitschnitte, Watcher, Builds), beende ich, sobald es seine Aufgabe erfüllt hat. Nach Abbruch oder Timeout und am Sitzungsende prüfe ich auf verwaiste Prozesse und beende sie gezielt. Details: `C:\Dropbox\Incomming\github\CLAUDE.md`, Abschnitt „Gestartete Prozesse IMMER wieder beenden“.
